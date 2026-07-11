@@ -1,0 +1,12 @@
+/* Match Claude's artifact/preview rendering: use grayscale antialiasing
+   instead of macOS default subpixel smoothing, which renders text heavier
+   and darker. Applied globally so all Verdure text matches the design. */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+}
