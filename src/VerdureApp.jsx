@@ -464,10 +464,8 @@ function PlantSilhouette({ speciesKey, baseColor, size = 70, fit }) {
   );
 }
 
-/* circular photo avatar with SVG fallback */
+/* circular plant avatar — SVG silhouette only */
 function PlantPhoto({ speciesKey, health, size = 56, round = true, imgW }) {
-  const [failed, setFailed] = useState(false);
-  const s = SPECIES[speciesKey];
   const hue = healthHue(health);
   return (
     <div style={{ width: size, height: size, borderRadius: round ? "50%" : 16, overflow: "hidden", position: "relative",
@@ -475,10 +473,6 @@ function PlantPhoto({ speciesKey, health, size = 56, round = true, imgW }) {
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <PlantSilhouette speciesKey={speciesKey} baseColor={hue} size={size * 0.74} />
       </div>
-      {!failed && (
-        <img src={commonsURL(s.commonsFile, imgW || 300)} alt={s.common} onError={() => setFailed(true)}
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-      )}
     </div>
   );
 }
