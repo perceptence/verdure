@@ -3116,7 +3116,7 @@ export default function VerdureApp() {
         .ob2-leaf-r { animation: spLeaf .6s cubic-bezier(.2,1.5,.4,1) 1.25s forwards; }
         .ob2-w-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: -0.02em; color: ${palette.white}; margin-bottom: 14px; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
         .ob2-w-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.82); line-height: 1.55; max-width: 310px; margin-bottom: 34px; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
-        .ob2-scan-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 30px; border-radius: ${radius['pill']}px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.bold}; cursor: pointer; box-shadow: 0 12px 34px rgba(0,0,0,0.28); transition: transform .16s ease; }
+        .ob2-scan-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 30px; border-radius: ${radius['pill']}px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.bold}; cursor: pointer; box-shadow: ${shadow.e4}; transition: transform .16s ease; }
         .ob2-scan-btn:active { transform: scale(0.96); }
         .ob2-w-foot { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.62); margin-top: 18px; }
         /* earned sign-in */
@@ -3497,7 +3497,7 @@ export default function VerdureApp() {
         /* nav — one continuous full-width bar; a single white pill slides across it */
         .nav-wrap { position: absolute; bottom: 20px; left: 16px; right: 16px; height: 60px; z-index: 55; }
         .nav-bar { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 100%;
-          padding: 6px 6px; border-radius: ${radius['2xl']}px; background: ${palette.black600}; box-shadow: 0 12px 30px rgba(0,0,0,0.32); }
+          padding: 6px 6px; border-radius: ${radius['2xl']}px; background: ${palette.black600}; box-shadow: ${shadow.e3}; }
         /* the sliding pill: travels + stretches between tabs */
         .nav-glider { position: absolute; top: 6px; height: 48px; border-radius: ${radius['2xl']}px; background: ${color.surfaceAlt}; z-index: 1;
           box-shadow: 0 2px 12px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.9);
@@ -3779,7 +3779,7 @@ export default function VerdureApp() {
         .dt-icon { width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${T.line}; background: ${T.card}; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .dt-hero { display: flex; gap: 16px; align-items: center; padding: 14px 24px 0; opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
         .dt-hero.in { opacity: 1; transform: translateY(0); }
-        .dt-photo-wrap { border-radius: ${radius['xl']}px; overflow: hidden; box-shadow: 0 8px 22px rgba(28,36,25,0.14); }
+        .dt-photo-wrap { border-radius: ${radius['xl']}px; overflow: hidden; box-shadow: ${shadow.e2}; }
         .dt-nick { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; line-height: 1.05; }
         .dt-latin { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkFaint}; margin-top: 3px; }
         .dt-badges { display: flex; gap: 7px; margin-top: 10px; }
