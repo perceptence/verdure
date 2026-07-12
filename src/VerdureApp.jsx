@@ -112,8 +112,8 @@ function celestialRealistic(hour) {
    alias; `color`, `ds` (type), `space`, `radius`, `shadow`, `motion` are the
    structured tokens used going forward. */
 const ADD_STAGES = ["Matching the species", "Reading its condition", "Measuring the room light"];
-function healthColor(h) { return h >= 70 ? T.moss : h >= 45 ? "#8A6820" : T.clay; }
-function healthColorLight(h) { return h >= 70 ? "#ffffff" : h >= 45 ? "#E8B04B" : "#E8875A"; }
+function healthColor(h) { return h >= 70 ? T.moss : h >= 45 ? color.watch : T.clay; }
+function healthColorLight(h) { return h >= 70 ? palette.white : h >= 45 ? color.watchSoft : color.needsCareSoft; }
 function healthHue(h) { return h >= 70 ? [64, 108, 68] : h >= 45 ? [156, 132, 60] : [190, 92, 40]; }
 function statusOf(h) { return h >= 70 ? "thriving" : h >= 45 ? "watch" : "urgent"; }
 function statusLabel(s) { return s === "thriving" ? "Thriving" : s === "watch" ? "Needs watch" : "Needs care"; }
@@ -318,7 +318,7 @@ function buildTasks(plants) {
   });
   return out.sort((a, b) => a.weight - b.weight);
 }
-function taskColor(kind) { return kind === "care" ? T.clay : kind === "watch" ? "#8A6820" : kind === "move" ? T.moss : T.mossBright; }
+function taskColor(kind) { return kind === "care" ? T.clay : kind === "watch" ? color.watch : kind === "move" ? T.moss : T.mossBright; }
 function taskIcon(kind, c) {
   if (kind === "water") return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" /></svg>;
   if (kind === "move") return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9" /></svg>;
@@ -487,7 +487,7 @@ function StatusBar({ light }) {
   h = h % 12; if (h === 0) h = 12;
   const timeStr = `${h}:${m < 10 ? "0" + m : m}`;
   return (
-    <div className="v-status" style={{ color: light ? "#1c2419" : "#f6f4ee" }}>
+    <div className="v-status" style={{ color: light ? color.ink : color.surfaceAlt }}>
       <span>{timeStr}</span>
       <svg width="25" height="12" viewBox="0 0 24 12" fill="none">
         <rect x="1" y="1" width="20" height="10" rx="2.5" stroke="currentColor" strokeWidth="1" />
@@ -546,7 +546,7 @@ function LivingSky({ hour, showCelestial = true, realisticSky = false }) {
           }} />
           <div className="vd-celestial" style={{
             left: `${moonPos.cx}%`, top: `${moonPos.cy}%`, opacity: moonOpacity,
-            background: `radial-gradient(circle at 38% 38%, #e8eaf2 0%, #c4c8da 60%, transparent 72%)`,
+            background: `radial-gradient(circle at 38% 38%, ${palette.water100} 0%, ${palette.water150} 60%, transparent 72%)`,
             boxShadow: `0 0 30px 8px rgba(200,205,230,0.25)`,
             width: 44, height: 44,
           }} />
@@ -570,7 +570,7 @@ function HomeScreen({ plants, hour, onOpenPlant, onOpenRooms, onOpenPlants, onAd
   const hh = Math.floor(hour), mm = Math.floor((hour - hh) * 60);
   const timeStr = `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
   const greeting = hour < 5 ? "Still resting" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : hour < 21 ? "Good evening" : "Winding down";
-  const lightText = L.warmth > 0.5 ? "#1c2419" : "#f6f4ee";
+  const lightText = L.warmth > 0.5 ? color.ink : color.surfaceAlt;
   const shadowSkew = sun.isDay ? (sun.cx - 50) * 0.5 : 0;
   const shadowLen = sun.isDay ? lerp(0.4, 1.2, 1 - sun.cy / 58) : 0.3;
 
@@ -768,7 +768,7 @@ function HomeScreen({ plants, hour, onOpenPlant, onOpenRooms, onOpenPlants, onAd
                 </div>
                 <div className="vd-plant-shadow" style={{ width: commonW * 0.6 * (0.7 + shadowLen * 0.4), transform: `translateX(-50%) skewX(${shadowSkew}deg) scaleX(${1 + shadowLen * 0.4})`, opacity: (sun.isDay ? 0.16 + L.warmth * 0.18 : 0.1) * (1 - d * 0.5) }} />
                 {p.health < 45 && <div className="vd-plant-alert">!</div>}
-                <div className="vd-plant-label" style={{ background: L.warmth > 0.5 ? "rgba(28,36,25,0.82)" : "rgba(246,244,238,0.9)", color: L.warmth > 0.5 ? "#f6f4ee" : "#1c2419" }}>{p.nickname}</div>
+                <div className="vd-plant-label" style={{ background: L.warmth > 0.5 ? "rgba(28,36,25,0.82)" : "rgba(246,244,238,0.9)", color: L.warmth > 0.5 ? color.surfaceAlt : color.ink }}>{p.nickname}</div>
               </div>
             );
           })}
@@ -827,7 +827,7 @@ function HealthChart({ journal, color }) {
       {[0.25, 0.5, 0.75].map((g) => <line key={g} x1={pad} x2={w - pad} y1={pad + g * (h - pad * 2)} y2={pad + g * (h - pad * 2)} stroke={T.line} strokeWidth="1" />)}
       <path d={area} fill="url(#hc)" />
       <path d={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      {pts.map((v, i) => <circle key={i} cx={X(i)} cy={Y(v)} r={i === pts.length - 1 ? 4 : 2.5} fill={i === pts.length - 1 ? color : "#fff"} stroke={color} strokeWidth="1.8" />)}
+      {pts.map((v, i) => <circle key={i} cx={X(i)} cy={Y(v)} r={i === pts.length - 1 ? 4 : 2.5} fill={i === pts.length - 1 ? color : palette.white} stroke={color} strokeWidth="1.8" />)}
     </svg>
   );
 }
@@ -942,13 +942,13 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
         <div className="dz-veil" />
         <div className="dz-statuswash" style={{ background: `radial-gradient(120% 80% at 50% 100%, ${color}2e 0%, transparent 60%)` }} />
         <div className="dz-top">
-          <button className="dz-icon" onClick={onBack} aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg></button>
+          <button className="dz-icon" onClick={onBack} aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg></button>
           <div className="dz-top-right">
             <button className="dz-icon" onClick={() => onToggleFavorite(plant.id)} aria-label={faved ? "Unfavorite" : "Favorite"}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill={faved ? "#fff" : "none"} stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11Z" /></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill={faved ? palette.white : "none"} stroke={palette.white} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11Z" /></svg>
             </button>
             <button className="dz-icon" onClick={() => setSheet(sheet === "options" ? null : "options")} aria-label="More options" aria-haspopup="menu" aria-expanded={sheet === "options"}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" stroke="none"><circle cx="12" cy="5" r="1.7" /><circle cx="12" cy="12" r="1.7" /><circle cx="12" cy="19" r="1.7" /></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill={palette.white} stroke="none"><circle cx="12" cy="5" r="1.7" /><circle cx="12" cy="12" r="1.7" /><circle cx="12" cy="19" r="1.7" /></svg>
             </button>
             {sheet === "options" && (
               <>
@@ -978,7 +978,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
             <div className="dz-vital-div" />
             <div className="dz-vital"><div className="dz-vital-num">{nextWaterIn === 0 ? "Now" : `${nextWaterIn}d`}</div><div className="dz-vital-lbl">Next water</div></div>
             <div className="dz-vital-div" />
-            <div className="dz-vital"><div className="dz-vital-num" style={{ color: matches[0].ok ? "#fff" : "#E8B04B" }}>{lightFit}</div><div className="dz-vital-lbl">Light fit</div></div>
+            <div className="dz-vital"><div className="dz-vital-num" style={{ color: matches[0].ok ? palette.white : color.watchSoft }}>{lightFit}</div><div className="dz-vital-lbl">Light fit</div></div>
           </div>
 
           {/* TREND — where this plant is heading */}
@@ -1008,7 +1008,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
             <div className="dz-rhythm-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6" /></svg></div>
             <div className="dz-rhythm-step">
               <div className="dz-rhythm-k">Next due</div>
-              <div className="dz-rhythm-v" style={{ color: nextWaterIn === 0 ? healthColorLight(plant.health) : "#fff" }}>{nextWaterIn === 0 ? "Today" : `in ${nextWaterIn}d`}</div>
+              <div className="dz-rhythm-v" style={{ color: nextWaterIn === 0 ? healthColorLight(plant.health) : palette.white }}>{nextWaterIn === 0 ? "Today" : `in ${nextWaterIn}d`}</div>
             </div>
           </div>
 
@@ -1017,7 +1017,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
             {plant.status === "urgent" ? (
               <>
                 <button className="dz-action urgent" onClick={() => openSheet("diagnosis")}>
-                  <span className="dz-action-main"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3.3 2.4-5.5 6-5.5.3 3.3-2.2 5.5-6 5.5Z"/><path d="M12 15c0-2.8-2-4.8-5-4.8-.2 2.8 1.7 4.8 5 4.8Z"/><path d="M7 21h10"/></svg>Start recovery plan</span>
+                  <span className="dz-action-main"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3.3 2.4-5.5 6-5.5.3 3.3-2.2 5.5-6 5.5Z"/><path d="M12 15c0-2.8-2-4.8-5-4.8-.2 2.8 1.7 4.8 5 4.8Z"/><path d="M7 21h10"/></svg>Start recovery plan</span>
                   <span className="dz-action-steps">{stepsTotal} steps</span>
                 </button>
                 <div className="dz-status subtle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" /><path d="M4 3l16 18" /></svg>Hold off watering — soil is still wet</div>
@@ -1039,13 +1039,13 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
 
           <div className={`dz-explore${mounted ? " in" : ""}`}>
             <button className="dz-row" onClick={() => openSheet("diagnosis")}>
-              <span className="dz-row-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.4 13.3 12 21l-8.4-7.7A5 5 0 0 1 12 6.5a5 5 0 0 1 8.4 6.8Z"/><path d="M3.5 12.5h4l2-3.5 3 7 2-4.5h6"/></svg></span>
+              <span className="dz-row-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.4 13.3 12 21l-8.4-7.7A5 5 0 0 1 12 6.5a5 5 0 0 1 8.4 6.8Z"/><path d="M3.5 12.5h4l2-3.5 3 7 2-4.5h6"/></svg></span>
               <span className="dz-row-body"><span className="dz-row-lbl">Health check</span><span className="dz-row-prev">{diag.title} · {diag.confidence}% confident</span></span>
               <svg className="dz-row-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2"><path d="M9 6l6 6-6 6" /></svg>
             </button>
             <div className="dz-row-sep" />
             <button className="dz-row" onClick={() => openSheet("care")}>
-              <span className="dz-row-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8"><path d="M12 22V12M12 12C12 8 9 5 5 5c0 4 3 7 7 7ZM12 12c0-4 3-7 7-7 0 4-3 7-7 7Z" /></svg></span>
+              <span className="dz-row-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="1.8"><path d="M12 22V12M12 12C12 8 9 5 5 5c0 4 3 7 7 7ZM12 12c0-4 3-7 7-7 0 4-3 7-7 7Z" /></svg></span>
               <span className="dz-row-body"><span className="dz-row-lbl">Care guide</span><span className="dz-row-prev">{(() => {
                 const off = matches.filter((m) => !m.ok);
                 return off.length === 0 ? "Light, humidity & watering all suit it" : `${off.length} to check — ${off.map((m) => m.label.toLowerCase()).join(" & ")}`;
@@ -1054,7 +1054,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
             </button>
             <div className="dz-row-sep" />
             <button className="dz-row" onClick={() => openSheet("journal")}>
-              <span className="dz-row-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8"><rect x="3" y="4" width="18" height="16" rx="2.5" /><path d="M3 15l5-4 4 3 4-5 5 6" /></svg></span>
+              <span className="dz-row-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="1.8"><rect x="3" y="4" width="18" height="16" rx="2.5" /><path d="M3 15l5-4 4 3 4-5 5 6" /></svg></span>
               <span className="dz-row-body"><span className="dz-row-lbl">Journal</span><span className="dz-row-prev">{jTrendTxt} · {plant.journal.length} check-ins</span></span>
               <svg className="dz-row-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2"><path d="M9 6l6 6-6 6" /></svg>
             </button>
@@ -1095,7 +1095,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
                     const positive = /positive|strong|good/i.test(f.weight);
                     return (
                       <div key={i} className="cg-cond-row">
-                        <span className="cg-cond-ic" style={{ background: positive ? `${T.moss}18` : "#8A682018", color: positive ? T.moss : "#8A6820" }}>
+                        <span className="cg-cond-ic" style={{ background: positive ? `${T.moss}18` : `${color.watch}18`, color: positive ? T.moss : color.watch }}>
                           {positive
                             ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
                             : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>}
@@ -1113,7 +1113,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
                     <div className="dt-revive-track"><div className="dt-revive-trackfill" style={{ width: `${(stepsDone / stepsTotal) * 100}%`, background: color }} /></div>
                     {diag.revive.map((r, i) => { const isDone = !!doneSteps[i]; return (
                       <button key={i} className={`dt-revive${isDone ? " done" : ""}`} onClick={() => toggleStep(i)}>
-                        <div className="dt-revive-check" style={{ borderColor: color, background: isDone ? color : "transparent" }}>{isDone && <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}</div>
+                        <div className="dt-revive-check" style={{ borderColor: color, background: isDone ? color : "transparent" }}>{isDone && <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke={palette.white} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}</div>
                         <div className="dt-revive-content"><div className="dt-revive-step">{r.step}</div><div className="dt-revive-detail">{r.detail}</div></div>
                       </button>); })}
                   </>
@@ -1134,8 +1134,8 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
             {/* verdict — three honest states, all from the shared roomFit():
                 great spot (all room conditions met) · a better room exists (move) ·
                 off but no better room available. Can never contradict the rows below. */}
-            <div className="dz-verdict" style={{ background: fit.roomOk ? `${T.moss}12` : "#8A68200f", borderColor: fit.roomOk ? `${T.moss}2a` : "#8A682033" }}>
-              <span className="dz-verdict-ic" style={{ background: fit.roomOk ? `${T.moss}22` : "#8A682022", color: fit.roomOk ? T.moss : "#8A6820" }}>
+            <div className="dz-verdict" style={{ background: fit.roomOk ? `${T.moss}12` : `${color.watch}0f`, borderColor: fit.roomOk ? `${T.moss}2a` : `${color.watch}33` }}>
+              <span className="dz-verdict-ic" style={{ background: fit.roomOk ? `${T.moss}22` : `${color.watch}22`, color: fit.roomOk ? T.moss : color.watch }}>
                 {fit.roomOk
                   ? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6" /></svg>
                   : fit.canMove
@@ -1167,15 +1167,15 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
                 return (
                 <div key={m.label} className="cg-merge">
                   <div className="cg-merge-head">
-                    <span className="cg-cond-ic" style={{ background: m.ok ? `${T.moss}18` : "#8A682018", color: m.ok ? T.moss : "#8A6820" }}>{condIcon}</span>
+                    <span className="cg-cond-ic" style={{ background: m.ok ? `${T.moss}18` : `${color.watch}18`, color: m.ok ? T.moss : color.watch }}>{condIcon}</span>
                     <div className="cg-cond-body"><div className="cg-cond-label">{m.label}</div><div className="cg-cond-have">{m.haveTxt}</div></div>
-                    <span className="cg-cond-flag" style={{ color: m.ok ? T.moss : "#8A6820" }}>{m.ok ? "Good" : "Off"}</span>
+                    <span className="cg-cond-flag" style={{ color: m.ok ? T.moss : color.watch }}>{m.ok ? "Good" : "Off"}</span>
                   </div>
                   {m.label !== "Watering" && (
                     <div className="cg-merge-track">
-                      <div className="dt-match-track"><div className="dt-match-fill" style={{ width: `${Math.min(100, m.have)}%`, background: m.ok ? `${T.moss}22` : "#8A682018" }} /><div className="dt-match-need" style={{ left: `${Math.min(96, m.need)}%` }} /><div className="dt-match-have" style={{ left: `${Math.min(96, m.have)}%`, background: m.ok ? T.moss : "#8A6820" }} /></div>
+                      <div className="dt-match-track"><div className="dt-match-fill" style={{ width: `${Math.min(100, m.have)}%`, background: m.ok ? `${T.moss}22` : `${color.watch}18` }} /><div className="dt-match-need" style={{ left: `${Math.min(96, m.need)}%` }} /><div className="dt-match-have" style={{ left: `${Math.min(96, m.have)}%`, background: m.ok ? T.moss : color.watch }} /></div>
                       <div className="cg-match-legend">
-                        <span className="cg-match-key"><i className="cg-key-have" style={{ background: m.ok ? T.moss : "#8A6820" }} />Your {plant.room.toLowerCase()}</span>
+                        <span className="cg-match-key"><i className="cg-key-have" style={{ background: m.ok ? T.moss : color.watch }} />Your {plant.room.toLowerCase()}</span>
                         <span className="cg-match-key"><i className="cg-key-need" />Ideal</span>
                       </div>
                     </div>
@@ -1219,7 +1219,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
                       const isCurrent = r === plant.room;
                       const isBest = misfit && r === best.room;
                       const rank = fit >= 80 ? "Great" : fit >= 60 ? "Good" : fit >= 40 ? "Okay" : "Poor";
-                      const rc = fit >= 60 ? T.moss : fit >= 40 ? "#8A6820" : T.clay;
+                      const rc = fit >= 60 ? T.moss : fit >= 40 ? color.watch : T.clay;
                       return (
                         <button key={r} className={`rx-move-room${isCurrent ? " current" : ""}${isBest ? " best" : ""}`} onClick={() => { if (!isCurrent) { onMovePlant(plant.id, r); setMoveOpen(false); } }} disabled={isCurrent}>
                           <div className="rx-move-room-l">
@@ -1305,7 +1305,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
             )}
           </div>
           <div className="dz-sheet-cta">
-            <button className="dz-cta-btn" onClick={() => onAddJournal(plant.id)}><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8"><rect x="3" y="6" width="18" height="14" rx="2.5" /><circle cx="12" cy="13" r="3.5" /><path d="M9 6l1-2h4l1 2" /></svg>Add a progress photo</button>
+            <button className="dz-cta-btn" onClick={() => onAddJournal(plant.id)}><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="1.8"><rect x="3" y="6" width="18" height="14" rx="2.5" /><circle cx="12" cy="13" r="3.5" /><path d="M9 6l1-2h4l1 2" /></svg>Add a progress photo</button>
           </div>
         </div>
       )}
@@ -1358,7 +1358,7 @@ function PlantDeck({ plants, onOpenPlant, favorites = {} }) {
   useEffect(() => { setExpanded(plants.length ? plants.length - 1 : null); }, [plants.length]);
 
   // moss-family tints cycle across the header strips (keeps Verdure's palette)
-  const tints = [T.moss, "#2A3B2C", "#3E5C43", T.mossBright, "#243A2A", "#456B4A"];
+  const tints = [T.moss, palette.moss750, palette.moss600, T.mossBright, palette.moss800, palette.moss550];
   const HEADER = 108;    // stacked collapsed card height — overlap (HEADER-STEP=34) exceeds corner radius so cards flow together
   const HEADER_LAST = 80; // the bottom collapsed card hugs its header with balanced padding (~24px below the room line)
   const STEP = 72;      // vertical advance per collapsed card — less than HEADER, so cards overlap (room line sits ~16px above the next card)
@@ -1389,15 +1389,15 @@ function PlantDeck({ plants, onOpenPlant, favorites = {} }) {
           const action = nextActionShort(p);
           return (
             <div key={p.id} className={`wal-card${isExp ? " exp" : ""}`}
-              style={{ top, height: isExp ? EXPANDED : collapsedH, zIndex: isExp ? 50 : i + 1, background: isExp ? "#1c1e17" : tint }}
+              style={{ top, height: isExp ? EXPANDED : collapsedH, zIndex: isExp ? 50 : i + 1, background: isExp ? palette.black600 : tint }}
               onClick={() => { if (isExp) onOpenPlant(p.id); else setExpanded(i); }}>
 
               {/* header strip — always visible */}
               <div className="wal-head">
                 <div className="wal-head-left">
                   <PlantLabel plant={p} dark roomInset={17}
-                    lead={<span className="wal-dot" style={{ background: isExp ? color : (p.status === "thriving" ? "#fff" : color), boxShadow: !isExp && p.status !== "thriving" ? `0 0 0 3px ${color}44` : "none" }} />}
-                    badge={favorites[p.id] ? <svg className="wal-pin" width="12" height="12" viewBox="0 0 24 24" fill={isExp ? "#fff" : color} stroke="none"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11Z" /></svg> : null}
+                    lead={<span className="wal-dot" style={{ background: isExp ? color : (p.status === "thriving" ? palette.white : color), boxShadow: !isExp && p.status !== "thriving" ? `0 0 0 3px ${color}44` : "none" }} />}
+                    badge={favorites[p.id] ? <svg className="wal-pin" width="12" height="12" viewBox="0 0 24 24" fill={isExp ? palette.white : color} stroke="none"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11Z" /></svg> : null}
                   />
                 </div>
                 <div className="wal-head-right">
@@ -1410,7 +1410,7 @@ function PlantDeck({ plants, onOpenPlant, favorites = {} }) {
                   )}
                   {isExp && (
                     <button className="wal-collapse" onClick={(e) => { e.stopPropagation(); setExpanded(null); }} aria-label="Collapse">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M18 15l-6-6-6 6" /></svg>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="2"><path d="M18 15l-6-6-6 6" /></svg>
                     </button>
                   )}
                 </div>
@@ -1434,7 +1434,7 @@ function PlantDeck({ plants, onOpenPlant, favorites = {} }) {
                       <div className="wal-vital-sep" />
                       <div className="wal-vital"><div className="wal-vital-num">{p.lastWatered.split(" ")[0]}d</div><div className="wal-vital-lbl">Watered</div></div>
                     </div>
-                    <div className="wal-open">Tap to open full record<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4"><path d="M9 6l6 6-6 6" /></svg></div>
+                    <div className="wal-open">Tap to open full record<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="2.4"><path d="M9 6l6 6-6 6" /></svg></div>
                   </div>
                 </div>
               )}
@@ -1608,12 +1608,12 @@ function RoomsScreen({ plants, onBack, onOpenPlant, onMovePlant }) {
                 </div>
                 <div className="rm-ov-bar">
                   {thr > 0 && <div style={{ flex: thr, background: T.moss }} />}
-                  {wat > 0 && <div style={{ flex: wat, background: "#C99A3A" }} />}
+                  {wat > 0 && <div style={{ flex: wat, background: palette.amber500 }} />}
                   {need > 0 && <div style={{ flex: need, background: T.clay }} />}
                 </div>
                 <div className="rm-ov-legend">
                   <span><i style={{ background: T.moss }} />{thr} thriving</span>
-                  {wat > 0 && <span><i style={{ background: "#C99A3A" }} />{wat} watching</span>}
+                  {wat > 0 && <span><i style={{ background: palette.amber500 }} />{wat} watching</span>}
                   {need > 0 && <span><i style={{ background: T.clay }} />{need} need care</span>}
                 </div>
               </div>
@@ -1669,16 +1669,16 @@ function RoomsScreen({ plants, onBack, onOpenPlant, onMovePlant }) {
                   return (
                     <div key={p.id} className="rx-plant">
                       <button className="rx-plant-tap" onClick={() => onOpenPlant(p.id)}>
-                        <div className="rx-plant-photo" style={{ boxShadow: `0 0 0 2px ${misfit ? "#8A6820" : healthColor(p.health)}` }}>
+                        <div className="rx-plant-photo" style={{ boxShadow: `0 0 0 2px ${misfit ? color.watch : healthColor(p.health)}` }}>
                           <PlantPhoto speciesKey={p.speciesKey} health={p.health} size={46} round />
                         </div>
                         <div className="rx-plant-name">{p.nickname}</div>
                       </button>
                       {rf.canMove
-                        ? <button className="rx-plant-move" onClick={() => setMovePicker(p)}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8A6820" strokeWidth="2.4"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9" /></svg>Move</button>
+                        ? <button className="rx-plant-move" onClick={() => setMovePicker(p)}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={color.watch} strokeWidth="2.4"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9" /></svg>Move</button>
                         : rf.roomOk
                           ? <div className="rx-plant-ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={T.moss} strokeWidth="2"><path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6" /></svg><span>Happy here</span></div>
-                          : <div className="rx-plant-ok best"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A6820" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21c4.5-5 7-8.2 7-11.5A7 7 0 1 0 5 9.5C5 12.8 7.5 16 12 21Z" /><circle cx="12" cy="9.5" r="2.3" /></svg><span>Best spot</span></div>}
+                          : <div className="rx-plant-ok best"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={color.watch} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21c4.5-5 7-8.2 7-11.5A7 7 0 1 0 5 9.5C5 12.8 7.5 16 12 21Z" /><circle cx="12" cy="9.5" r="2.3" /></svg><span>Best spot</span></div>}
                     </div>
                   );
                 })}
@@ -1723,7 +1723,7 @@ function RoomsScreen({ plants, onBack, onOpenPlant, onMovePlant }) {
                 const isCurrent = r === movePicker.room;
                 const isBest = misfit && r === best.room;
                 const rank = fit >= 80 ? "Great" : fit >= 60 ? "Good" : fit >= 40 ? "Okay" : "Poor";
-                const rc = fit >= 60 ? T.moss : fit >= 40 ? "#8A6820" : T.clay;
+                const rc = fit >= 60 ? T.moss : fit >= 40 ? color.watch : T.clay;
                 return (
                   <button key={r} className={`rx-move-room${isCurrent ? " current" : ""}${isBest ? " best" : ""}`} onClick={() => !isCurrent && doMove(r)} disabled={isCurrent}>
                     <div className="rx-move-room-l">
@@ -1749,9 +1749,9 @@ function RemindersScreen({ plants, onBack, onOpenPlant, onWater }) {
   // Events are derived deterministically from plant state + journals.
   const EV = {
     water:   { color: T.mossBright, ic: <path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" /> },
-    overwater:{ color: "#5B7CC2", ic: <><path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" /><path d="M4 3l16 18" strokeLinecap="round"/></> },
-    dry:     { color: "#8A6820", ic: <><path d="M12 3v5" strokeLinecap="round" /><path d="M12 8C7 9 4 13 4 20 C11 20 16 16 16 10 C16 8.5 14 8 12 8Z" strokeLinejoin="round" /><path d="M12 9C10 12 8 16 5 19" strokeLinecap="round" /></> },
-    light:   { color: "#8A6820", ic: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" strokeLinecap="round"/></> },
+    overwater:{ color: palette.water600, ic: <><path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" /><path d="M4 3l16 18" strokeLinecap="round"/></> },
+    dry:     { color: color.watch, ic: <><path d="M12 3v5" strokeLinecap="round" /><path d="M12 8C7 9 4 13 4 20 C11 20 16 16 16 10 C16 8.5 14 8 12 8Z" strokeLinejoin="round" /><path d="M12 9C10 12 8 16 5 19" strokeLinecap="round" /></> },
+    light:   { color: color.watch, ic: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" strokeLinecap="round"/></> },
     rise:    { color: T.moss, ic: <path d="M4 17l7-7 4 4 5-6" /> },
     drop:    { color: T.clay, ic: <path d="M4 7l7 7 4-4 5 6" /> },
     milestone:{ color: T.mossBright, ic: <path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /> },
@@ -1799,7 +1799,7 @@ function RemindersScreen({ plants, onBack, onOpenPlant, onWater }) {
   const toggle = (k) => setExpanded((o) => ({ ...o, [k]: !o[k] }));
   // families group "similar notifications" within a section
   const FAM = {
-    attention: { types: ["overwater", "dry", "light"], color: "#8A6820", ic: <><path d="M10.3 4.3 2 18.5A2 2 0 0 0 3.7 21.5h16.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" /><path d="M12 9.5v4M12 17h.01" strokeLinecap="round" /></>, title: (n) => `${n} plants need attention` },
+    attention: { types: ["overwater", "dry", "light"], color: color.watch, ic: <><path d="M10.3 4.3 2 18.5A2 2 0 0 0 3.7 21.5h16.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" /><path d="M12 9.5v4M12 17h.01" strokeLinecap="round" /></>, title: (n) => `${n} plants need attention` },
     health: { types: ["rise", "drop"], color: T.moss, ic: <><path d="M20.4 13.3 12 21l-8.4-7.7A5 5 0 0 1 12 6.5a5 5 0 0 1 8.4 6.8Z" strokeLinecap="round" strokeLinejoin="round" /><path d="M3.5 12.5h4l2-3.5 3 7 2-4.5h6" strokeLinecap="round" strokeLinejoin="round" /></>, title: (n) => `${n} health updates` },
     care: { types: ["water"], color: T.mossBright, ic: <path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" />, title: (n) => `You watered ${n} plants` },
     move: { types: ["move"], color: T.moss, ic: <path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9" />, title: (n) => `${n} plants settled in` },
@@ -1895,7 +1895,7 @@ function ProfileScreen({ plants, onBack, onOpenRooms, onOpenActivity, signedIn =
             <svg width="56" height="56" viewBox="0 0 96 96" fill="none">
               <path d="M48 78V46" stroke={T.moss} strokeWidth="3.5" strokeLinecap="round" />
               <path d="M48 54c0-9-5-15-14-17 0 9 5 15 14 17Z" fill={T.mossBright} />
-              <path d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill="#7FA968" />
+              <path d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf300} />
             </svg>
           </div>
           <div className="pf-out-title">Save your garden</div>
@@ -1992,38 +1992,38 @@ function ProfileScreenSignedIn({ plants, onBack, onOpenRooms, onOpenActivity, ac
           <div className="pf3-avatar">
             <svg width="78" height="78" viewBox="0 0 78 78" fill="none">
               <defs>
-                <linearGradient id="avgrad" x1="0" y1="0" x2="78" y2="78"><stop stopColor="#5C8663" /><stop offset="1" stopColor="#37543D" /></linearGradient>
+                <linearGradient id="avgrad" x1="0" y1="0" x2="78" y2="78"><stop stopColor={palette.moss400} /><stop offset="1" stopColor={palette.moss650} /></linearGradient>
                 <clipPath id="avclip"><circle cx="39" cy="39" r="39" /></clipPath>
               </defs>
               <circle cx="39" cy="39" r="39" fill="url(#avgrad)" />
               <g clipPath="url(#avclip)">
                 {/* blouse + collar */}
-                <path d="M15 78 C15 62 26 55 39 55 C52 55 63 62 63 78 Z" fill="#EFE7D8" />
-                <path d="M34.5 56 C36 60 42 60 43.5 56 L44 61 L34 61 Z" fill="#E2D6C1" />
+                <path d="M15 78 C15 62 26 55 39 55 C52 55 63 62 63 78 Z" fill={color.surfaceWarm} />
+                <path d="M34.5 56 C36 60 42 60 43.5 56 L44 61 L34 61 Z" fill={color.surfaceWarmDeep} />
                 {/* neck */}
-                <path d="M35 48 h8 v7 c0 2 -1.6 3.4 -4 3.4 s-4 -1.4 -4 -3.4 Z" fill="#D9A67E" />
+                <path d="M35 48 h8 v7 c0 2 -1.6 3.4 -4 3.4 s-4 -1.4 -4 -3.4 Z" fill={palette.clay120} />
                 {/* hair back */}
-                <path d="M24 39 C24 26 30.5 18 39 18 C47.5 18 54 26 54 39 C54 49 52 55 49 60 L49 42 C49 36 45 32 39 32 C33 32 29 36 29 42 L29 60 C26 55 24 49 24 39 Z" fill="#3B2A24" />
+                <path d="M24 39 C24 26 30.5 18 39 18 C47.5 18 54 26 54 39 C54 49 52 55 49 60 L49 42 C49 36 45 32 39 32 C33 32 29 36 29 42 L29 60 C26 55 24 49 24 39 Z" fill={palette.bark700} />
                 {/* face */}
-                <path d="M30 37.5 C30 30 33.6 25 39 25 C44.4 25 48 30 48 37.5 C48 46 44.4 51 39 51 C33.6 51 30 46 30 37.5 Z" fill="#ECBE9A" />
+                <path d="M30 37.5 C30 30 33.6 25 39 25 C44.4 25 48 30 48 37.5 C48 46 44.4 51 39 51 C33.6 51 30 46 30 37.5 Z" fill={palette.clay200} />
                 {/* ears */}
-                <circle cx="30" cy="39.5" r="2" fill="#E3B08A" /><circle cx="48" cy="39.5" r="2" fill="#E3B08A" />
+                <circle cx="30" cy="39.5" r="2" fill={palette.clay150} /><circle cx="48" cy="39.5" r="2" fill={palette.clay150} />
                 {/* hairline / fringe */}
-                <path d="M29 35 C30 26.5 33.6 22.5 39 22.5 C44.4 22.5 48 26.5 49 35 C46.5 30 43 28 39 28 C35 28 31.5 30 29 35 Z" fill="#463229" />
-                <path d="M28.6 34 C27.6 40 28 46 29.6 50 C27.2 46 26.4 40 27.4 34 Z" fill="#3B2A24" />
-                <path d="M49.4 34 C50.4 40 50 46 48.4 50 C50.8 46 51.6 40 50.6 34 Z" fill="#3B2A24" />
+                <path d="M29 35 C30 26.5 33.6 22.5 39 22.5 C44.4 22.5 48 26.5 49 35 C46.5 30 43 28 39 28 C35 28 31.5 30 29 35 Z" fill={palette.bark600} />
+                <path d="M28.6 34 C27.6 40 28 46 29.6 50 C27.2 46 26.4 40 27.4 34 Z" fill={palette.bark700} />
+                <path d="M49.4 34 C50.4 40 50 46 48.4 50 C50.8 46 51.6 40 50.6 34 Z" fill={palette.bark700} />
                 {/* cheeks */}
-                <ellipse cx="33.3" cy="42.5" rx="2.2" ry="1.4" fill="#E79A7E" opacity="0.5" />
-                <ellipse cx="44.7" cy="42.5" rx="2.2" ry="1.4" fill="#E79A7E" opacity="0.5" />
+                <ellipse cx="33.3" cy="42.5" rx="2.2" ry="1.4" fill={palette.clay300} opacity="0.5" />
+                <ellipse cx="44.7" cy="42.5" rx="2.2" ry="1.4" fill={palette.clay300} opacity="0.5" />
                 {/* brows */}
-                <path d="M33.4 35.6 C34.4 34.9 35.9 34.9 36.9 35.4" stroke="#5a4033" strokeWidth="0.9" fill="none" strokeLinecap="round" />
-                <path d="M41.1 35.4 C42.1 34.9 43.6 34.9 44.6 35.6" stroke="#5a4033" strokeWidth="0.9" fill="none" strokeLinecap="round" />
+                <path d="M33.4 35.6 C34.4 34.9 35.9 34.9 36.9 35.4" stroke={palette.bark500} strokeWidth="0.9" fill="none" strokeLinecap="round" />
+                <path d="M41.1 35.4 C42.1 34.9 43.6 34.9 44.6 35.6" stroke={palette.bark500} strokeWidth="0.9" fill="none" strokeLinecap="round" />
                 {/* eyes */}
-                <circle cx="35" cy="38.6" r="1.5" fill="#2E2622" /><circle cx="43" cy="38.6" r="1.5" fill="#2E2622" />
-                <circle cx="35.5" cy="38.1" r="0.45" fill="#fff" /><circle cx="43.5" cy="38.1" r="0.45" fill="#fff" />
+                <circle cx="35" cy="38.6" r="1.5" fill={palette.black500} /><circle cx="43" cy="38.6" r="1.5" fill={palette.black500} />
+                <circle cx="35.5" cy="38.1" r="0.45" fill={palette.white} /><circle cx="43.5" cy="38.1" r="0.45" fill={palette.white} />
                 {/* nose + smile */}
-                <path d="M38.6 40 l-0.7 2 h1.5 Z" fill="#DCA983" opacity="0.7" />
-                <path d="M36 45.2 C37.5 46.8 40.5 46.8 42 45.2" stroke="#BC6E54" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                <path d="M38.6 40 l-0.7 2 h1.5 Z" fill={palette.clay250} opacity="0.7" />
+                <path d="M36 45.2 C37.5 46.8 40.5 46.8 42 45.2" stroke={palette.clay500} strokeWidth="1.3" fill="none" strokeLinecap="round" />
               </g>
             </svg>
           </div>
@@ -2064,7 +2064,7 @@ function ProfileScreenSignedIn({ plants, onBack, onOpenRooms, onOpenActivity, ac
         <div className="pf3-earned-strip">
           {achievements.map((a, i) => (
             <div key={i} className={`pf3-chip${a.got ? " got" : ""}`} onClick={() => a.got && setCelebrate(a)}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={a.got ? "#fff" : T.inkFaint} strokeWidth="1.8">{a.icon}</svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={a.got ? palette.white : T.inkFaint} strokeWidth="1.8">{a.icon}</svg>
               <div className="pf3-chip-tip">
                 <div className="pf3-chip-tip-name">{a.label}</div>
                 <div className="pf3-chip-tip-sub">{a.got ? "Earned" : `${a.sub} · ${a.cur}/${a.target}`}</div>
@@ -2124,7 +2124,7 @@ function ProfileScreenSignedIn({ plants, onBack, onOpenRooms, onOpenActivity, ac
               const state = i < tierIdx ? "done" : i === tierIdx ? "current" : "locked";
               return (
                 <div key={t.name} className={`pf3-tier ${state}`}>
-                  <div className="pf3-tier-rail"><div className="pf3-tier-dot">{state === "done" && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5"><path d="M20 6L9 17l-5-5" /></svg>}</div>{i < TIERS.length - 1 && <div className="pf3-tier-line" />}</div>
+                  <div className="pf3-tier-rail"><div className="pf3-tier-dot">{state === "done" && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="3.5"><path d="M20 6L9 17l-5-5" /></svg>}</div>{i < TIERS.length - 1 && <div className="pf3-tier-line" />}</div>
                   <div className="pf3-tier-body">
                     <div className="pf3-tier-top">
                       <span className="pf3-tier-name">{t.name}</span>
@@ -2147,8 +2147,8 @@ function ProfileScreenSignedIn({ plants, onBack, onOpenRooms, onOpenActivity, ac
           <div className="pf3-badges" style={{ margin: "18px 0 0" }}>
             {achievements.map((a, i) => (
               <div key={i} className={`pf3-badge-card${a.got ? " got" : " locked"}`}>
-                {a.got && <div className="pf3-badge-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg></div>}
-                <div className="pf3-badge-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={a.got ? "#fff" : T.inkFaint} strokeWidth="1.8">{a.icon}</svg></div>
+                {a.got && <div className="pf3-badge-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg></div>}
+                <div className="pf3-badge-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={a.got ? palette.white : T.inkFaint} strokeWidth="1.8">{a.icon}</svg></div>
                 <div className="pf3-badge-label">{a.label}</div>
                 <div className="pf3-badge-sub">{a.sub}</div>
                 {!a.got && <div className="pf3-badge-prog"><div className="pf3-badge-prog-bar"><div style={{ width: `${a.pct}%` }} /></div><span>{a.cur}/{a.target}</span></div>}
@@ -2240,10 +2240,10 @@ function ProfileScreenSignedIn({ plants, onBack, onOpenRooms, onOpenActivity, ac
         <div className="pf3-celebrate" onClick={() => setCelebrate(null)}>
           <div className="pf3-cel-burst">
             {Array.from({ length: 14 }).map((_, i) => (
-              <span key={i} className="pf3-confetti" style={{ "--a": `${(360 / 14) * i}deg`, "--d": `${0.05 * (i % 5)}s`, background: [T.moss, T.mossBright, "#E8B04B", T.clay][i % 4] }} />
+              <span key={i} className="pf3-confetti" style={{ "--a": `${(360 / 14) * i}deg`, "--d": `${0.05 * (i % 5)}s`, background: [T.moss, T.mossBright, color.watchSoft, T.clay][i % 4] }} />
             ))}
           </div>
-          <div className="pf3-cel-badge"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8">{celebrate.icon}</svg></div>
+          <div className="pf3-cel-badge"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="1.8">{celebrate.icon}</svg></div>
           <div className="pf3-cel-kicker">Milestone earned</div>
           <div className="pf3-cel-name">{celebrate.label}</div>
           <div className="pf3-cel-sub">{celebrate.sub}</div>
@@ -2322,7 +2322,7 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
       <StatusBar light={false} />
       {(phase === "capture1" || phase === "capture2" || phase === "analyzing") && (
         <div className="ap-viewfinder">
-          <button className="ap-close" onClick={onClose} aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
+          <button className="ap-close" onClick={onClose} aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="2"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
 
           {/* subtle two-step progress */}
           {phase !== "analyzing" && (
@@ -2376,9 +2376,9 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
 
       {phase === "failed" && (
         <div className="ap-viewfinder ap-failed">
-          <button className="ap-close" onClick={onClose} aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
+          <button className="ap-close" onClick={onClose} aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="2"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
           <div className="ap-fail-card">
-            <div className="ap-fail-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#E8B04B" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7a10.6 10.6 0 0 1-4.2-.9" /><path d="M3 3l18 18" /><circle cx="12" cy="12" r="3" /></svg></div>
+            <div className="ap-fail-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={color.watchSoft} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7a10.6 10.6 0 0 1-4.2-.9" /><path d="M3 3l18 18" /><circle cx="12" cy="12" r="3" /></svg></div>
             <div className="ap-fail-title">We couldn't get a clear read</div>
             <div className="ap-fail-sub">The photos were a little too dark or busy to identify with confidence. A couple of quick things help:</div>
             <div className="ap-fail-tips">
@@ -2396,7 +2396,7 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
         <div className="apx">
           {/* immersive reveal — the plant arrives on a dark canvas with a glow */}
           <div className="apx-glow" />
-          <button className="apx-close" onClick={onClose} aria-label="Close"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
+          <button className="apx-close" onClick={onClose} aria-label="Close"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="2"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
 
           <div className="apx-scroll">
             <div className={`apx-hero${revealed ? " in" : ""}`}>
@@ -2411,7 +2411,7 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
             {needsCare && (
               <div className={`apx-alert${revealed ? " in" : ""}`}>
                 <div className="apx-alert-top">
-                  <span className="apx-alert-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8B04B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.3 4.3 2 18.5A2 2 0 0 0 3.7 21.5h16.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" /><path d="M12 9.5v4M12 17h.01" /></svg></span>
+                  <span className="apx-alert-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color.watchSoft} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.3 4.3 2 18.5A2 2 0 0 0 3.7 21.5h16.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" /><path d="M12 9.5v4M12 17h.01" /></svg></span>
                   <div className="apx-alert-head">
                     <div className="apx-alert-title">Needs a little care</div>
                     <div className="apx-alert-conf">AI · {diag.confidence}% confident</div>
@@ -2472,9 +2472,9 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
               {!room ? (
                 <>Choose a room to continue</>
               ) : firstRun ? (
-                <><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V11"/><path d="M12 11c0-3.3 2.4-5.5 6-5.5.3 3.3-2.2 5.5-6 5.5Z"/><path d="M12 13c0-2.8-2-4.8-5-4.8-.2 2.8 1.7 4.8 5 4.8Z"/><path d="M7 22h10"/></svg>Continue with {nickname.trim() || s.common}</>
+                <><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V11"/><path d="M12 11c0-3.3 2.4-5.5 6-5.5.3 3.3-2.2 5.5-6 5.5Z"/><path d="M12 13c0-2.8-2-4.8-5-4.8-.2 2.8 1.7 4.8 5 4.8Z"/><path d="M7 22h10"/></svg>Continue with {nickname.trim() || s.common}</>
               ) : (
-                <><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11Z" /></svg>Welcome {nickname.trim() || s.common} home</>
+                <><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={palette.white} strokeWidth="2"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11Z" /></svg>Welcome {nickname.trim() || s.common} home</>
               )}
             </button>
           </div>
@@ -2500,10 +2500,10 @@ function SplashScreen({ onDone }) {
         <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
           <circle className="sp-ring" cx="48" cy="48" r="44" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
           {/* growing sprout */}
-          <path className="sp-stem" d="M48 74V44" stroke="#EAF0E4" strokeWidth="3" strokeLinecap="round" />
-          <path className="sp-leaf sp-leaf-l" d="M48 52c0-9-5-15-14-17 0 9 5 15 14 17Z" fill="#7FA968" />
-          <path className="sp-leaf sp-leaf-r" d="M48 46c0-9 5-15 14-17 0 9-5 15-14 17Z" fill="#A9C88C" />
-          <circle className="sp-seed" cx="48" cy="76" r="3" fill="#EAF0E4" />
+          <path className="sp-stem" d="M48 74V44" stroke={color.onDark} strokeWidth="3" strokeLinecap="round" />
+          <path className="sp-leaf sp-leaf-l" d="M48 52c0-9-5-15-14-17 0 9 5 15 14 17Z" fill={palette.leaf300} />
+          <path className="sp-leaf sp-leaf-r" d="M48 46c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf200} />
+          <circle className="sp-seed" cx="48" cy="76" r="3" fill={color.onDark} />
         </svg>
       </div>
       <div className="sp-word">VERDURE</div>
@@ -2569,9 +2569,9 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
         <div className={`ob2-welcome${enter ? " in" : ""}`}>
           <div className="ob2-mark">
             <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
-              <path className="ob2-stem" d="M48 78V46" stroke="#EAF0E4" strokeWidth="3.5" strokeLinecap="round" />
-              <path className="ob2-leaf ob2-leaf-l" d="M48 54c0-9-5-15-14-17 0 9 5 15 14 17Z" fill="#7FA968" />
-              <path className="ob2-leaf ob2-leaf-r" d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill="#A9C88C" />
+              <path className="ob2-stem" d="M48 78V46" stroke={color.onDark} strokeWidth="3.5" strokeLinecap="round" />
+              <path className="ob2-leaf ob2-leaf-l" d="M48 54c0-9-5-15-14-17 0 9 5 15 14 17Z" fill={palette.leaf300} />
+              <path className="ob2-leaf ob2-leaf-r" d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf200} />
             </svg>
           </div>
           <div className="ob2-w-title">Meet your first plant</div>
@@ -2599,9 +2599,9 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
             <>
               <div className="ob2-si-mark">
                 <svg width="72" height="72" viewBox="0 0 96 96" fill="none">
-                  <path d="M48 78V46" stroke="#EAF0E4" strokeWidth="3.5" strokeLinecap="round" />
-                  <path d="M48 54c0-9-5-15-14-17 0 9 5 15 14 17Z" fill="#7FA968" />
-                  <path d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill="#A9C88C" />
+                  <path d="M48 78V46" stroke={color.onDark} strokeWidth="3.5" strokeLinecap="round" />
+                  <path d="M48 54c0-9-5-15-14-17 0 9 5 15 14 17Z" fill={palette.leaf300} />
+                  <path d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf200} />
                 </svg>
               </div>
               <div className="ob2-si-name">Save your garden</div>
@@ -2617,7 +2617,7 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
                   Continue with Apple
                 </button>
                 <button className="ob2-sso google" onClick={() => startSSO("google")}>
-                  <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/><path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.45 14.97.5 12 .5A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 6.68 9.14 4.75 12 4.75z"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill={palette.amber300} d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/><path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.45 14.97.5 12 .5A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 6.68 9.14 4.75 12 4.75z"/></svg>
                   Continue with Google
                 </button>
                 <button className="ob2-sso email" onClick={() => setEmailStep("email")}>
@@ -2713,7 +2713,7 @@ function DynamicIsland({ activity, onDismiss, nudge, onNudgeTap }) {
       ) : (
         <div className="di-expanded">
           <div className="di-exp-head">
-            <span className="di-live-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FA3C4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" /></svg></span>
+            <span className="di-live-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color.water} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.5C8 8 5 11.5 5 15a7 7 0 0014 0c0-3.5-3-7-7-12.5Z" /></svg></span>
             <span className="di-exp-title">{activity.nickname} watered</span>
             <span className="di-exp-gain">+{activity.gain} health</span>
           </div>
@@ -2853,7 +2853,7 @@ function DesignSystemScreen({ onBack }) {
         <Section label="Components">
           <div style={{ display: "flex", flexDirection: "column", gap: space[12] }}>
             <div style={{ display: "flex", gap: space[10], flexWrap: "wrap" }}>
-              <button type="button" style={{ height: 44, padding: `0 ${space[20]}px`, borderRadius: radius.pill, border: "none", background: color.brand, color: "#fff", fontFamily: ds.family, fontSize: ds.size.lg, fontWeight: ds.weight.bold, cursor: "pointer" }}>Primary</button>
+              <button type="button" style={{ height: 44, padding: `0 ${space[20]}px`, borderRadius: radius.pill, border: "none", background: color.brand, color: palette.white, fontFamily: ds.family, fontSize: ds.size.lg, fontWeight: ds.weight.bold, cursor: "pointer" }}>Primary</button>
               <button type="button" style={{ height: 44, padding: `0 ${space[20]}px`, borderRadius: radius.pill, border: `1px solid ${color.lineStrong}`, background: color.surfaceRaised, color: color.ink, fontFamily: ds.family, fontSize: ds.size.lg, fontWeight: ds.weight.bold, cursor: "pointer" }}>Secondary</button>
             </div>
             <div style={{ display: "flex", gap: space[8], flexWrap: "wrap" }}>
@@ -3039,15 +3039,15 @@ export default function VerdureApp() {
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         /* keyboard focus only — pointer taps stay clean */
         .v-phone :focus-visible:not(input):not(textarea):not(select) { outline: 2.5px solid ${T.mossBright}; outline-offset: 2px; border-radius: 8px; }
-        .v-phone .dz :focus-visible:not(input):not(textarea), .v-phone .apx :focus-visible:not(input):not(textarea), .v-phone .ap-viewfinder :focus-visible:not(input):not(textarea) { outline-color: #EAF0E6; }
+        .v-phone .dz :focus-visible:not(input):not(textarea), .v-phone .apx :focus-visible:not(input):not(textarea), .v-phone .ap-viewfinder :focus-visible:not(input):not(textarea) { outline-color: ${palette.onDarkAlt}; }
         .v-phone { width: 402px; height: 874px; border-radius: 55px; overflow: hidden; position: relative; background: ${T.bg};
-          box-shadow: 0 0 0 9px #0B0C09, 0 40px 80px rgba(0,0,0,0.6); }
-        .v-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: #0B0C09; border-radius: 20px; z-index: 80; }
+          box-shadow: 0 0 0 9px ${color.chrome}, 0 40px 80px rgba(0,0,0,0.6); }
+        .v-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: ${color.chrome}; border-radius: 20px; z-index: 80; }
 
         /* ---------- HARDWARE BUTTONS (iPhone 17 Pro) ---------- */
         .v-stage { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .v-phone-shell { position: relative; transform-origin: center; }
-        .v-btn { position: absolute; width: 4px; background: linear-gradient(90deg, #050604, #16170f 55%, #050604); box-shadow: 0 1px 2px rgba(0,0,0,0.4); z-index: 5; }
+        .v-btn { position: absolute; width: 4px; background: linear-gradient(90deg, ${color.chromeDeep}, ${palette.black700} 55%, ${color.chromeDeep}); box-shadow: 0 1px 2px rgba(0,0,0,0.4); z-index: 5; }
         .v-btn.left { left: -12px; border-radius: 3px 0 0 3px; }
         .v-btn.right { right: -12px; border-radius: 0 3px 3px 0; }
         .v-btn-action { top: 150px; height: 34px; }   /* Action button */
@@ -3058,30 +3058,30 @@ export default function VerdureApp() {
 
         /* ---------- DYNAMIC ISLAND (live activity) ---------- */
         .di-wrap { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 60; cursor: pointer;
-          background: #0B0C09; border-radius: 20px; overflow: hidden; transition: width .38s cubic-bezier(.3,1.3,.4,1), height .38s cubic-bezier(.3,1.3,.4,1), border-radius .38s ease;
+          background: ${color.chrome}; border-radius: 20px; overflow: hidden; transition: width .38s cubic-bezier(.3,1.3,.4,1), height .38s cubic-bezier(.3,1.3,.4,1), border-radius .38s ease;
           width: 120px; height: 34px; }
         .di-wrap:not(.open) { width: 210px; }
         .di-wrap.open { width: 300px; height: 78px; border-radius: 24px; }
         .di-pill { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 13px; }
         .di-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .di-dot.urgent { background: #E8875A; box-shadow: 0 0 8px #E8875A; animation: diPulse 1.6s ease-in-out infinite; }
-        .di-dot.water { background: #6FA3C4; box-shadow: 0 0 8px #6FA3C4; animation: diPulse 1.6s ease-in-out infinite; }
-        .di-dot.save { background: #E8B04B; box-shadow: 0 0 8px #E8B04B; }
+        .di-dot.urgent { background: ${color.needsCareSoft}; box-shadow: 0 0 8px ${color.needsCareSoft}; animation: diPulse 1.6s ease-in-out infinite; }
+        .di-dot.water { background: ${color.water}; box-shadow: 0 0 8px ${color.water}; animation: diPulse 1.6s ease-in-out infinite; }
+        .di-dot.save { background: ${color.watchSoft}; box-shadow: 0 0 8px ${color.watchSoft}; }
         .di-wrap.nudge { width: 236px; }
         .di-chev { flex-shrink: 0; }
         @keyframes diPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .di-mini { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: #EAF0E4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-        .di-gain { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 800; color: #0B0C09; background: #7FB5D6; border-radius: 100px; min-width: 22px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
+        .di-mini { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: ${color.onDark}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+        .di-gain { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 800; color: ${color.chrome}; background: ${color.waterSoft}; border-radius: 100px; min-width: 22px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
         .di-expanded { padding: 14px 18px; opacity: 0; animation: diFade .3s ease .12s forwards; }
         @keyframes diFade { to { opacity: 1; } }
         .di-exp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
         .di-live-ic { display: flex; flex-shrink: 0; }
-        .di-exp-title { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 800; color: #EAF0E4; flex: 1; }
-        .di-exp-gain { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; color: #7FB5D6; }
+        .di-exp-title { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 800; color: ${color.onDark}; flex: 1; }
+        .di-exp-gain { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; color: ${color.waterSoft}; }
         .di-exp-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 500; color: rgba(234,240,228,0.55); }
 
         /* ---------- SPLASH ---------- */
-        .sp-root { position: absolute; inset: 0; z-index: 70; background: radial-gradient(120% 100% at 50% 30%, #16241A 0%, #0B120D 70%); display: flex; flex-direction: column; align-items: center; justify-content: center;
+        .sp-root { position: absolute; inset: 0; z-index: 70; background: radial-gradient(120% 100% at 50% 30%, ${color.brandDeep} 0%, ${palette.black780} 70%); display: flex; flex-direction: column; align-items: center; justify-content: center;
           transition: opacity .5s ease; }
         .sp-root.leaving { opacity: 0; }
         .sp-glowfield { position: absolute; top: 26%; left: 50%; width: 300px; height: 300px; transform: translate(-50%,-50%); background: radial-gradient(circle, rgba(90,140,90,0.28), transparent 65%); animation: spGlow 3s ease-in-out infinite; }
@@ -3097,7 +3097,7 @@ export default function VerdureApp() {
         @keyframes spLeaf { 0% { opacity: 0; transform: scale(0.2) rotate(-10deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
         .sp-seed { animation: spSeed .5s ease-out forwards; opacity: 0; }
         @keyframes spSeed { to { opacity: 1; } }
-        .sp-word { position: relative; z-index: 2; font-family: 'Manrope', sans-serif; font-size: 34px; font-weight: 700; letter-spacing: 0.24em; padding-left: 0.24em; color: #EAF0E4; margin-top: 26px; opacity: 0; animation: spRise .7s ease-out 1.4s forwards; }
+        .sp-word { position: relative; z-index: 2; font-family: 'Manrope', sans-serif; font-size: 34px; font-weight: 700; letter-spacing: 0.24em; padding-left: 0.24em; color: ${color.onDark}; margin-top: 26px; opacity: 0; animation: spRise .7s ease-out 1.4s forwards; }
         .sp-rule { position: relative; z-index: 2; width: 28px; height: 1px; background: rgba(234,240,228,0.32); margin-top: 9px; opacity: 0; animation: spRise .7s ease-out 1.6s forwards; }
         .sp-tag { position: relative; z-index: 2; font-family: 'Manrope', sans-serif; text-transform: uppercase; font-size: 10.5px; font-weight: 600; letter-spacing: 0.28em; padding-left: 0.28em; color: rgba(234,240,228,0.5); margin-top: 8px; opacity: 0; animation: spRise .7s ease-out 1.8s forwards; }
         @keyframes spRise { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -3114,9 +3114,9 @@ export default function VerdureApp() {
         .ob2-leaf { opacity: 0; transform-box: fill-box; transform-origin: bottom center; }
         .ob2-leaf-l { animation: spLeaf .6s cubic-bezier(.2,1.5,.4,1) 1.05s forwards; }
         .ob2-leaf-r { animation: spLeaf .6s cubic-bezier(.2,1.5,.4,1) 1.25s forwards; }
-        .ob2-w-title { font-family: 'Manrope', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: #fff; margin-bottom: 14px; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+        .ob2-w-title { font-family: 'Manrope', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: ${palette.white}; margin-bottom: 14px; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
         .ob2-w-sub { font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.82); line-height: 1.55; max-width: 310px; margin-bottom: 34px; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
-        .ob2-scan-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 30px; border-radius: 100px; border: none; background: #fff; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: 16.5px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 34px rgba(0,0,0,0.28); transition: transform .16s ease; }
+        .ob2-scan-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 30px; border-radius: 100px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: 16.5px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 34px rgba(0,0,0,0.28); transition: transform .16s ease; }
         .ob2-scan-btn:active { transform: scale(0.96); }
         .ob2-w-foot { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.62); margin-top: 18px; }
         /* earned sign-in */
@@ -3125,34 +3125,34 @@ export default function VerdureApp() {
         .ob2-si-plant { margin-bottom: 20px; filter: drop-shadow(0 18px 40px rgba(0,0,0,0.4)); animation: ob2Plant .7s cubic-bezier(.2,1.3,.35,1); }
         @keyframes ob2Plant { 0% { opacity: 0; transform: scale(0.7); } 100% { opacity: 1; transform: scale(1); } }
         .ob2-si-kicker { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 6px; }
-        .ob2-si-name { font-family: 'Manrope', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: #fff; margin-bottom: 12px; text-shadow: 0 2px 20px rgba(0,0,0,0.35); }
+        .ob2-si-name { font-family: 'Manrope', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: ${palette.white}; margin-bottom: 12px; text-shadow: 0 2px 20px rgba(0,0,0,0.35); }
         .ob2-si-sub { font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.8); line-height: 1.55; max-width: 300px; margin-bottom: 28px; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
         .ob2-si-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; }
         .ob2-sso { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 52px; border-radius: 100px; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; cursor: pointer; transition: transform .15s ease; border: 1px solid transparent; }
         .ob2-sso:active { transform: scale(0.98); }
-        .ob2-sso.apple { background: #fff; color: #111; }
-        .ob2-sso.google { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .ob2-sso.email { background: transparent; color: #fff; border-color: rgba(255,255,255,0.3); }
+        .ob2-sso.apple { background: ${palette.white}; color: #111; }
+        .ob2-sso.google { background: rgba(255,255,255,0.14); color: ${palette.white}; border-color: rgba(255,255,255,0.28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .ob2-sso.email { background: transparent; color: ${palette.white}; border-color: rgba(255,255,255,0.3); }
         .ob2-si-skip { margin-top: 18px; background: none; border: none; color: rgba(255,255,255,0.7); font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
         .ob2-si-mark { width: 108px; height: 108px; border-radius: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 16px 44px rgba(0,0,0,0.3); }
         .ob2-email { display: flex; flex-direction: column; width: 100%; max-width: 320px; margin-top: 8px; }
         .ob2-email.in { animation: ob2In .4s cubic-bezier(.2,.9,.3,1); }
         .ob2-email-cap { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 12px; text-align: center; }
-        .ob2-input { width: 100%; height: 54px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0 18px; font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 500; color: #fff; outline: none; margin-bottom: 12px; transition: border-color .2s ease; }
+        .ob2-input { width: 100%; height: 54px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0 18px; font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 500; color: ${palette.white}; outline: none; margin-bottom: 12px; transition: border-color .2s ease; }
         .ob2-input::placeholder { color: rgba(255,255,255,0.5); }
         .ob2-input:focus { border-color: rgba(255,255,255,0.7); }
-        .ob2-email-next { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 52px; border-radius: 100px; border: none; background: #fff; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; cursor: pointer; transition: transform .15s ease; }
+        .ob2-email-next { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 52px; border-radius: 100px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; cursor: pointer; transition: transform .15s ease; }
         .ob2-email-next:active { transform: scale(0.98); }
         .ob2-email-next:disabled { opacity: 0.4; cursor: default; }
         .ob2-email-back { margin-top: 14px; background: none; border: none; color: rgba(255,255,255,0.7); font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
         .v-screen { position: absolute; inset: 0; }
         .v-screen.light { background: ${T.bg}; }
-        .v-screen.dark { background: #0B0C09; }
+        .v-screen.dark { background: ${color.chrome}; }
         .v-status { position: absolute; top: 0; left: 0; right: 0; height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 8px 30px 0; z-index: 40; font-size: 15px; font-weight: 600; }
 
         .vd-sky { position: absolute; inset: 0; transition: background .25s linear; }
         .vd-stars { position: absolute; inset: 0; pointer-events: none; }
-        .vd-star { position: absolute; border-radius: 50%; background: #fff; }
+        .vd-star { position: absolute; border-radius: 50%; background: ${palette.white}; }
         .vd-celestial { position: absolute; border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); transition: background .25s linear, box-shadow .25s linear, opacity .4s linear; z-index: 2; }
         .vd-horizon { position: absolute; left: 0; right: 0; top: 0; bottom: 0; pointer-events: none; z-index: 1; transition: opacity .5s linear; }
         .vd-content { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; }
@@ -3179,7 +3179,7 @@ export default function VerdureApp() {
         .vd-guest-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
         .vd-guest-title { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; }
         .vd-guest-sub { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; line-height: 1.35; }
-        .vd-guest-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: #fff; background: ${T.moss}; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; }
+        .vd-guest-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: ${palette.white}; background: ${T.moss}; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; }
         .vd-brief-card { border: none; border-radius: 14px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 6px 20px rgba(20,28,20,0.12); overflow: hidden; opacity: 0.92; }
         .vd-brief-card.open { opacity: 1; }
         .vd-brief-card.open { border-radius: 14px; }
@@ -3206,7 +3206,7 @@ export default function VerdureApp() {
         .vd-bi-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
         .vd-bi-title { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .vd-bi-sub { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 500; opacity: 0.58; line-height: 1.35; margin-top: 1px; }
-        .vd-bi-act { flex-shrink: 0; padding: 6px 13px; border-radius: 100px; border: none; color: #fff; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; align-self: center; }
+        .vd-bi-act { flex-shrink: 0; padding: 6px 13px; border-radius: 100px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; align-self: center; }
         .vd-bi-check { position: relative; flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: 1.6px solid currentColor; background: transparent; color: inherit; opacity: 0.4; display: flex; align-items: center; justify-content: center; cursor: pointer; align-self: center; overflow: hidden; transition: opacity .2s ease, border-color .3s ease; }
         .vd-bi-check:active { transform: scale(0.92); }
         .vd-bi-check-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: ${T.mossBright}; }
@@ -3238,7 +3238,7 @@ export default function VerdureApp() {
         .vd-task-body { flex: 1; min-width: 0; }
         .vd-task-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
         .vd-task-why { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; line-height: 1.35; margin-top: 2px; }
-        .vd-task-act { flex-shrink: 0; padding: 8px 15px; border-radius: 100px; border: none; color: #fff; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+        .vd-task-act { flex-shrink: 0; padding: 8px 15px; border-radius: 100px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; }
         .vd-task-check { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 1px solid ${T.line}; background: ${T.bg}; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .vd-today-batch { display: flex; align-items: center; gap: 12px; padding: 13px; margin-bottom: 8px; border-radius: 16px;
           background: rgba(251,249,244,0.9); backdrop-filter: blur(16px); border: 1px solid rgba(76,115,80,0.22); box-shadow: 0 6px 18px rgba(20,28,20,0.1); }
@@ -3246,7 +3246,7 @@ export default function VerdureApp() {
         .vd-tb-body { flex: 1; min-width: 0; }
         .vd-tb-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; color: ${T.ink}; }
         .vd-tb-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkSoft}; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .vd-tb-go { flex-shrink: 0; padding: 9px 14px; border-radius: 12px; border: none; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+        .vd-tb-go { flex-shrink: 0; padding: 9px 14px; border-radius: 12px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; }
         .vd-today-clear { display: flex; align-items: center; gap: 13px; padding: 15px; border-radius: 16px;
           background: rgba(251,249,244,0.72); backdrop-filter: blur(16px); border: 1px solid rgba(28,36,25,0.06); }
         .vd-today-clear-ic { width: 40px; height: 40px; border-radius: 12px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -3257,7 +3257,7 @@ export default function VerdureApp() {
         .vd-sway { animation-name: vdSway; animation-timing-function: ease-in-out; animation-iteration-count: infinite; will-change: transform; }
         @keyframes vdSway { 0%, 100% { transform: rotate(-1.1deg); } 50% { transform: rotate(1.1deg); } }
         .vd-fireflies { position: absolute; inset: 0; pointer-events: none; z-index: 40; transition: opacity 1s ease; }
-        .vd-firefly { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #ffe9a3;
+        .vd-firefly { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: ${palette.amber100};
           box-shadow: 0 0 8px 2px rgba(255,225,140,0.8); animation-name: vdFirefly; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
         @keyframes vdFirefly {
           0% { transform: translate(0, 0); opacity: 0; }
@@ -3284,7 +3284,7 @@ export default function VerdureApp() {
         .vd-plant { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s ease; }
         .vd-plant-shadow { position: absolute; bottom: -4px; left: 50%; height: 12px; border-radius: 50%; background: rgba(0,0,0,0.28); filter: blur(5px); transition: all .25s linear; }
         .vd-plant-glow { position: absolute; top: 36%; left: 50%; width: 150px; height: 150px; border-radius: 50%; transform: translate(-50%,-50%); pointer-events: none; transition: opacity .25s linear; }
-        .vd-plant-alert { position: absolute; top: 18%; right: 22%; width: 20px; height: 20px; border-radius: 50%; background: ${T.clay}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px rgba(181,96,47,0.25); animation: alertBob 2s ease-in-out infinite; }
+        .vd-plant-alert { position: absolute; top: 18%; right: 22%; width: 20px; height: 20px; border-radius: 50%; background: ${T.clay}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px rgba(181,96,47,0.25); animation: alertBob 2s ease-in-out infinite; }
         @keyframes alertBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
         .vd-plant-label { position: absolute; bottom: 100%; left: 50%; margin-bottom: 6px; transform-origin: center bottom; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 100px; backdrop-filter: blur(8px); opacity: 0; transition: opacity .25s ease; white-space: nowrap; }
         .vd-plant:hover .vd-plant-label { opacity: 1; }
@@ -3299,7 +3299,7 @@ export default function VerdureApp() {
         .pf-out-perks { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; margin-bottom: 30px; }
         .pf-out-perk { display: flex; align-items: center; gap: 11px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: ${T.ink}; }
         .pf-out-perk-ic { width: 26px; height: 26px; border-radius: 8px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .pf-out-btn { width: 100%; max-width: 320px; height: 54px; border-radius: 100px; border: none; background: ${T.ink}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform .15s ease; }
+        .pf-out-btn { width: 100%; max-width: 320px; height: 54px; border-radius: 100px; border: none; background: ${T.ink}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform .15s ease; }
         .pf-out-btn:active { transform: scale(0.97); }
         .pf-avatar { width: 72px; height: 72px; border-radius: 50%; background: ${T.moss}18; display: flex; align-items: center; justify-content: center; font-size: 34px; }
         .pf-name { font-family: 'Manrope', sans-serif; font-size: 23px; font-weight: 700; color: ${T.ink}; margin-top: 12px; }
@@ -3330,7 +3330,7 @@ export default function VerdureApp() {
         .pf3-cel-kicker { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.moss}; margin-top: 22px; }
         .pf3-cel-name { font-family: 'Manrope', sans-serif; font-size: 26px; font-weight: 800; color: ${T.ink}; margin-top: 6px; text-align: center; }
         .pf3-cel-sub { font-family: 'Manrope', sans-serif; font-size: 13.5px; color: ${T.inkSoft}; margin-top: 6px; text-align: center; }
-        .pf3-cel-btn { margin-top: 26px; padding: 13px 40px; border-radius: 100px; border: none; background: ${T.ink}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .pf3-cel-btn { margin-top: 26px; padding: 13px 40px; border-radius: 100px; border: none; background: ${T.ink}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
         .pf3-tierbar { display: block; width: calc(100% - 48px); margin: 14px 24px 0; padding: 0; border: none; background: transparent; cursor: pointer; }
         .pf3-tierbar-track { height: 6px; border-radius: 100px; background: ${T.card}; border: 1px solid ${T.line}; overflow: hidden; }
         .pf3-tierbar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, ${T.moss}, ${T.mossBright}); transition: width 1s cubic-bezier(.3,.8,.3,1); }
@@ -3355,7 +3355,7 @@ export default function VerdureApp() {
         .pf3-chip-tip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: max-content; max-width: 170px; padding: 8px 11px; border-radius: 10px; background: ${T.ink}; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 30; }
         .pf3-chip:hover .pf3-chip-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
         .pf3-chip-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: ${T.ink}; }
-        .pf3-chip-tip-name { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: #fff; }
+        .pf3-chip-tip-name { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: ${palette.white}; }
         .pf3-chip-tip-sub { font-family: 'Manrope', sans-serif; font-size: 10.5px; color: rgba(255,255,255,0.7); margin-top: 2px; line-height: 1.35; }
 
         /* tier ladder (hotel-style) */
@@ -3377,7 +3377,7 @@ export default function VerdureApp() {
         .pf3-tier.locked .pf3-tier-body { opacity: 0.5; }
         .pf3-tier-top { display: flex; align-items: center; gap: 8px; }
         .pf3-tier-name { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 800; color: ${T.ink}; }
-        .pf3-tier-here { padding: 2px 8px; border-radius: 100px; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
+        .pf3-tier-here { padding: 2px 8px; border-radius: 100px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
         .pf3-tier-need { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; color: ${T.moss}; margin-top: 2px; }
         .pf3-tier-perk { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${T.inkSoft}; margin-top: 4px; line-height: 1.4; }
 
@@ -3391,7 +3391,7 @@ export default function VerdureApp() {
         .pf3-badge-card.got .pf3-badge-ic { background: rgba(255,255,255,0.2); }
         .pf3-badge-card.locked .pf3-badge-ic { background: ${T.line}; }
         .pf3-badge-label { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${T.ink}; }
-        .pf3-badge-card.got .pf3-badge-label { color: #fff; }
+        .pf3-badge-card.got .pf3-badge-label { color: ${palette.white}; }
         .pf3-badge-sub { font-family: 'Manrope', sans-serif; font-size: 11px; color: ${T.inkFaint}; margin-top: 2px; line-height: 1.35; }
         .pf3-badge-card.got .pf3-badge-sub { color: rgba(255,255,255,0.82); }
         .pf3-badge-prog { display: flex; align-items: center; gap: 7px; margin-top: 10px; }
@@ -3453,7 +3453,7 @@ export default function VerdureApp() {
         .pf2-toggle-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 2px; }
         .pf2-switch { width: 46px; height: 28px; border-radius: 100px; background: ${T.line}; flex-shrink: 0; position: relative; transition: background .25s ease; }
         .pf2-switch.on { background: ${T.moss}; }
-        .pf2-switch-knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transition: left .25s cubic-bezier(.3,1.4,.5,1); }
+        .pf2-switch-knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: ${palette.white}; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transition: left .25s cubic-bezier(.3,1.4,.5,1); }
         .pf2-switch.on .pf2-switch-knob { left: 21px; }
         .pf2-climate-now { display: flex; gap: 10px; margin-top: 18px; }
         .pf2-climate-item { flex: 1; padding: 14px 10px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 14px; text-align: center; }
@@ -3466,9 +3466,9 @@ export default function VerdureApp() {
         .pf2-acct-back { display: inline-flex; align-items: center; gap: 4px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: ${T.inkSoft}; padding: 0; margin-bottom: 14px; }
         .pf2-acct-input { width: 100%; height: 50px; margin-top: 18px; padding: 0 16px; border-radius: 13px; border: 1.5px solid ${T.line}; background: ${T.bg}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: ${T.ink}; outline: none; }
         .pf2-acct-input:focus { border-color: ${T.inkSoft}; }
-        .pf2-acct-save { width: 100%; height: 50px; margin-top: 16px; border-radius: 13px; border: none; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .pf2-acct-save { width: 100%; height: 50px; margin-top: 16px; border-radius: 13px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
         .pf2-acct-save:disabled { opacity: 0.45; cursor: default; }
-        .pf2-acct-delete { width: 100%; height: 50px; margin-top: 20px; border-radius: 13px; border: none; background: ${T.clay}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .pf2-acct-delete { width: 100%; height: 50px; margin-top: 20px; border-radius: 13px; border: none; background: ${T.clay}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
         .pf2-acct-cancel { width: 100%; height: 46px; margin-top: 10px; border-radius: 13px; border: none; background: transparent; color: ${T.inkSoft}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
         .pf2-acct-msg { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: ${T.mossBright}12; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: ${T.moss}; }
 
@@ -3477,16 +3477,16 @@ export default function VerdureApp() {
           background: rgba(255,255,255,0.55); border: 1px solid rgba(28,36,25,0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .demo-head { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
         .demo-badge { font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
-          color: #fff; background: #4b5d3f; padding: 3px 7px; border-radius: 5px; }
+          color: ${palette.white}; background: ${palette.moss500}; padding: 3px 7px; border-radius: 5px; }
         .demo-title { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: rgba(28,36,25,0.55); }
         .demo-row { display: flex; align-items: center; gap: 12px; }
         .demo-clock { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: rgba(28,36,25,0.85);
           min-width: 44px; }
         .demo-scrub { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 4px; outline: none; cursor: pointer; background: rgba(28,36,25,0.18); }
-        .demo-scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #4b5d3f; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
-        .demo-scrub::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #4b5d3f; border: none; }
+        .demo-scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: ${palette.moss500}; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        .demo-scrub::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: ${palette.moss500}; border: none; }
         .demo-play { display: flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600;
-          color: #fff; background: #4b5d3f; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; white-space: nowrap; }
+          color: ${palette.white}; background: ${palette.moss500}; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; white-space: nowrap; }
         .demo-divider { height: 1px; background: rgba(28,36,25,0.1); margin: 14px 0; }
         .demo-jumps { display: flex; flex-wrap: wrap; gap: 7px; }
         .demo-jump { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(28,36,25,0.82);
@@ -3497,22 +3497,22 @@ export default function VerdureApp() {
         /* nav — one continuous full-width bar; a single white pill slides across it */
         .nav-wrap { position: absolute; bottom: 20px; left: 16px; right: 16px; height: 60px; z-index: 55; }
         .nav-bar { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 100%;
-          padding: 6px 6px; border-radius: 38px; background: #1c1e17; box-shadow: 0 12px 30px rgba(0,0,0,0.32); }
+          padding: 6px 6px; border-radius: 38px; background: ${palette.black600}; box-shadow: 0 12px 30px rgba(0,0,0,0.32); }
         /* the sliding pill: travels + stretches between tabs */
-        .nav-glider { position: absolute; top: 6px; height: 48px; border-radius: 32px; background: #f6f4ee; z-index: 1;
+        .nav-glider { position: absolute; top: 6px; height: 48px; border-radius: 32px; background: ${color.surfaceAlt}; z-index: 1;
           box-shadow: 0 2px 12px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.9);
           transition: left .55s cubic-bezier(.34,1.5,.5,1), width .55s cubic-bezier(.34,1.5,.5,1), opacity .3s ease; }
         .nav-item { position: relative; z-index: 2; height: 48px; display: flex; align-items: center; justify-content: center; gap: 7px;
-          border: none; background: transparent; cursor: pointer; color: #f6f4ee; border-radius: 32px;
+          border: none; background: transparent; cursor: pointer; color: ${color.surfaceAlt}; border-radius: 32px;
           transition: color .35s ease, background-color .35s ease, box-shadow .35s ease; white-space: nowrap; flex-shrink: 0; padding: 0 12px; }
         /* FALLBACK pill: lives on the active button so the tab is legible even if the
            slide never initializes. Suppressed once the glider is ready (has-glider),
            so with the slide running there's only the one sliding pill. */
-        .nav-item.active { color: #1c1e17; padding: 0 20px; background: #f6f4ee;
+        .nav-item.active { color: ${palette.black600}; padding: 0 20px; background: ${color.surfaceAlt};
           box-shadow: 0 2px 12px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.9); }
         .nav-bar.has-glider .nav-item.active { background: transparent; box-shadow: none; }
         .nav-item-ic { position: relative; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
-        .nav-dot { position: absolute; top: -1px; right: -2px; width: 8px; height: 8px; border-radius: 50%; background: ${T.clay}; box-shadow: 0 0 0 2px #1c1e17; }
+        .nav-dot { position: absolute; top: -1px; right: -2px; width: 8px; height: 8px; border-radius: 50%; background: ${T.clay}; box-shadow: 0 0 0 2px ${palette.black600}; }
         .nav-item-lbl { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600;
           animation: navLblIn .4s cubic-bezier(.2,.85,.25,1); white-space: nowrap; }
         /* label fades in as the tab becomes active */
@@ -3524,7 +3524,7 @@ export default function VerdureApp() {
         /* hero variant: photo bleeds to the very top, under the status area */
         .dt-scroll-hero { top: 0; }
         /* ---------- IMMERSIVE CANVAS: photo + dark treatment as the whole background ---------- */
-        .dz { position: absolute; inset: 0; overflow: hidden; background: #0f1610; }
+        .dz { position: absolute; inset: 0; overflow: hidden; background: ${palette.black750}; }
         .dz-photo { position: absolute; top: 0; left: 0; right: 0; height: 78%; transition: transform .6s cubic-bezier(.2,1.4,.3,1), filter .6s ease; }
         .dz-photo.watered { transform: scale(1.035); filter: brightness(1.12) saturate(1.12); }
         .dz-waterfx { position: absolute; top: 0; left: 0; right: 0; height: 78%; pointer-events: none; z-index: 3; overflow: hidden; }
@@ -3545,7 +3545,7 @@ export default function VerdureApp() {
         /* silhouette (no real photo): contain it so leaves fill without being cropped */
         .dz-photo svg { width: 100% !important; height: 100% !important; object-fit: contain; }
         .dz-veil { position: absolute; inset: 0; pointer-events: none; background:
-          linear-gradient(180deg, rgba(15,22,16,0.45) 0%, rgba(15,22,16,0) 18%, rgba(15,22,16,0) 40%, rgba(15,22,16,0.55) 62%, rgba(15,22,16,0.95) 76%, #0f1610 84%, #0f1610 100%); }
+          linear-gradient(180deg, rgba(15,22,16,0.45) 0%, rgba(15,22,16,0) 18%, rgba(15,22,16,0) 40%, rgba(15,22,16,0.55) 62%, rgba(15,22,16,0.95) 76%, ${palette.black750} 84%, ${palette.black750} 100%); }
         .dz-statuswash { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
         .dz-scroll { position: absolute; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; z-index: 2; padding-bottom: 40px; }
         .dz-scroll::-webkit-scrollbar { display: none; }
@@ -3558,7 +3558,7 @@ export default function VerdureApp() {
         .dz-confirm-body { padding: 6px 24px 26px; text-align: center; }
         .dz-confirm-ic { width: 52px; height: 52px; border-radius: 50%; background: ${T.clay}14; display: flex; align-items: center; justify-content: center; margin: 6px auto 16px; }
         .dz-sheet-confirm .dz-sheet-sub { text-align: center; max-width: 300px; margin: 8px auto 0; line-height: 1.5; }
-        .dz-confirm-keep { width: 100%; height: 52px; margin-top: 22px; border-radius: 15px; border: none; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .dz-confirm-keep { width: 100%; height: 52px; margin-top: 22px; border-radius: 15px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
         .dz-confirm-remove { width: 100%; height: 48px; margin-top: 9px; border-radius: 15px; border: none; background: transparent; color: ${T.clay}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
         .dz-menu-scrim { position: fixed; inset: 0; z-index: 8; }
         .dz-menu { position: absolute; top: 48px; right: 0; z-index: 9; min-width: 210px; background: ${T.card}; border-radius: 14px; padding: 6px; box-shadow: 0 16px 40px rgba(0,0,0,0.3); animation: dzMenuIn .16s ease; transform-origin: top right; }
@@ -3572,21 +3572,21 @@ export default function VerdureApp() {
         .dz-pulse-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .dz-pulse { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255,255,255,0.14); animation: dtpulse 1.8s ease-in-out infinite; }
         .dz-pulse-lbl { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.92); }
-        .dz-name { font-family: 'Manrope', sans-serif; font-size: 46px; font-weight: 800; color: #fff; line-height: 0.98; letter-spacing: -0.025em; }
+        .dz-name { font-family: 'Manrope', sans-serif; font-size: 46px; font-weight: 800; color: ${palette.white}; line-height: 0.98; letter-spacing: -0.025em; }
         .dz-latin { font-family: 'Manrope', sans-serif; font-size: 14px; color: rgba(255,255,255,0.72); margin-top: 8px; }
         /* headline + the single action */
         .dz-call { padding: 22px 24px 0; opacity: 0; transform: translateY(14px); transition: opacity .7s ease .1s, transform .7s ease .1s; }
         .dz-call.in { opacity: 1; transform: translateY(0); }
         .dz-headline { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 600; color: rgba(255,255,255,0.95); line-height: 1.4; margin-bottom: 16px; }
-        .dz-action { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: 18px; border: none; cursor: pointer; background: #fff; transition: background .3s ease; }
-        .dz-action.urgent { justify-content: space-between; padding: 0 20px; background: linear-gradient(135deg, #c96a44, #a94e2f); box-shadow: 0 10px 26px rgba(169,78,47,0.4); }
-        .dz-action.urgent .dz-action-main { color: #fff; }
+        .dz-action { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: 18px; border: none; cursor: pointer; background: ${palette.white}; transition: background .3s ease; }
+        .dz-action.urgent { justify-content: space-between; padding: 0 20px; background: linear-gradient(135deg, ${palette.clay450}, ${palette.clay700}); box-shadow: 0 10px 26px rgba(169,78,47,0.4); }
+        .dz-action.urgent .dz-action-main { color: ${palette.white}; }
         .dz-action-steps { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: 100px; }
         .dz-status.subtle { margin-top: 10px; background: rgba(255,255,255,0.05); }
         .dz-action.done { background: ${T.mossBright}; }
         .dz-action-main { display: flex; align-items: center; gap: 9px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${T.ink}; }
-        .dz-action.done .dz-action-main { color: #fff; }
-        .dz-action.done .dz-action-main svg { stroke: #fff; }
+        .dz-action.done .dz-action-main { color: ${palette.white}; }
+        .dz-action.done .dz-action-main svg { stroke: ${palette.white}; }
         /* explore — grouped list of rows, one frosted card */
         .dz-explore { margin: 16px 24px 30px; border-radius: 20px; overflow: hidden;
           background: rgba(255,255,255,0.08); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.12);
@@ -3595,7 +3595,7 @@ export default function VerdureApp() {
         .dz-row { display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px 16px; border: none; background: transparent; cursor: pointer; text-align: left; }
         .dz-row-ic { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .dz-row-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-        .dz-row-lbl { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: #fff; }
+        .dz-row-lbl { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${palette.white}; }
         .dz-row-prev { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.62); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .dz-row-arr { flex-shrink: 0; }
         .dz-row-sep { height: 1px; background: rgba(255,255,255,0.1); margin-left: 70px; }
@@ -3620,8 +3620,8 @@ export default function VerdureApp() {
           font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
         .dz-status.done { color: ${T.mossBright}; }
         .dz-status-done-txt { flex: 1; min-width: 0; }
-        .dz-status-undo { flex-shrink: 0; margin-left: auto; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.16); border: none; padding: 6px 13px; border-radius: 100px; cursor: pointer; }
-        .dz-status-log { margin-left: auto; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.16); border: none; padding: 6px 12px; border-radius: 100px; cursor: pointer; }
+        .dz-status-undo { flex-shrink: 0; margin-left: auto; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: ${palette.white}; background: rgba(255,255,255,0.16); border: none; padding: 6px 13px; border-radius: 100px; cursor: pointer; }
+        .dz-status-log { margin-left: auto; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: ${palette.white}; background: rgba(255,255,255,0.16); border: none; padding: 6px 12px; border-radius: 100px; cursor: pointer; }
 
         /* door affordance */
 
@@ -3635,7 +3635,7 @@ export default function VerdureApp() {
         /* pinned sheet CTA */
         .dz-sheet-scroll-pinned { padding-bottom: 12px; }
         .dz-sheet-cta { flex-shrink: 0; padding: 12px 24px calc(24px + env(safe-area-inset-bottom)); border-top: 1px solid ${T.line}; background: ${T.bg}; }
-        .dz-cta-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 54px; border-radius: 16px; border: none; cursor: pointer; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; }
+        .dz-cta-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 54px; border-radius: 16px; border: none; cursor: pointer; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; }
 
         /* journal redesign */
         .jn-chart { background: ${T.card}; border: 1px solid ${T.line}; border-radius: 18px; padding: 16px 16px 10px; margin: 6px 0 24px; }
@@ -3662,7 +3662,7 @@ export default function VerdureApp() {
           opacity: 0; transform: translateY(12px); transition: opacity .7s ease .15s, transform .7s ease .15s; }
         .dz-vitals.in { opacity: 1; transform: translateY(0); }
         .dz-vital { flex: 1; text-align: center; }
-        .dz-vital-num { display: inline-block; font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800; color: #fff; line-height: 1; }
+        .dz-vital-num { display: inline-block; font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800; color: ${palette.white}; line-height: 1; }
         .dz-vital-lbl { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,0.65); margin-top: 5px; }
         .dz-vital-div { width: 1px; height: 30px; background: rgba(255,255,255,0.16); }
 
@@ -3683,7 +3683,7 @@ export default function VerdureApp() {
         .dz-rhythm.in { opacity: 1; transform: translateY(0); }
         .dz-rhythm-step { flex: 1; text-align: center; }
         .dz-rhythm-k { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.04em; }
-        .dz-rhythm-v { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: #fff; margin-top: 4px; }
+        .dz-rhythm-v { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${palette.white}; margin-top: 4px; }
         .dz-rhythm-arrow { flex-shrink: 0; display: flex; padding: 0 2px; }
 
 
@@ -3696,7 +3696,7 @@ export default function VerdureApp() {
         .dz-verdict-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
         .dz-verdict-title { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${T.ink}; }
         .dz-verdict-sub { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; color: ${T.inkSoft}; line-height: 1.4; }
-        .dz-verdict-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: #fff; background: #8A6820; border: none; padding: 8px 15px; border-radius: 100px; cursor: pointer; }
+        .dz-verdict-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: ${palette.white}; background: ${color.watch}; border: none; padding: 8px 15px; border-radius: 100px; cursor: pointer; }
         .dz-do-now { margin-top: 12px; padding: 15px 16px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; }
         .dz-do-now-lbl { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.clay}; }
         .dz-do-now-step { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${T.ink}; margin-top: 7px; }
@@ -3806,7 +3806,7 @@ export default function VerdureApp() {
         .dt-vital-spark { margin-top: 8px; height: 32px; }
         .dt-vital-bar { margin-top: 10px; height: 4px; border-radius: 3px; background: ${T.bg}; overflow: hidden; }
         .dt-vital-fill { height: 100%; border-radius: 3px; }
-        .dt-water { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 48px); margin: 16px 24px 0; height: 50px; border-radius: 16px; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 600; border: none; cursor: pointer; transition: background .3s ease; }
+        .dt-water { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 48px); margin: 16px 24px 0; height: 50px; border-radius: 16px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 600; border: none; cursor: pointer; transition: background .3s ease; }
         .dt-water.done { background: ${T.mossBright}; }
         .dt-tabs { display: flex; gap: 6px; margin: 22px 24px 0; padding: 4px; background: ${T.bg}; border-radius: 14px; }
         .dt-tab { flex: 1; height: 38px; border-radius: 11px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: ${T.inkSoft}; transition: all .2s ease; }
@@ -3882,7 +3882,7 @@ export default function VerdureApp() {
         .rm-ov-legend i { width: 7px; height: 7px; border-radius: 50%; }
         .rx-weather-ic { flex-shrink: 0; margin-top: 1px; }
         .rx-weather-txt { font-family: 'Manrope', sans-serif; font-size: 11.5px; line-height: 1.45; color: ${T.inkSoft}; }
-        .rx-suggest-move { flex-shrink: 0; padding: 6px 14px; border-radius: 100px; border: none; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .rx-suggest-move { flex-shrink: 0; padding: 6px 14px; border-radius: 100px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
         .rx-room-id { min-width: 0; flex: 1; }
         .rx-env-hum { border: none; cursor: pointer; }
         .rx-env-src { font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkSoft}; background: rgba(28,36,25,0.06); padding: 1px 5px; border-radius: 5px; margin-left: 5px; }
@@ -3904,10 +3904,10 @@ export default function VerdureApp() {
         .rx-plant-tap { display: flex; flex-direction: column; align-items: center; gap: 7px; border: none; background: transparent; cursor: pointer; width: 72px; padding: 0; }
         .rx-plant-photo { border-radius: 50%; }
         .rx-plant-name { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: ${T.ink}; line-height: 1.25; text-align: center; width: 72px; word-break: break-word; }
-        .rx-plant-move { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 100px; border: none; background: #8A682010; color: #8A6820; font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .rx-plant-move { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 100px; border: none; background: ${color.watch}10; color: ${color.watch}; font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 700; cursor: pointer; white-space: nowrap; }
         .rx-plant-move svg { flex-shrink: 0; }
         .rx-plant-ok { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 2px; font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 600; color: ${T.moss}; opacity: 0.82; white-space: nowrap; pointer-events: none; user-select: none; }
-        .rx-plant-ok.best { color: #8A6820; gap: 4px; }
+        .rx-plant-ok.best { color: ${color.watch}; gap: 4px; }
         /* move picker sheet */
         .rx-move-scrim { position: absolute; inset: 0; background: rgba(10,14,10,0.5); z-index: 60; animation: dzFade .25s ease; }
         .rx-move-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: ${T.bg}; border-radius: 28px 28px 0 0; z-index: 61; padding: 0 24px calc(28px + env(safe-area-inset-bottom)); animation: dzSheetUp .4s cubic-bezier(.2,.85,.25,1); box-shadow: 0 -12px 40px rgba(0,0,0,0.3); }
@@ -3923,7 +3923,7 @@ export default function VerdureApp() {
         .rx-move-tip-txt { font-family: 'Manrope', sans-serif; font-size: 12.5px; line-height: 1.5; color: ${T.inkSoft}; }
         .rx-move-tip-txt b { color: ${T.ink}; font-weight: 700; }
         .rx-move-room.best { border-color: ${T.moss}; background: ${T.moss}0d; }
-        .rx-move-besttag { display: inline-block; margin-left: 7px; padding: 1px 7px; border-radius: 100px; background: ${T.moss}; color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; vertical-align: middle; }
+        .rx-move-besttag { display: inline-block; margin-left: 7px; padding: 1px 7px; border-radius: 100px; background: ${T.moss}; color: ${palette.white}; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; vertical-align: middle; }
         .rx-move-room.current { opacity: 0.55; cursor: default; }
         .rx-move-room-name { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${T.ink}; }
         .rx-move-here { font-weight: 500; color: ${T.inkFaint}; font-size: 12px; }
@@ -3949,7 +3949,7 @@ export default function VerdureApp() {
         .rx-room-avg-lbl { font-family: 'Manrope', sans-serif; font-size: 9.5px; font-weight: 500; color: ${T.inkFaint}; margin-top: 3px; }
         .rx-env { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
         .rx-env-item { display: flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 100px; background: ${T.bg}; font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; color: ${T.inkSoft}; }
-        .rx-env-item.warn { background: #8A682014; color: #8A6820; }
+        .rx-env-item.warn { background: ${color.watch}14; color: ${color.watch}; }
         .rx-env-ic { display: flex; }
 
         /* ---- AI notification inbox (nx-) ---- */
@@ -3963,13 +3963,13 @@ export default function VerdureApp() {
         .nx-focus-title { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800; color: ${T.ink}; margin-top: 11px; letter-spacing: -0.01em; }
         .nx-focus-why { font-family: 'Manrope', sans-serif; font-size: 13.5px; color: ${T.inkSoft}; line-height: 1.5; margin-top: 6px; }
         .nx-focus-acts { display: flex; gap: 10px; margin-top: 16px; }
-        .nx-focus-go { flex: 1; height: 46px; border-radius: 14px; border: none; color: #fff; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .nx-focus-go { flex: 1; height: 46px; border-radius: 14px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
         .nx-focus-snooze { padding: 0 20px; height: 46px; border-radius: 14px; border: 1px solid ${T.line}; background: transparent; color: ${T.inkSoft}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
         .nx-batch { margin: 14px 24px 0; padding: 16px; background: ${T.mossBright}0e; border: 1px solid ${T.mossBright}2a; border-radius: 18px; }
         .nx-batch-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
         .nx-batch-title { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 800; color: ${T.ink}; }
         .nx-batch-sub { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkSoft}; margin-top: 3px; line-height: 1.4; }
-        .nx-batch-go { flex-shrink: 0; padding: 0 16px; height: 40px; border-radius: 12px; border: none; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .nx-batch-go { flex-shrink: 0; padding: 0 16px; height: 40px; border-radius: 12px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
         .nx-batch-avatars { display: flex; margin-top: 14px; }
         .nx-batch-av { margin-right: -8px; border: none; border-radius: 50%; }
         .nx-batch-av > div { box-shadow: 0 0 0 2px ${T.bg}; }
@@ -3983,7 +3983,7 @@ export default function VerdureApp() {
         .nx-task-why { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; line-height: 1.4; }
         .nx-task-acts { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: 10px; }
         .nx-act { border: none; cursor: pointer; font-family: 'Manrope', sans-serif; font-weight: 700; }
-        .nx-act.primary { padding: 8px 14px; border-radius: 100px; background: ${T.moss}; color: #fff; font-size: 12.5px; }
+        .nx-act.primary { padding: 8px 14px; border-radius: 100px; background: ${T.moss}; color: ${palette.white}; font-size: 12.5px; }
         .nx-act.ghost { width: 34px; height: 34px; border-radius: 50%; background: ${T.bg}; display: flex; align-items: center; justify-content: center; }
         .rm-head { padding: 16px 24px 0; }
         /* view toggle (deck / list) */
@@ -4008,7 +4008,7 @@ export default function VerdureApp() {
         .pl-id-name { font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; white-space: nowrap; color: ${T.ink}; }
         .pl-id-species { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${T.inkFaint}; min-width: 0; }
         .pl-id-room { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; color: ${T.inkFaint}; white-space: nowrap; }
-        .pl-id.dark .pl-id-name { color: #fff; }
+        .pl-id.dark .pl-id-name { color: ${palette.white}; }
         .pl-id.dark .pl-id-species { color: rgba(255,255,255,0.7); }
         .pl-id.dark .pl-id-room { color: rgba(255,255,255,0.6); }
         .wal-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; align-self: center; }
@@ -4016,7 +4016,7 @@ export default function VerdureApp() {
         .wal-action { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.18); padding: 4px 11px; border-radius: 100px; }
         .wal-action.attn { box-shadow: 0 2px 10px rgba(0,0,0,0.28); }
         .wal-action.attn .wal-action-sep { color: rgba(255,255,255,0.65); }
-        .wal-action-health { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 800; color: #fff; }
+        .wal-action-health { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 800; color: ${palette.white}; }
         .wal-action-sep { color: rgba(255,255,255,0.5); font-size: 11px; }
         .wal-action-txt { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.92); white-space: nowrap; }
         .wal-collapse { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.18); cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -4030,7 +4030,7 @@ export default function VerdureApp() {
         .wal-status { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 100px; }
         .wal-vitals { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 13px 16px; border-radius: 16px; background: rgba(255,255,255,0.14); backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%); border: 1px solid rgba(255,255,255,0.22); }
         .wal-vital { flex: 1; text-align: center; }
-        .wal-vital-num { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; color: #fff; line-height: 1; }
+        .wal-vital-num { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; color: ${palette.white}; line-height: 1; }
         .wal-vital-lbl { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.7); margin-top: 4px; }
         .wal-vital-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
         .wal-open { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 12px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); }
@@ -4060,7 +4060,7 @@ export default function VerdureApp() {
         .apl-pill-sep { color: ${T.inkFaint}; font-size: 10px; }
         .apl-pill-txt { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: ${T.inkSoft}; }
         .apl-pill.attn { box-shadow: 0 2px 9px rgba(0,0,0,0.13); }
-        .apl-pill.attn .apl-pill-health { color: #fff; }
+        .apl-pill.attn .apl-pill-health { color: ${palette.white}; }
         .apl-pill.attn .apl-pill-sep { color: rgba(255,255,255,0.6); }
         .apl-pill.attn .apl-pill-txt { color: rgba(255,255,255,0.95); }
         .rm-title { font-family: 'Manrope', sans-serif; font-size: 28px; font-weight: 800; color: ${T.ink}; letter-spacing: -0.01em; }
@@ -4075,12 +4075,12 @@ export default function VerdureApp() {
         .rm-card-status { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; margin-top: 2px; }
 
         /* add plant */
-        .ap-viewfinder { position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, #20231C 0%, #0B0C09 75%); }
+        .ap-viewfinder { position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, ${palette.black550} 0%, ${color.chrome} 75%); }
         .ap-close { position: absolute; top: 64px; left: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 25; cursor: pointer; border: none; }
         .ap-close.light { background: rgba(28,36,25,0.08); }
         .ap-hint { position: absolute; top: 78px; left: 0; right: 0; text-align: center; font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(255,255,255,0.6); }
         .ap-frame { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 220px; height: 220px; }
-        .ap-corner { position: absolute; width: 26px; height: 26px; border-color: #fff; opacity: 0.85; }
+        .ap-corner { position: absolute; width: 26px; height: 26px; border-color: ${palette.white}; opacity: 0.85; }
         .ap-corner.tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; border-radius: 6px 0 0 0; }
         .ap-corner.tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; border-radius: 0 6px 0 0; }
         .ap-corner.bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; border-radius: 0 0 0 6px; }
@@ -4106,7 +4106,7 @@ export default function VerdureApp() {
         .ap-seg { position: absolute; top: 74px; left: 0; right: 0; display: flex; gap: 6px; justify-content: center; z-index: 20; }
         .ap-seg-line { width: 24px; height: 3px; border-radius: 100px; background: rgba(255,255,255,0.22); transition: all .4s ease; }
         .ap-seg-line.past { background: rgba(255,255,255,0.5); }
-        .ap-seg-line.on { width: 30px; background: #fff; }
+        .ap-seg-line.on { width: 30px; background: ${palette.white}; }
         /* why copy */
         .ap-why { position: absolute; top: 104px; left: 34px; right: 34px; text-align: center; z-index: 20; animation: apWhyIn .45s ease; }
         @keyframes apWhyIn { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -4130,7 +4130,7 @@ export default function VerdureApp() {
         }
         /* corners briefly tighten inward to signal the shutter */
         .ap-frame.snap .ap-corner { animation: apCornerSnap .62s ease; }
-        @keyframes apCornerSnap { 0%,100% { opacity: 0.85; } 20% { opacity: 1; border-color: #EAF0E4; } }
+        @keyframes apCornerSnap { 0%,100% { opacity: 0.85; } 20% { opacity: 1; border-color: ${color.onDark}; } }
         /* a single soft capture ring that blooms once */
         .ap-snap-ring { position: absolute; top: 50%; left: 50%; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 24px; border: 2px solid rgba(234,240,228,0.7); transform: translateY(-8%); animation: apSnapRing .62s ease-out; pointer-events: none; }
         @keyframes apSnapRing { 0% { opacity: 0; transform: translateY(-8%) scale(1.15); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-8%) scale(0.92); } }
@@ -4140,11 +4140,11 @@ export default function VerdureApp() {
         .ap-scanline { position: absolute; left: 90px; right: 90px; height: 2px; background: linear-gradient(90deg, transparent, ${T.mossBright}, transparent); box-shadow: 0 0 12px ${T.mossBright}; animation: apsweep 1.8s ease-in-out infinite; }
         @keyframes apsweep { 0% { top: 60%; opacity: 0; } 10% { opacity: 1; } 50% { top: 38%; } 90% { opacity: 1; } 100% { top: 60%; opacity: 0; } }
         .ap-shutter-wrap { position: absolute; bottom: 60px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ap-shutter { width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .ap-shutter-in { width: 56px; height: 56px; flex: 0 0 auto; border-radius: 50%; background: #fff; transition: transform .15s ease; }
+        .ap-shutter { width: 70px; height: 70px; border-radius: 50%; border: 3px solid ${palette.white}; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .ap-shutter-in { width: 56px; height: 56px; flex: 0 0 auto; border-radius: 50%; background: ${palette.white}; transition: transform .15s ease; }
         .ap-shutter:active .ap-shutter-in { transform: scale(0.86); }
         .ap-stages { position: absolute; bottom: 90px; left: 0; right: 0; text-align: center; }
-        .ap-stage-text { font-family: 'Manrope', sans-serif; font-size: 15px; color: #fff; }
+        .ap-stage-text { font-family: 'Manrope', sans-serif; font-size: 15px; color: ${palette.white}; }
         .ap-dots { display: flex; gap: 6px; justify-content: center; margin-top: 12px; }
         .ap-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: all .3s ease; }
         .ap-dot.on { background: ${T.mossBright}; transform: scale(1.4); }
@@ -4158,11 +4158,11 @@ export default function VerdureApp() {
         .ap-input { width: 100%; height: 46px; border-radius: 14px; border: 1px solid ${T.line}; background: ${T.card}; padding: 0 16px; font-family: 'Manrope', sans-serif; font-size: 14px; color: ${T.ink}; outline: none; margin-bottom: 18px; }
         .ap-rooms { display: flex; flex-wrap: wrap; gap: 8px; }
         .ap-room { padding: 9px 16px; border-radius: 100px; border: 1.3px solid ${T.line}; background: ${T.card}; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: ${T.inkSoft}; }
-        .ap-room.sel { background: ${T.moss}; border-color: ${T.moss}; color: #fff; }
-        .ap-confirm { width: 100%; height: 52px; border-radius: 16px; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; border: none; cursor: pointer; margin-top: 28px; }
+        .ap-room.sel { background: ${T.moss}; border-color: ${T.moss}; color: ${palette.white}; }
+        .ap-confirm { width: 100%; height: 52px; border-radius: 16px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; border: none; cursor: pointer; margin-top: 28px; }
 
         /* ---- immersive plant reveal ---- */
-        .apx { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 0%, #1a2a1c 0%, #0f1610 55%, #0b0f0b 100%); display: flex; flex-direction: column; overflow: hidden; }
+        .apx { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 0%, ${palette.moss850} 0%, ${palette.black750} 55%, ${palette.black800} 100%); display: flex; flex-direction: column; overflow: hidden; }
         .apx-glow { position: absolute; top: -10%; left: 50%; transform: translateX(-50%); width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, ${T.mossBright}44 0%, transparent 68%); pointer-events: none; animation: apxGlow 4s ease-in-out infinite; }
         @keyframes apxGlow { 0%,100% { opacity: 0.7; transform: translateX(-50%) scale(1); } 50% { opacity: 1; transform: translateX(-50%) scale(1.08); } }
         .apx-close { position: absolute; top: 60px; left: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.14); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; z-index: 5; }
@@ -4171,20 +4171,20 @@ export default function VerdureApp() {
 
         .apx-hero { display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; transform: translateY(18px) scale(0.96); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
         .apx-hero.in { opacity: 1; transform: translateY(0) scale(1); }
-        .apx-badge { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; color: #cfe0c8; background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); padding: 6px 14px; border-radius: 100px; margin-bottom: 22px; }
+        .apx-badge { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; color: ${palette.leaf100}; background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); padding: 6px 14px; border-radius: 100px; margin-bottom: 22px; }
         .apx-photo { border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08); }
-        .apx-name { font-family: 'Manrope', sans-serif; font-size: 34px; font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-top: 20px; line-height: 1; }
+        .apx-name { font-family: 'Manrope', sans-serif; font-size: 34px; font-weight: 800; color: ${palette.white}; letter-spacing: -0.02em; margin-top: 20px; line-height: 1; }
         .apx-latin { font-family: 'Manrope', sans-serif; font-style: italic; font-size: 13.5px; color: rgba(255,255,255,0.6); margin-top: 7px; }
         .apx-dispute { margin-top: 16px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.55); text-decoration: underline; text-underline-offset: 3px; }
         .ap-failed { display: flex; align-items: center; justify-content: center; padding: 0 30px; }
         .ap-fail-card { text-align: center; max-width: 320px; animation: navLblIn .3s ease; }
         .ap-fail-ic { width: 62px; height: 62px; border-radius: 50%; background: rgba(232,176,75,0.14); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
-        .ap-fail-title { font-family: 'Manrope', sans-serif; font-size: 21px; font-weight: 800; color: #fff; }
+        .ap-fail-title { font-family: 'Manrope', sans-serif; font-size: 21px; font-weight: 800; color: ${palette.white}; }
         .ap-fail-sub { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,0.68); line-height: 1.5; margin-top: 10px; }
         .ap-fail-tips { text-align: left; margin: 20px 0 4px; display: flex; flex-direction: column; gap: 11px; }
         .ap-fail-tip { display: flex; align-items: center; gap: 11px; font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.82); }
-        .ap-fail-tip span { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
-        .ap-fail-retry { width: 100%; height: 52px; margin-top: 24px; border-radius: 15px; border: none; background: #fff; color: #1c1e17; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .ap-fail-tip span { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: ${palette.white}; }
+        .ap-fail-retry { width: 100%; height: 52px; margin-top: 24px; border-radius: 15px; border: none; background: ${palette.white}; color: ${palette.black600}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
         .ap-fail-cancel { width: 100%; height: 46px; margin-top: 8px; border-radius: 15px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
 
         .apx-care { margin-top: 28px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; opacity: 0; transform: translateY(18px); transition: opacity .7s ease .12s, transform .7s ease .12s; }
@@ -4194,36 +4194,36 @@ export default function VerdureApp() {
         .apx-alert.in { opacity: 1; transform: translateY(0); }
         .apx-alert-top { display: flex; align-items: center; gap: 11px; }
         .apx-alert-ic { width: 32px; height: 32px; border-radius: 10px; background: rgba(232,176,75,0.16); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .apx-alert-title { font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 800; color: #fff; }
+        .apx-alert-title { font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 800; color: ${palette.white}; }
         .apx-alert-conf { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,0.55); margin-top: 1px; }
         .apx-alert-body { font-family: 'Manrope', sans-serif; font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,0.78); margin-top: 12px; }
-        .apx-alert-first { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: #fff; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(232,176,75,0.2); }
-        .apx-alert-first-lbl { font-weight: 800; color: #E8B04B; }
+        .apx-alert-first { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${palette.white}; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(232,176,75,0.2); }
+        .apx-alert-first-lbl { font-weight: 800; color: ${color.watchSoft}; }
         /* add-room */
         .apx-room-add { display: inline-flex; align-items: center; gap: 5px; border-style: dashed; color: rgba(255,255,255,0.7); }
         .apx-room-new { display: flex; gap: 9px; margin-top: 11px; }
         .apx-room-new-input { margin-bottom: 0 !important; flex: 1; }
-        .apx-room-new-save { flex-shrink: 0; padding: 0 20px; border-radius: 14px; border: none; background: ${T.mossBright}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .apx-room-new-save { flex-shrink: 0; padding: 0 20px; border-radius: 14px; border: none; background: ${T.mossBright}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
         .apx-care-lbl { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.5); padding: 14px 16px 4px; }
         .apx-care-row { display: flex; align-items: center; gap: 13px; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.07); }
         .apx-care-row:first-of-type { border-top: none; }
-        .apx-care-ic { width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #bcd4b4; flex-shrink: 0; }
-        .apx-care-k { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: #fff; }
+        .apx-care-ic { width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: ${palette.leaf150}; flex-shrink: 0; }
+        .apx-care-k { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${palette.white}; }
         .apx-care-v { font-family: 'Manrope', sans-serif; font-size: 12px; color: rgba(255,255,255,0.66); margin-top: 2px; line-height: 1.4; }
 
         .apx-form { margin-top: 24px; opacity: 0; transform: translateY(18px); transition: opacity .7s ease .24s, transform .7s ease .24s; }
         .apx-form.in { opacity: 1; transform: translateY(0); }
         .apx-field-lbl { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 9px; }
-        .apx-input { width: 100%; height: 50px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08); padding: 0 16px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #fff; outline: none; margin-bottom: 22px; }
+        .apx-input { width: 100%; height: 50px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08); padding: 0 16px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: ${palette.white}; outline: none; margin-bottom: 22px; }
         .apx-input::placeholder { color: rgba(255,255,255,0.4); font-weight: 500; }
         .apx-rooms { display: flex; flex-wrap: wrap; gap: 9px; }
         .apx-room { position: relative; padding: 11px 17px; border-radius: 100px; border: 1.4px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: rgba(255,255,255,0.82); transition: all .2s ease; }
-        .apx-room.sel { background: #fff; border-color: #fff; color: ${T.ink}; }
-        .apx-room-rec { position: absolute; top: -8px; right: -6px; font-size: 8.5px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: #0f1610; background: ${T.mossBright}; padding: 2px 6px; border-radius: 100px; white-space: nowrap; }
+        .apx-room.sel { background: ${palette.white}; border-color: ${palette.white}; color: ${T.ink}; }
+        .apx-room-rec { position: absolute; top: -8px; right: -6px; font-size: 8.5px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: ${palette.black750}; background: ${T.mossBright}; padding: 2px 6px; border-radius: 100px; white-space: nowrap; }
 
-        .apx-cta-wrap { flex-shrink: 0; z-index: 2; padding: 12px 24px calc(24px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, #0b0f0b 30%); opacity: 0; transform: translateY(14px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
+        .apx-cta-wrap { flex-shrink: 0; z-index: 2; padding: 12px 24px calc(24px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, ${palette.black800} 30%); opacity: 0; transform: translateY(14px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
         .apx-cta-wrap.in { opacity: 1; transform: translateY(0); }
-        .apx-cta { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: 18px; border: none; cursor: pointer; background: ${T.mossBright}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; box-shadow: 0 10px 30px rgba(76,115,80,0.4); transition: opacity .2s ease; }
+        .apx-cta { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: 18px; border: none; cursor: pointer; background: ${T.mossBright}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; box-shadow: 0 10px 30px rgba(76,115,80,0.4); transition: opacity .2s ease; }
         .apx-cta:disabled { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.6); box-shadow: none; cursor: default; }
 
         /* reminders */
