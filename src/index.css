@@ -5,8 +5,16 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Solid fallback matching the gradient so the browser canvas (seen on
+     overscroll / in dark mode) is never black behind the app. */
+  background: #dfe6ec;
 }
 
+/* Expansive misty blue-grey backdrop lives on <body> so it propagates to the
+   whole browser canvas — no dark bar can show above/below the phone frame. */
 body {
   margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(130% 100% at 50% 22%, #f2f4f6 0%, #dfe6ec 42%, #c6d3de 78%, #b2c4d4 100%) no-repeat;
+  background-attachment: fixed;
 }
