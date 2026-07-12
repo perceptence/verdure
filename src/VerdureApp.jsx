@@ -3040,7 +3040,7 @@ export default function VerdureApp() {
         /* keyboard focus only — pointer taps stay clean */
         .v-phone :focus-visible:not(input):not(textarea):not(select) { outline: 2.5px solid ${T.mossBright}; outline-offset: 2px; border-radius: ${radius['sm']}px; }
         .v-phone .dz :focus-visible:not(input):not(textarea), .v-phone .apx :focus-visible:not(input):not(textarea), .v-phone .ap-viewfinder :focus-visible:not(input):not(textarea) { outline-color: ${palette.onDarkAlt}; }
-        .v-phone { width: 402px; height: 874px; border-radius: ${radius.device}; overflow: hidden; position: relative; background: ${T.bg};
+        .v-phone { width: 402px; height: 874px; border-radius: ${radius.device}px; overflow: hidden; position: relative; background: ${T.bg};
           box-shadow: 0 0 0 9px ${color.chrome}, 0 40px 80px rgba(0,0,0,0.6); }
         .v-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: ${color.chrome}; border-radius: ${radius['xl']}px; z-index: 80; }
 
