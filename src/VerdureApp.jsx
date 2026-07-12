@@ -3044,6 +3044,11 @@ export default function VerdureApp() {
         .v-phone .dz :focus-visible:not(input):not(textarea), .v-phone .apx :focus-visible:not(input):not(textarea), .v-phone .ap-viewfinder :focus-visible:not(input):not(textarea) { outline-color: ${palette.onDarkAlt}; }
         .v-phone { width: 402px; height: 874px; border-radius: 55px; overflow: hidden; position: relative; background: ${T.bg};
           box-shadow: 0 0 0 9px ${color.chrome}, 0 40px 80px rgba(0,0,0,0.6); }
+        /* The app UI is authored for a 390x844 canvas (its original tuning). Render
+           it at that size and scale to the iPhone 17 Pro's 402x874 screen so density,
+           wrapping, and proportions match the original inside the larger frame. */
+        .v-app { position: absolute; top: 0; left: 0; width: 390px; height: 844px;
+          transform-origin: top left; transform: scale(${402/390}, ${874/844}); }
         .v-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: ${color.chrome}; border-radius: 20px; z-index: 80; }
 
         /* ---------- HARDWARE BUTTONS (iPhone 17 Pro) ---------- */
@@ -4282,6 +4287,7 @@ export default function VerdureApp() {
       <div className="v-btn right v-btn-cam" aria-hidden="true" />
       <div className="v-phone">
         <div className="v-island" />
+        <div className="v-app">
 
         {phase === "splash" && <SplashScreen onDone={() => { setSignedIn(true); setPhase("app"); }} />}
         {phase === "onboarding" && <OnboardingFlow hour={hour} resumePlant={resumeSignin} onComplete={(plantData, signedIn, account) => {
@@ -4354,6 +4360,7 @@ export default function VerdureApp() {
           <div className="v-overlay ov-modal-out"><AddPlantScreen onClose={() => {}} onAdd={() => {}} /></div>
         )}
         </>}
+        </div>
       </div>
       </div>
       </div>
