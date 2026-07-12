@@ -590,9 +590,9 @@ function HomeScreen({ plants, hour, onOpenPlant, onOpenRooms, onOpenPlants, onAd
               Add plant
             </button>
           </div>
-          <div className={`vd-greeting${mounted ? " in" : ""}`}>
+          <h1 className={`vd-greeting${mounted ? " in" : ""}`}>
             {greeting.split(" ").map((w, i, arr) => i === arr.length - 1 ? <em key={i}>{w}</em> : w + " ")}
-          </div>
+          </h1>
           <div className={`vd-sub${mounted ? " in" : ""}`} style={{ color: L.warmth > 0.5 ? "rgba(28,36,25,0.75)" : "rgba(246,244,238,0.92)" }}>
             {hour < 5 ? "The garden rests in the quiet dark." : hour < 12 ? "Morning light is reaching the leaves." : hour < 17 ? "Warm light settling across the garden." : hour < 21 ? "The day is softening into evening." : "The garden is winding down with you."}
           </div>
@@ -968,7 +968,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
 
           <div className={`dz-id${mounted ? " in" : ""}`}>
             <div className="dz-pulse-row"><span className="dz-pulse" style={{ background: color }} /><span className="dz-pulse-lbl">{statusLabel(plant.status)}</span></div>
-            <div className="dz-name">{plant.nickname}</div>
+            <h1 className="dz-name">{plant.nickname}</h1>
             <div className="dz-latin">{s.common} · {plant.room}</div>
           </div>
 
@@ -1479,7 +1479,7 @@ function AllPlantsScreen({ plants, onBack, onOpenPlant, favorites = {} }) {
             </button>
           </div>
         </div>
-        <div className="rm-head"><div className="rm-title">All plants</div><div className="rm-sub">{plants.length} in your care.</div></div>
+        <div className="rm-head"><h1 className="rm-title">All plants</h1><div className="rm-sub">{plants.length} in your care.</div></div>
 
         <div className="ap-search">
           <svg className="ap-search-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.inkFaint} strokeWidth="1.9"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" /></svg>
@@ -1571,7 +1571,7 @@ function RoomsScreen({ plants, onBack, onOpenPlant, onMovePlant }) {
     <div className="v-screen light">
       <StatusBar light={true} />
       <div className="dt-scroll">
-        <div className="rm-head"><div className="rm-title">Rooms</div><div className="rm-sub">How each space suits the plants living in it.</div></div>
+        <div className="rm-head"><h1 className="rm-title">Rooms</h1><div className="rm-sub">How each space suits the plants living in it.</div></div>
 
         {/* GARDEN OVERVIEW — the health of your growing spaces at a glance */}
         {(() => {
@@ -1833,7 +1833,7 @@ function RemindersScreen({ plants, onBack, onOpenPlant, onWater }) {
     <div className="v-screen light">
       <StatusBar light={true} />
       <div className="dt-scroll">
-        <div className="rm-head"><div className="rm-title">Activity</div><div className="rm-sub">A diary of your garden — what you've done and what Verdure has noticed.</div></div>
+        <div className="rm-head"><h1 className="rm-title">Activity</h1><div className="rm-sub">A diary of your garden — what you've done and what Verdure has noticed.</div></div>
 
         {groups.length === 0 ? (
           <div className="nx-empty">
@@ -2027,7 +2027,7 @@ function ProfileScreenSignedIn({ plants, onBack, onOpenRooms, onOpenActivity, ac
               </g>
             </svg>
           </div>
-          <div className="pf2-name">{userName}</div>
+          <h1 className="pf2-name">{userName}</h1>
           <button className="pf3-badge pf3-badge-tap" onClick={() => setSheet("tiers")}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={T.moss} strokeWidth="2"><path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /></svg>
             {greenThumbLevel}
@@ -2402,7 +2402,7 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
             <div className={`apx-hero${revealed ? " in" : ""}`}>
               <div className="apx-badge">Identified · 94% match</div>
               <div className="apx-photo"><PlantPhoto speciesKey={detected} health={detectedHealth} size={150} round={false} /></div>
-              <div className="apx-name">{s.common}</div>
+              <h1 className="apx-name">{s.common}</h1>
               <div className="apx-latin">{s.latin}</div>
               <button className="apx-dispute" onClick={() => setPhase("failed")}>Not the right plant?</button>
             </div>
@@ -2574,7 +2574,7 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
               <path className="ob2-leaf ob2-leaf-r" d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf200} />
             </svg>
           </div>
-          <div className="ob2-w-title">Meet your first plant</div>
+          <h1 className="ob2-w-title">Meet your first plant</h1>
           <div className="ob2-w-sub">Point your camera at any plant. Verdure will know what it is, how it's doing, and exactly how to help it thrive.</div>
           <button className="ob2-scan-btn" onClick={() => setSub("scan")}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/></svg>
@@ -2593,7 +2593,7 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
             <>
               <div className="ob2-si-plant"><PlantPhoto speciesKey={plant.speciesKey} health={plant.health} size={124} round={false} /></div>
               <div className="ob2-si-kicker">Say hello to</div>
-              <div className="ob2-si-name">{plant.nickname}</div>
+              <h1 className="ob2-si-name">{plant.nickname}</h1>
             </>
           ) : (
             <>
@@ -2604,7 +2604,7 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
                   <path d="M48 48c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf200} />
                 </svg>
               </div>
-              <div className="ob2-si-name">Save your garden</div>
+              <h1 className="ob2-si-name">Save your garden</h1>
             </>
           )}
 
@@ -3037,6 +3037,9 @@ export default function VerdureApp() {
       <style>{`
         ${FONT_IMPORT}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* headings carry semantic weight only — appearance stays 100% class-driven
+           (class rules out-specify these), this just strips UA margins/sizing */
+        h1, h2, h3, h4, h5, h6 { margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; }
         /* keyboard focus only — pointer taps stay clean */
         .v-phone :focus-visible:not(input):not(textarea):not(select) { outline: 2.5px solid ${T.mossBright}; outline-offset: 2px; border-radius: ${radius['sm']}px; }
         .v-phone .dz :focus-visible:not(input):not(textarea), .v-phone .apx :focus-visible:not(input):not(textarea), .v-phone .ap-viewfinder :focus-visible:not(input):not(textarea) { outline-color: ${palette.onDarkAlt}; }
