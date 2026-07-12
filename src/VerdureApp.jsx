@@ -2724,6 +2724,156 @@ function DynamicIsland({ activity, onDismiss, nudge, onNudgeTap }) {
   );
 }
 
+/* ==========================================================================
+   DESIGN SYSTEM — living styleguide. Data-driven: it maps over the token
+   objects from ./tokens.js, so it always reflects the real system.
+========================================================================== */
+function DesignSystemScreen({ onBack }) {
+  const Section = ({ label, children }) => (
+    <div style={{ marginTop: space[28] }}>
+      <div style={{ fontFamily: ds.family, fontSize: ds.size.xs, fontWeight: ds.weight.bold,
+        letterSpacing: ds.tracking.wide, textTransform: "uppercase", color: color.inkFaint, marginBottom: space[12] }}>{label}</div>
+      {children}
+    </div>
+  );
+
+  const colorGroups = [
+    { title: "Surface", items: [["surface", color.surface], ["surfaceRaised", color.surfaceRaised], ["surfaceAlt", color.surfaceAlt], ["surfaceWarm", color.surfaceWarm]] },
+    { title: "Ink", items: [["ink", color.ink], ["inkSoft", color.inkSoft], ["inkFaint", color.inkFaint]] },
+    { title: "Brand", items: [["brand", color.brand], ["brandBright", color.brandBright], ["brandDeep", color.brandDeep]] },
+    { title: "Status", items: [["thriving", color.thriving], ["watch", color.watch], ["needsCare", color.needsCare], ["water", color.water]] },
+  ];
+  const typeSteps = Object.entries(ds.size).sort((a, b) => a[1] - b[1]);
+  const spaceSteps = Object.entries(space).filter(([, v]) => v > 0 && v <= 32);
+  const radiusSteps = Object.entries(radius).filter(([k]) => k !== "device");
+  const shadowSteps = [["e1", shadow.e1], ["e2", shadow.e2], ["e3", shadow.e3], ["e4", shadow.e4]];
+
+  const swatch = (name, hex) => {
+    const dark = ["ink", "brand", "brandDeep", "thriving", "needsCare", "watch", "water"].includes(name);
+    return (
+      <div key={name} style={{ display: "flex", alignItems: "center", gap: space[12], padding: `${space[8]}px 0` }}>
+        <div style={{ width: 40, height: 40, borderRadius: radius.md, background: hex, border: `1px solid ${color.line}`, flexShrink: 0 }} />
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: ds.family, fontSize: ds.size.md, fontWeight: ds.weight.semibold, color: color.ink }}>{name}</div>
+          <div style={{ fontFamily: ds.family, fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint, textTransform: "uppercase", letterSpacing: "0.04em" }}>{hex}</div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ position: "absolute", inset: 0, background: color.surface, overflowY: "auto", fontFamily: ds.family }}>
+      {/* header */}
+      <div style={{ position: "sticky", top: 0, zIndex: 2, display: "flex", alignItems: "center", gap: space[12],
+        padding: `54px ${space[24]}px ${space[12]}px`, background: color.surface, borderBottom: `1px solid ${color.line}` }}>
+        <button type="button" onClick={onBack} aria-label="Back" style={{ width: 36, height: 36, borderRadius: radius.pill, border: `1px solid ${color.line}`,
+          background: color.surfaceRaised, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color.ink} strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+        <div>
+          <h1 style={{ margin: 0, fontFamily: ds.family, fontSize: ds.size["2xl"], fontWeight: ds.weight.extrabold, letterSpacing: ds.tracking.tight, color: color.ink }}>Design System</h1>
+          <div style={{ fontFamily: ds.family, fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint }}>Verdure — tokens &amp; primitives</div>
+        </div>
+      </div>
+
+      <div style={{ padding: `0 ${space[24]}px ${space[48]}px` }}>
+        {/* COLOR */}
+        {colorGroups.map((g) => (
+          <Section key={g.title} label={`Color · ${g.title}`}>
+            <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, padding: `${space[6]}px ${space[16]}px` }}>
+              {g.items.map(([n, h]) => swatch(n, h))}
+            </div>
+          </Section>
+        ))}
+
+        {/* TYPE */}
+        <Section label="Type scale">
+          <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, padding: `${space[8]}px ${space[16]}px` }}>
+            {typeSteps.map(([name, px]) => (
+              <div key={name} style={{ display: "flex", alignItems: "baseline", gap: space[14], padding: `${space[8]}px 0`, borderBottom: `1px solid ${color.line}` }}>
+                <span style={{ fontSize: Math.min(px, 30), fontWeight: ds.weight.bold, color: color.ink, lineHeight: 1, flex: 1, whiteSpace: "nowrap", overflow: "hidden" }}>Verdant</span>
+                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.semibold, color: color.inkSoft }}>{name}</span>
+                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint, minWidth: 34, textAlign: "right" }}>{px}px</span>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* WEIGHT */}
+        <Section label="Weight">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: space[8] }}>
+            {Object.entries(ds.weight).map(([name, w]) => (
+              <div key={name} style={{ background: color.surfaceRaised, border: `1px solid ${color.line}`, borderRadius: radius.md, padding: `${space[10]}px ${space[14]}px` }}>
+                <div style={{ fontSize: ds.size.lg, fontWeight: w, color: color.ink }}>Aa</div>
+                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.medium, color: color.inkFaint, marginTop: 2 }}>{name} · {w}</div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* SPACING */}
+        <Section label="Spacing">
+          <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, padding: `${space[12]}px ${space[16]}px` }}>
+            {spaceSteps.map(([name, v]) => (
+              <div key={name} style={{ display: "flex", alignItems: "center", gap: space[12], padding: `${space[4]}px 0` }}>
+                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.semibold, color: color.inkSoft, minWidth: 24 }}>{name}</span>
+                <div style={{ height: 10, width: v, background: color.brandBright, borderRadius: radius.xs }} />
+                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint }}>{v}px</span>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* RADIUS */}
+        <Section label="Radius">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: space[10] }}>
+            {radiusSteps.map(([name, v]) => (
+              <div key={name} style={{ textAlign: "center" }}>
+                <div style={{ width: 52, height: 52, background: color.brand, borderRadius: Math.min(v, 26) }} />
+                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.semibold, color: color.ink, marginTop: 5 }}>{name}</div>
+                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.medium, color: color.inkFaint }}>{v}px</div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* ELEVATION */}
+        <Section label="Elevation">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: space[16], padding: `${space[4]}px 0 ${space[8]}px` }}>
+            {shadowSteps.map(([name, sh]) => (
+              <div key={name} style={{ textAlign: "center" }}>
+                <div style={{ width: 64, height: 44, background: color.surfaceRaised, borderRadius: radius.md, boxShadow: sh }} />
+                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.semibold, color: color.inkSoft, marginTop: 8 }}>{name}</div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* COMPONENTS */}
+        <Section label="Components">
+          <div style={{ display: "flex", flexDirection: "column", gap: space[12] }}>
+            <div style={{ display: "flex", gap: space[10], flexWrap: "wrap" }}>
+              <button type="button" style={{ height: 44, padding: `0 ${space[20]}px`, borderRadius: radius.pill, border: "none", background: color.brand, color: "#fff", fontFamily: ds.family, fontSize: ds.size.lg, fontWeight: ds.weight.bold, cursor: "pointer" }}>Primary</button>
+              <button type="button" style={{ height: 44, padding: `0 ${space[20]}px`, borderRadius: radius.pill, border: `1px solid ${color.lineStrong}`, background: color.surfaceRaised, color: color.ink, fontFamily: ds.family, fontSize: ds.size.lg, fontWeight: ds.weight.bold, cursor: "pointer" }}>Secondary</button>
+            </div>
+            <div style={{ display: "flex", gap: space[8], flexWrap: "wrap" }}>
+              {[["Thriving", color.thriving, color.thrivingText], ["Watch", color.watch, color.watchText], ["Needs care", color.needsCare, color.needsCareText], ["Water", color.water, color.waterText]].map(([lbl, dot, txt]) => (
+                <span key={lbl} style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: `0 ${space[12]}px`, borderRadius: radius.pill, background: `${dot}1e`, color: txt, fontFamily: ds.family, fontSize: ds.size.sm, fontWeight: ds.weight.bold }}>
+                  <span style={{ width: 7, height: 7, borderRadius: radius.pill, background: dot }} />{lbl}
+                </span>
+              ))}
+            </div>
+            <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, boxShadow: shadow.e1, padding: space[16] }}>
+              <div style={{ fontSize: ds.size.lg, fontWeight: ds.weight.bold, color: color.ink }}>Card primitive</div>
+              <div style={{ fontSize: ds.size.md, fontWeight: ds.weight.medium, color: color.inkSoft, marginTop: 4 }}>surfaceRaised · radius.lg · shadow.e1 · line border</div>
+            </div>
+          </div>
+        </Section>
+      </div>
+    </div>
+  );
+}
+
 
 export default function VerdureApp() {
   const realHour = new Date().getHours() + new Date().getMinutes() / 60;
@@ -4187,6 +4337,9 @@ export default function VerdureApp() {
         {top?.type === "add" && (
           <div className="v-overlay ov-modal-in"><AddPlantScreen onClose={back} onAdd={addPlant} /></div>
         )}
+        {top?.type === "designsystem" && (
+          <div className="v-overlay ov-push-in"><DesignSystemScreen onBack={back} /></div>
+        )}
 
         {/* exiting screen — animates out in the reverse direction */}
         {exiting?.type === "allplants" && (
@@ -4234,6 +4387,7 @@ export default function VerdureApp() {
             ["Rooms", () => { setPhase("app"); resetTo("rooms"); }],
             ["Activity", () => { setPhase("app"); resetTo("reminders"); }],
             ["Profile", () => { setPhase("app"); resetTo("profile"); }],
+            ["Design system", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "designsystem" }), 30); }],
             ["Plants deck", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "allplants" }), 30); }],
             ["Add plant", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "add" }), 30); }],
             ["Plant detail", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "detail", id: plants[1].id }), 30); }],
