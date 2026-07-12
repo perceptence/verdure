@@ -1101,7 +1101,7 @@ function DetailScreen({ plant, onBack, onWater, onAddJournal, faved, onToggleFav
                             : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>}
                         </span>
                         <div className="cg-cond-body"><div className="cg-cond-label">{f.text}</div></div>
-                        <span className="cg-cond-flag" style={{ color: T.inkFaint, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase" }}>{f.weight}</span>
+                        <span className="cg-cond-flag" style={{ color: T.inkFaint, fontSize: ds.size['2xs'], letterSpacing: "0.04em", textTransform: "uppercase" }}>{f.weight}</span>
                       </div>
                     );
                   })}
@@ -3038,17 +3038,17 @@ export default function VerdureApp() {
         ${FONT_IMPORT}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         /* keyboard focus only — pointer taps stay clean */
-        .v-phone :focus-visible:not(input):not(textarea):not(select) { outline: 2.5px solid ${T.mossBright}; outline-offset: 2px; border-radius: 8px; }
+        .v-phone :focus-visible:not(input):not(textarea):not(select) { outline: 2.5px solid ${T.mossBright}; outline-offset: 2px; border-radius: ${radius['sm']}px; }
         .v-phone .dz :focus-visible:not(input):not(textarea), .v-phone .apx :focus-visible:not(input):not(textarea), .v-phone .ap-viewfinder :focus-visible:not(input):not(textarea) { outline-color: ${palette.onDarkAlt}; }
-        .v-phone { width: 402px; height: 874px; border-radius: 55px; overflow: hidden; position: relative; background: ${T.bg};
+        .v-phone { width: 402px; height: 874px; border-radius: ${radius.device}; overflow: hidden; position: relative; background: ${T.bg};
           box-shadow: 0 0 0 9px ${color.chrome}, 0 40px 80px rgba(0,0,0,0.6); }
-        .v-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: ${color.chrome}; border-radius: 20px; z-index: 80; }
+        .v-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: ${color.chrome}; border-radius: ${radius['xl']}px; z-index: 80; }
 
         /* ---------- HARDWARE BUTTONS (iPhone 17 Pro) ---------- */
         .v-stage { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .v-phone-shell { position: relative; transform-origin: center; }
         .v-btn { position: absolute; width: 4px; background: linear-gradient(90deg, ${color.chromeDeep}, ${palette.black700} 55%, ${color.chromeDeep}); box-shadow: 0 1px 2px rgba(0,0,0,0.4); z-index: 5; }
-        .v-btn.left { left: -12px; border-radius: 3px 0 0 3px; }
+        .v-btn.left { left: -12px; border-radius: ${radius['xs']}px 0 0 3px; }
         .v-btn.right { right: -12px; border-radius: 0 3px 3px 0; }
         .v-btn-action { top: 150px; height: 34px; }   /* Action button */
         .v-btn-volup  { top: 204px; height: 58px; }    /* Volume up */
@@ -3058,10 +3058,10 @@ export default function VerdureApp() {
 
         /* ---------- DYNAMIC ISLAND (live activity) ---------- */
         .di-wrap { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 60; cursor: pointer;
-          background: ${color.chrome}; border-radius: 20px; overflow: hidden; transition: width .38s cubic-bezier(.3,1.3,.4,1), height .38s cubic-bezier(.3,1.3,.4,1), border-radius .38s ease;
+          background: ${color.chrome}; border-radius: ${radius['xl']}px; overflow: hidden; transition: width .38s cubic-bezier(.3,1.3,.4,1), height .38s cubic-bezier(.3,1.3,.4,1), border-radius .38s ease;
           width: 120px; height: 34px; }
         .di-wrap:not(.open) { width: 210px; }
-        .di-wrap.open { width: 300px; height: 78px; border-radius: 24px; }
+        .di-wrap.open { width: 300px; height: 78px; border-radius: ${radius['xl']}px; }
         .di-pill { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 13px; }
         .di-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .di-dot.urgent { background: ${color.needsCareSoft}; box-shadow: 0 0 8px ${color.needsCareSoft}; animation: diPulse 1.6s ease-in-out infinite; }
@@ -3070,15 +3070,15 @@ export default function VerdureApp() {
         .di-wrap.nudge { width: 236px; }
         .di-chev { flex-shrink: 0; }
         @keyframes diPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .di-mini { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: ${color.onDark}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-        .di-gain { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 800; color: ${color.chrome}; background: ${color.waterSoft}; border-radius: 100px; min-width: 22px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
+        .di-mini { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: ${color.onDark}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+        .di-gain { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.extrabold}; color: ${color.chrome}; background: ${color.waterSoft}; border-radius: ${radius['pill']}px; min-width: 22px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
         .di-expanded { padding: 14px 18px; opacity: 0; animation: diFade .3s ease .12s forwards; }
         @keyframes diFade { to { opacity: 1; } }
         .di-exp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
         .di-live-ic { display: flex; flex-shrink: 0; }
-        .di-exp-title { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 800; color: ${color.onDark}; flex: 1; }
-        .di-exp-gain { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; color: ${color.waterSoft}; }
-        .di-exp-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 500; color: rgba(234,240,228,0.55); }
+        .di-exp-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.extrabold}; color: ${color.onDark}; flex: 1; }
+        .di-exp-gain { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.extrabold}; color: ${color.waterSoft}; }
+        .di-exp-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.medium}; color: rgba(234,240,228,0.55); }
 
         /* ---------- SPLASH ---------- */
         .sp-root { position: absolute; inset: 0; z-index: 70; background: radial-gradient(120% 100% at 50% 30%, ${color.brandDeep} 0%, ${palette.black780} 70%); display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -3097,9 +3097,9 @@ export default function VerdureApp() {
         @keyframes spLeaf { 0% { opacity: 0; transform: scale(0.2) rotate(-10deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
         .sp-seed { animation: spSeed .5s ease-out forwards; opacity: 0; }
         @keyframes spSeed { to { opacity: 1; } }
-        .sp-word { position: relative; z-index: 2; font-family: 'Manrope', sans-serif; font-size: 34px; font-weight: 700; letter-spacing: 0.24em; padding-left: 0.24em; color: ${color.onDark}; margin-top: 26px; opacity: 0; animation: spRise .7s ease-out 1.4s forwards; }
+        .sp-word { position: relative; z-index: 2; font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.24em; padding-left: 0.24em; color: ${color.onDark}; margin-top: 26px; opacity: 0; animation: spRise .7s ease-out 1.4s forwards; }
         .sp-rule { position: relative; z-index: 2; width: 28px; height: 1px; background: rgba(234,240,228,0.32); margin-top: 9px; opacity: 0; animation: spRise .7s ease-out 1.6s forwards; }
-        .sp-tag { position: relative; z-index: 2; font-family: 'Manrope', sans-serif; text-transform: uppercase; font-size: 10.5px; font-weight: 600; letter-spacing: 0.28em; padding-left: 0.28em; color: rgba(234,240,228,0.5); margin-top: 8px; opacity: 0; animation: spRise .7s ease-out 1.8s forwards; }
+        .sp-tag { position: relative; z-index: 2; font-family: 'Manrope', sans-serif; text-transform: uppercase; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; letter-spacing: 0.28em; padding-left: 0.28em; color: rgba(234,240,228,0.5); margin-top: 8px; opacity: 0; animation: spRise .7s ease-out 1.8s forwards; }
         @keyframes spRise { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
 
         /* ---------- ONBOARDING ---------- */
@@ -3109,46 +3109,46 @@ export default function VerdureApp() {
         .ob2-welcome, .ob2-signin { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 34px; text-align: center; }
         .ob2-welcome { opacity: 0; transform: translateY(14px); transition: opacity .9s ease, transform .9s ease; }
         .ob2-welcome.in { opacity: 1; transform: translateY(0); }
-        .ob2-mark { width: 124px; height: 124px; border-radius: 34px; background: rgba(255,255,255,0.1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; box-shadow: 0 16px 44px rgba(0,0,0,0.3); }
+        .ob2-mark { width: 124px; height: 124px; border-radius: ${radius['2xl']}px; background: rgba(255,255,255,0.1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; box-shadow: 0 16px 44px rgba(0,0,0,0.3); }
         .ob2-stem { stroke-dasharray: 34; stroke-dashoffset: 34; animation: spDraw .9s ease-out .5s forwards; }
         .ob2-leaf { opacity: 0; transform-box: fill-box; transform-origin: bottom center; }
         .ob2-leaf-l { animation: spLeaf .6s cubic-bezier(.2,1.5,.4,1) 1.05s forwards; }
         .ob2-leaf-r { animation: spLeaf .6s cubic-bezier(.2,1.5,.4,1) 1.25s forwards; }
-        .ob2-w-title { font-family: 'Manrope', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: ${palette.white}; margin-bottom: 14px; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
-        .ob2-w-sub { font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 500; color: rgba(255,255,255,0.82); line-height: 1.55; max-width: 310px; margin-bottom: 34px; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
-        .ob2-scan-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 30px; border-radius: 100px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: 16.5px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 34px rgba(0,0,0,0.28); transition: transform .16s ease; }
+        .ob2-w-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: -0.02em; color: ${palette.white}; margin-bottom: 14px; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+        .ob2-w-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.82); line-height: 1.55; max-width: 310px; margin-bottom: 34px; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
+        .ob2-scan-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 30px; border-radius: ${radius['pill']}px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.bold}; cursor: pointer; box-shadow: 0 12px 34px rgba(0,0,0,0.28); transition: transform .16s ease; }
         .ob2-scan-btn:active { transform: scale(0.96); }
-        .ob2-w-foot { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.62); margin-top: 18px; }
+        .ob2-w-foot { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.62); margin-top: 18px; }
         /* earned sign-in */
         .ob2-signin { animation: ob2In .6s cubic-bezier(.2,.9,.3,1); }
         @keyframes ob2In { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         .ob2-si-plant { margin-bottom: 20px; filter: drop-shadow(0 18px 40px rgba(0,0,0,0.4)); animation: ob2Plant .7s cubic-bezier(.2,1.3,.35,1); }
         @keyframes ob2Plant { 0% { opacity: 0; transform: scale(0.7); } 100% { opacity: 1; transform: scale(1); } }
-        .ob2-si-kicker { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 6px; }
-        .ob2-si-name { font-family: 'Manrope', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: ${palette.white}; margin-bottom: 12px; text-shadow: 0 2px 20px rgba(0,0,0,0.35); }
-        .ob2-si-sub { font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.8); line-height: 1.55; max-width: 300px; margin-bottom: 28px; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
+        .ob2-si-kicker { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 6px; }
+        .ob2-si-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: -0.02em; color: ${palette.white}; margin-bottom: 12px; text-shadow: 0 2px 20px rgba(0,0,0,0.35); }
+        .ob2-si-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.8); line-height: 1.55; max-width: 300px; margin-bottom: 28px; text-shadow: 0 1px 10px rgba(0,0,0,0.3); }
         .ob2-si-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; }
-        .ob2-sso { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 52px; border-radius: 100px; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; cursor: pointer; transition: transform .15s ease; border: 1px solid transparent; }
+        .ob2-sso { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 52px; border-radius: ${radius['pill']}px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; cursor: pointer; transition: transform .15s ease; border: 1px solid transparent; }
         .ob2-sso:active { transform: scale(0.98); }
         .ob2-sso.apple { background: ${palette.white}; color: #111; }
         .ob2-sso.google { background: rgba(255,255,255,0.14); color: ${palette.white}; border-color: rgba(255,255,255,0.28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         .ob2-sso.email { background: transparent; color: ${palette.white}; border-color: rgba(255,255,255,0.3); }
-        .ob2-si-skip { margin-top: 18px; background: none; border: none; color: rgba(255,255,255,0.7); font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .ob2-si-mark { width: 108px; height: 108px; border-radius: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 16px 44px rgba(0,0,0,0.3); }
+        .ob2-si-skip { margin-top: 18px; background: none; border: none; color: rgba(255,255,255,0.7); font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.semibold}; cursor: pointer; }
+        .ob2-si-mark { width: 108px; height: 108px; border-radius: ${radius['2xl']}px; background: rgba(255,255,255,0.1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 16px 44px rgba(0,0,0,0.3); }
         .ob2-email { display: flex; flex-direction: column; width: 100%; max-width: 320px; margin-top: 8px; }
         .ob2-email.in { animation: ob2In .4s cubic-bezier(.2,.9,.3,1); }
-        .ob2-email-cap { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 12px; text-align: center; }
-        .ob2-input { width: 100%; height: 54px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0 18px; font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 500; color: ${palette.white}; outline: none; margin-bottom: 12px; transition: border-color .2s ease; }
+        .ob2-email-cap { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.85); margin-bottom: 12px; text-align: center; }
+        .ob2-input { width: 100%; height: 54px; border-radius: ${radius['md']}px; border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0 18px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.medium}; color: ${palette.white}; outline: none; margin-bottom: 12px; transition: border-color .2s ease; }
         .ob2-input::placeholder { color: rgba(255,255,255,0.5); }
         .ob2-input:focus { border-color: rgba(255,255,255,0.7); }
-        .ob2-email-next { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 52px; border-radius: 100px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; cursor: pointer; transition: transform .15s ease; }
+        .ob2-email-next { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 52px; border-radius: ${radius['pill']}px; border: none; background: ${palette.white}; color: ${T.ink}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; cursor: pointer; transition: transform .15s ease; }
         .ob2-email-next:active { transform: scale(0.98); }
         .ob2-email-next:disabled { opacity: 0.4; cursor: default; }
-        .ob2-email-back { margin-top: 14px; background: none; border: none; color: rgba(255,255,255,0.7); font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .ob2-email-back { margin-top: 14px; background: none; border: none; color: rgba(255,255,255,0.7); font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; cursor: pointer; }
         .v-screen { position: absolute; inset: 0; }
         .v-screen.light { background: ${T.bg}; }
         .v-screen.dark { background: ${color.chrome}; }
-        .v-status { position: absolute; top: 0; left: 0; right: 0; height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 8px 30px 0; z-index: 40; font-size: 15px; font-weight: 600; }
+        .v-status { position: absolute; top: 0; left: 0; right: 0; height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 8px 30px 0; z-index: 40; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.semibold}; }
 
         .vd-sky { position: absolute; inset: 0; transition: background .25s linear; }
         .vd-stars { position: absolute; inset: 0; pointer-events: none; }
@@ -3158,14 +3158,14 @@ export default function VerdureApp() {
         .vd-content { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; }
         .vd-head { padding: 66px 24px 0; }
         .vd-head-top { display: flex; align-items: center; justify-content: space-between; }
-        .vd-time { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; display: flex; align-items: center; gap: 8px; }
+        .vd-time { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; letter-spacing: 0.14em; display: flex; align-items: center; gap: 8px; }
         .vd-phase-dot { width: 6px; height: 6px; border-radius: 50%; }
-        .vd-add-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px 8px 11px; border-radius: 100px; cursor: pointer;
-          border: 1px solid; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        .vd-greeting { font-family: 'Manrope', sans-serif; font-size: 38px; font-weight: 700; line-height: 1.02; margin-top: 16px; letter-spacing: -0.02em; opacity: 0; transform: translateY(14px); transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1); }
+        .vd-add-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px 8px 11px; border-radius: ${radius['pill']}px; cursor: pointer;
+          border: 1px solid; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .vd-greeting { font-family: 'Manrope', sans-serif; font-size: ${ds.size['5xl']}px; font-weight: ${ds.weight.bold}; line-height: 1.02; margin-top: 16px; letter-spacing: -0.02em; opacity: 0; transform: translateY(14px); transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1); }
         .vd-greeting.in { opacity: 1; transform: translateY(0); }
-        .vd-greeting em { font-style: italic; font-weight: 400; }
-        .vd-sub { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; margin-top: 12px; max-width: 300px; opacity: 0; transform: translateY(10px); transition: opacity .9s ease .15s, transform .9s ease .15s; }
+        .vd-greeting em { font-style: italic; font-weight: ${ds.weight.regular}; }
+        .vd-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.medium}; line-height: 1.5; margin-top: 12px; max-width: 300px; opacity: 0; transform: translateY(10px); transition: opacity .9s ease .15s, transform .9s ease .15s; }
         .vd-sub.in { opacity: 1; transform: translateY(0); }
 
         .vd-today { margin-top: 14px; opacity: 0; transform: translateY(10px); transition: opacity .9s ease .3s, transform .9s ease .3s; }
@@ -3173,40 +3173,40 @@ export default function VerdureApp() {
         .vd-brief-wrap { margin-top: 12px; opacity: 0; transform: translateY(10px); transition: opacity .9s ease .3s, transform .9s ease .3s; }
         .vd-brief-wrap.in { opacity: 1; transform: translateY(0); }
         /* guest sign-in banner — inline on home, glass to match the briefing bar */
-        .vd-guest { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; border: 1px solid; border-radius: 14px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 6px 20px rgba(20,28,20,0.1); opacity: 0; transform: translateY(10px); transition: opacity .9s ease .4s, transform .9s ease .4s; }
+        .vd-guest { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; border: 1px solid; border-radius: ${radius['md']}px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 6px 20px rgba(20,28,20,0.1); opacity: 0; transform: translateY(10px); transition: opacity .9s ease .4s, transform .9s ease .4s; }
         .vd-guest.in { opacity: 1; transform: translateY(0); }
-        .vd-guest-ic { flex-shrink: 0; width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .vd-guest-ic { flex-shrink: 0; width: 32px; height: 32px; border-radius: ${radius['sm']}px; display: flex; align-items: center; justify-content: center; }
         .vd-guest-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-        .vd-guest-title { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; }
-        .vd-guest-sub { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; line-height: 1.35; }
-        .vd-guest-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: ${palette.white}; background: ${T.moss}; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; }
-        .vd-brief-card { border: none; border-radius: 14px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 6px 20px rgba(20,28,20,0.12); overflow: hidden; opacity: 0.92; }
+        .vd-guest-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; }
+        .vd-guest-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.medium}; line-height: 1.35; }
+        .vd-guest-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; background: ${T.moss}; border: none; padding: 8px 14px; border-radius: ${radius['pill']}px; cursor: pointer; }
+        .vd-brief-card { border: none; border-radius: ${radius['md']}px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 6px 20px rgba(20,28,20,0.12); overflow: hidden; opacity: 0.92; }
         .vd-brief-card.open { opacity: 1; }
-        .vd-brief-card.open { border-radius: 14px; }
+        .vd-brief-card.open { border-radius: ${radius['md']}px; }
         .vd-brief-head { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 52px; padding: 13px 16px; border: none; background: transparent; cursor: pointer; text-align: left; color: inherit; font: inherit; }
         .vd-brief-static { cursor: default; }
         .vd-brief-ic { flex-shrink: 0; display: flex; }
-        .vd-brief-text { flex: 1; min-width: 0; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit; }
-        .vd-brief-sub { font-weight: 500; }
+        .vd-brief-text { flex: 1; min-width: 0; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit; }
+        .vd-brief-sub { font-weight: ${ds.weight.medium}; }
         /* collapsed visual summary — semantic task chips (icon + count) */
         .vd-brief-chips { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; margin-right: 2px; }
-        .vd-brief-chip { height: 26px; min-width: 26px; padding: 0 7px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
+        .vd-brief-chip { height: 26px; min-width: 26px; padding: 0 7px; border-radius: ${radius['sm']}px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
         .vd-brief-chip svg { width: 15px; height: 15px; }
-        .vd-brief-chip-n { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; line-height: 1; }
+        .vd-brief-chip-n { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; line-height: 1; }
         .vd-brief-chev { flex-shrink: 0; opacity: 0.6; transition: transform .3s ease; }
         .vd-brief-reveal { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .32s cubic-bezier(.3,.8,.3,1), opacity .28s ease; }
         .vd-brief-reveal.open { grid-template-rows: 1fr; opacity: 1; }
         .vd-brief-reveal-inner { overflow: hidden; min-height: 0; }
         .vd-brief-items { padding: 2px 8px 8px; }
         /* compact item rows inside the card */
-        .vd-bi { display: flex; align-items: flex-start; gap: 10px; padding: 9px 8px; border-radius: 12px; cursor: pointer; }
+        .vd-bi { display: flex; align-items: flex-start; gap: 10px; padding: 9px 8px; border-radius: ${radius['md']}px; cursor: pointer; }
         .vd-bi + .vd-bi { margin-top: 2px; }
         .vd-bi:hover { background: rgba(127,127,127,0.06); }
-        .vd-bi-ic { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .vd-bi-ic { width: 30px; height: 30px; border-radius: ${radius['sm']}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .vd-bi-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-        .vd-bi-title { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .vd-bi-sub { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 500; opacity: 0.58; line-height: 1.35; margin-top: 1px; }
-        .vd-bi-act { flex-shrink: 0; padding: 6px 13px; border-radius: 100px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; align-self: center; }
+        .vd-bi-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .vd-bi-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.medium}; opacity: 0.58; line-height: 1.35; margin-top: 1px; }
+        .vd-bi-act { flex-shrink: 0; padding: 6px 13px; border-radius: ${radius['pill']}px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; cursor: pointer; align-self: center; }
         .vd-bi-check { position: relative; flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: 1.6px solid currentColor; background: transparent; color: inherit; opacity: 0.4; display: flex; align-items: center; justify-content: center; cursor: pointer; align-self: center; overflow: hidden; transition: opacity .2s ease, border-color .3s ease; }
         .vd-bi-check:active { transform: scale(0.92); }
         .vd-bi-check-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: ${T.mossBright}; }
@@ -3223,35 +3223,35 @@ export default function VerdureApp() {
         .vd-bi-batch { background: rgba(76,115,80,0.1); }
         .vd-access { display: flex; gap: 10px; margin-top: 16px; opacity: 0; transform: translateY(10px); transition: opacity .9s ease .26s, transform .9s ease .26s; }
         .vd-access.in { opacity: 1; transform: translateY(0); }
-        .vd-access-btn { flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 14px; border: 1px solid; cursor: pointer; opacity: 0.92;
+        .vd-access-btn { flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: ${radius['md']}px; border: 1px solid; cursor: pointer; opacity: 0.92;
           backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-family: 'Manrope', sans-serif; }
-        .vd-access-lbl { font-size: 13.5px; font-weight: 700; }
-        .vd-access-num { margin-left: auto; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; opacity: 0.68; font-variant-numeric: tabular-nums; }
+        .vd-access-lbl { font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; }
+        .vd-access-num { margin-left: auto; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; opacity: 0.68; font-variant-numeric: tabular-nums; }
         .vd-today-more { width: 100%; padding: 9px; margin-top: 2px; border: none; background: transparent; cursor: pointer;
-          font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: inherit; opacity: 0.75; }
+          font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: inherit; opacity: 0.75; }
         .vd-today-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 11px; }
-        .vd-today-title { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 800; color: inherit; }
-        .vd-today-count { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; opacity: 0.6; }
-        .vd-task { display: flex; align-items: center; gap: 12px; padding: 12px 13px; margin-bottom: 8px; border-radius: 16px; cursor: pointer;
+        .vd-today-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.extrabold}; color: inherit; }
+        .vd-today-count { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; opacity: 0.6; }
+        .vd-task { display: flex; align-items: center; gap: 12px; padding: 12px 13px; margin-bottom: 8px; border-radius: ${radius['lg']}px; cursor: pointer;
           background: rgba(251,249,244,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(28,36,25,0.06); box-shadow: 0 6px 18px rgba(20,28,20,0.1); }
-        .vd-task-ic { width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .vd-task-ic { width: 36px; height: 36px; border-radius: ${radius['md']}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .vd-task-body { flex: 1; min-width: 0; }
-        .vd-task-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
-        .vd-task-why { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; line-height: 1.35; margin-top: 2px; }
-        .vd-task-act { flex-shrink: 0; padding: 8px 15px; border-radius: 100px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+        .vd-task-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .vd-task-why { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; line-height: 1.35; margin-top: 2px; }
+        .vd-task-act { flex-shrink: 0; padding: 8px 15px; border-radius: ${radius['pill']}px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         .vd-task-check { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 1px solid ${T.line}; background: ${T.bg}; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .vd-today-batch { display: flex; align-items: center; gap: 12px; padding: 13px; margin-bottom: 8px; border-radius: 16px;
+        .vd-today-batch { display: flex; align-items: center; gap: 12px; padding: 13px; margin-bottom: 8px; border-radius: ${radius['lg']}px;
           background: rgba(251,249,244,0.9); backdrop-filter: blur(16px); border: 1px solid rgba(76,115,80,0.22); box-shadow: 0 6px 18px rgba(20,28,20,0.1); }
-        .vd-tb-ic { width: 38px; height: 38px; border-radius: 11px; background: ${T.mossBright}18; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .vd-tb-ic { width: 38px; height: 38px; border-radius: ${radius['md']}px; background: ${T.mossBright}18; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .vd-tb-body { flex: 1; min-width: 0; }
-        .vd-tb-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; color: ${T.ink}; }
-        .vd-tb-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkSoft}; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .vd-tb-go { flex-shrink: 0; padding: 9px 14px; border-radius: 12px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; }
-        .vd-today-clear { display: flex; align-items: center; gap: 13px; padding: 15px; border-radius: 16px;
+        .vd-tb-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .vd-tb-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkSoft}; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .vd-tb-go { flex-shrink: 0; padding: 9px 14px; border-radius: ${radius['md']}px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
+        .vd-today-clear { display: flex; align-items: center; gap: 13px; padding: 15px; border-radius: ${radius['lg']}px;
           background: rgba(251,249,244,0.72); backdrop-filter: blur(16px); border: 1px solid rgba(28,36,25,0.06); }
-        .vd-today-clear-ic { width: 40px; height: 40px; border-radius: 12px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .vd-today-clear-t { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
-        .vd-today-clear-s { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkFaint}; margin-top: 2px; }
+        .vd-today-clear-ic { width: 40px; height: 40px; border-radius: ${radius['md']}px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .vd-today-clear-t { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .vd-today-clear-s { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkFaint}; margin-top: 2px; }
 
         .vd-shelf { flex: 1; position: relative; }
         .vd-sway { animation-name: vdSway; animation-timing-function: ease-in-out; animation-iteration-count: infinite; will-change: transform; }
@@ -3284,88 +3284,88 @@ export default function VerdureApp() {
         .vd-plant { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s ease; }
         .vd-plant-shadow { position: absolute; bottom: -4px; left: 50%; height: 12px; border-radius: 50%; background: rgba(0,0,0,0.28); filter: blur(5px); transition: all .25s linear; }
         .vd-plant-glow { position: absolute; top: 36%; left: 50%; width: 150px; height: 150px; border-radius: 50%; transform: translate(-50%,-50%); pointer-events: none; transition: opacity .25s linear; }
-        .vd-plant-alert { position: absolute; top: 18%; right: 22%; width: 20px; height: 20px; border-radius: 50%; background: ${T.clay}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px rgba(181,96,47,0.25); animation: alertBob 2s ease-in-out infinite; }
+        .vd-plant-alert { position: absolute; top: 18%; right: 22%; width: 20px; height: 20px; border-radius: 50%; background: ${T.clay}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px rgba(181,96,47,0.25); animation: alertBob 2s ease-in-out infinite; }
         @keyframes alertBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-        .vd-plant-label { position: absolute; bottom: 100%; left: 50%; margin-bottom: 6px; transform-origin: center bottom; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 100px; backdrop-filter: blur(8px); opacity: 0; transition: opacity .25s ease; white-space: nowrap; }
+        .vd-plant-label { position: absolute; bottom: 100%; left: 50%; margin-bottom: 6px; transform-origin: center bottom; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; padding: 4px 11px; border-radius: ${radius['pill']}px; backdrop-filter: blur(8px); opacity: 0; transition: opacity .25s ease; white-space: nowrap; }
         .vd-plant:hover .vd-plant-label { opacity: 1; }
 
         /* profile */
         .pf-hero { display: flex; flex-direction: column; align-items: center; padding: 16px 24px 0; }
         /* signed-out profile */
         .pf-out { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 32px; }
-        .pf-out-mark { width: 96px; height: 96px; border-radius: 28px; background: ${T.card}; border: 1px solid ${T.line}; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 12px 30px rgba(28,36,25,0.08); }
-        .pf-out-title { font-family: 'Manrope', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: ${T.ink}; margin-bottom: 12px; }
-        .pf-out-sub { font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 500; color: ${T.inkSoft}; line-height: 1.55; max-width: 310px; margin-bottom: 26px; }
+        .pf-out-mark { width: 96px; height: 96px; border-radius: ${radius['2xl']}px; background: ${T.card}; border: 1px solid ${T.line}; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 12px 30px rgba(28,36,25,0.08); }
+        .pf-out-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: -0.02em; color: ${T.ink}; margin-bottom: 12px; }
+        .pf-out-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.medium}; color: ${T.inkSoft}; line-height: 1.55; max-width: 310px; margin-bottom: 26px; }
         .pf-out-perks { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; margin-bottom: 30px; }
-        .pf-out-perk { display: flex; align-items: center; gap: 11px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: ${T.ink}; }
-        .pf-out-perk-ic { width: 26px; height: 26px; border-radius: 8px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .pf-out-btn { width: 100%; max-width: 320px; height: 54px; border-radius: 100px; border: none; background: ${T.ink}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform .15s ease; }
+        .pf-out-perk { display: flex; align-items: center; gap: 11px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
+        .pf-out-perk-ic { width: 26px; height: 26px; border-radius: ${radius['sm']}px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pf-out-btn { width: 100%; max-width: 320px; height: 54px; border-radius: ${radius['pill']}px; border: none; background: ${T.ink}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; cursor: pointer; transition: transform .15s ease; }
         .pf-out-btn:active { transform: scale(0.97); }
-        .pf-avatar { width: 72px; height: 72px; border-radius: 50%; background: ${T.moss}18; display: flex; align-items: center; justify-content: center; font-size: 34px; }
-        .pf-name { font-family: 'Manrope', sans-serif; font-size: 23px; font-weight: 700; color: ${T.ink}; margin-top: 12px; }
-        .pf-sub { font-family: 'Manrope', sans-serif; font-size: 13px; color: ${T.inkFaint}; margin-top: 3px; }
-        .pf-list { margin: 24px 24px 0; background: ${T.card}; border-radius: 18px; border: 1px solid ${T.line}; overflow: hidden; }
+        .pf-avatar { width: 72px; height: 72px; border-radius: 50%; background: ${T.moss}18; display: flex; align-items: center; justify-content: center; font-size: ${ds.size['4xl']}px; }
+        .pf-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; margin-top: 12px; }
+        .pf-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.inkFaint}; margin-top: 3px; }
+        .pf-list { margin: 24px 24px 0; background: ${T.card}; border-radius: ${radius['lg']}px; border: 1px solid ${T.line}; overflow: hidden; }
         .pf-row { display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px 16px; border: none; background: transparent; border-top: 1px solid ${T.line}; cursor: pointer; }
         .pf-row:first-child { border-top: none; }
-        .pf-row-icon { width: 34px; height: 34px; border-radius: 10px; background: ${T.moss}12; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pf-row-icon { width: 34px; height: 34px; border-radius: ${radius['sm']}px; background: ${T.moss}12; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .pf-row-text { flex: 1; text-align: left; }
-        .pf-row-label { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.ink}; }
-        .pf-row-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 1px; }
+        .pf-row-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
+        .pf-row-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 1px; }
 
         /* ---- redesigned profile (pf2-) ---- */
         .pf3-avatar { width: 78px; height: 78px; border-radius: 50%; overflow: hidden; box-shadow: 0 10px 26px ${T.moss}44; }
-        .pf3-badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; padding: 5px 12px; border-radius: 100px; background: ${T.moss}14; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; }
+        .pf3-badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; padding: 5px 12px; border-radius: ${radius['pill']}px; background: ${T.moss}14; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; }
         .pf3-badge-tap { border: none; cursor: pointer; }
-        .pf3-sec-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: ${T.inkFaint}; margin: 24px 24px 10px; }
+        .pf3-sec-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.05em; text-transform: uppercase; color: ${T.inkFaint}; margin: 24px 24px 10px; }
 
         .pf3-celebrate { position: absolute; inset: 0; z-index: 80; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 40px;
           background: rgba(237,238,230,0.86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: dzFade .3s ease; cursor: pointer; }
         .pf3-cel-burst { position: absolute; top: 42%; left: 50%; width: 0; height: 0; }
-        .pf3-confetti { position: absolute; width: 8px; height: 8px; border-radius: 2px; left: 0; top: 0;
+        .pf3-confetti { position: absolute; width: 8px; height: 8px; border-radius: ${radius['xs']}px; left: 0; top: 0;
           transform: rotate(var(--a)) translateY(0); opacity: 0; animation: pfConfetti .9s ease-out var(--d) forwards; }
         @keyframes pfConfetti { 0% { opacity: 1; transform: rotate(var(--a)) translateY(0) scale(1); } 100% { opacity: 0; transform: rotate(var(--a)) translateY(-110px) scale(.4); } }
-        .pf3-cel-badge { width: 84px; height: 84px; border-radius: 26px; background: linear-gradient(150deg, ${T.moss}, ${T.mossBright}); display: flex; align-items: center; justify-content: center;
+        .pf3-cel-badge { width: 84px; height: 84px; border-radius: ${radius['2xl']}px; background: linear-gradient(150deg, ${T.moss}, ${T.mossBright}); display: flex; align-items: center; justify-content: center;
           box-shadow: 0 16px 40px ${T.moss}55; animation: pfBadgePop .6s cubic-bezier(.2,1.6,.35,1); }
         @keyframes pfBadgePop { 0% { transform: scale(0) rotate(-20deg); } 60% { transform: scale(1.18) rotate(6deg); } 100% { transform: scale(1) rotate(0); } }
-        .pf3-cel-kicker { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.moss}; margin-top: 22px; }
-        .pf3-cel-name { font-family: 'Manrope', sans-serif; font-size: 26px; font-weight: 800; color: ${T.ink}; margin-top: 6px; text-align: center; }
-        .pf3-cel-sub { font-family: 'Manrope', sans-serif; font-size: 13.5px; color: ${T.inkSoft}; margin-top: 6px; text-align: center; }
-        .pf3-cel-btn { margin-top: 26px; padding: 13px 40px; border-radius: 100px; border: none; background: ${T.ink}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .pf3-cel-kicker { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.moss}; margin-top: 22px; }
+        .pf3-cel-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; margin-top: 6px; text-align: center; }
+        .pf3-cel-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.inkSoft}; margin-top: 6px; text-align: center; }
+        .pf3-cel-btn { margin-top: 26px; padding: 13px 40px; border-radius: ${radius['pill']}px; border: none; background: ${T.ink}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         .pf3-tierbar { display: block; width: calc(100% - 48px); margin: 14px 24px 0; padding: 0; border: none; background: transparent; cursor: pointer; }
-        .pf3-tierbar-track { height: 6px; border-radius: 100px; background: ${T.card}; border: 1px solid ${T.line}; overflow: hidden; }
-        .pf3-tierbar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, ${T.moss}, ${T.mossBright}); transition: width 1s cubic-bezier(.3,.8,.3,1); }
-        .pf3-tierbar-cap { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; color: ${T.inkSoft}; margin-top: 7px; text-align: center; }
+        .pf3-tierbar-track { height: 6px; border-radius: ${radius['pill']}px; background: ${T.card}; border: 1px solid ${T.line}; overflow: hidden; }
+        .pf3-tierbar-fill { height: 100%; border-radius: ${radius['pill']}px; background: linear-gradient(90deg, ${T.moss}, ${T.mossBright}); transition: width 1s cubic-bezier(.3,.8,.3,1); }
+        .pf3-tierbar-cap { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; margin-top: 7px; text-align: center; }
 
         .pf3-mile-head { display: flex; align-items: baseline; justify-content: space-between; margin: 26px 24px 10px; }
-        .pf3-mile-all { border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 700; color: ${T.moss}; }
+        .pf3-mile-all { border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; color: ${T.moss}; }
 
-        .pf3-next { display: flex; align-items: center; gap: 13px; width: calc(100% - 48px); margin: 0 24px 12px; padding: 14px; border-radius: 16px; cursor: pointer; text-align: left;
+        .pf3-next { display: flex; align-items: center; gap: 13px; width: calc(100% - 48px); margin: 0 24px 12px; padding: 14px; border-radius: ${radius['lg']}px; cursor: pointer; text-align: left;
           background: linear-gradient(120deg, ${T.moss}16, ${T.mossBright}0a); border: 1px solid ${T.moss}2c; }
-        .pf3-next-ic { width: 42px; height: 42px; border-radius: 12px; background: ${T.moss}18; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pf3-next-ic { width: 42px; height: 42px; border-radius: ${radius['md']}px; background: ${T.moss}18; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .pf3-next-body { flex: 1; min-width: 0; }
-        .pf3-next-kicker { font-family: 'Manrope', sans-serif; font-size: 9.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: ${T.moss}; }
-        .pf3-next-label { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; margin: 2px 0 7px; }
-        .pf3-next-bar { height: 4.5px; border-radius: 100px; background: ${T.moss}1c; overflow: hidden; }
-        .pf3-next-fill { height: 100%; border-radius: 100px; background: ${T.moss}; transition: width 1s cubic-bezier(.3,.8,.3,1); }
-        .pf3-next-pct { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 800; color: ${T.moss}; flex-shrink: 0; }
+        .pf3-next-kicker { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: 0.07em; text-transform: uppercase; color: ${T.moss}; }
+        .pf3-next-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; margin: 2px 0 7px; }
+        .pf3-next-bar { height: 4.5px; border-radius: ${radius['pill']}px; background: ${T.moss}1c; overflow: hidden; }
+        .pf3-next-fill { height: 100%; border-radius: ${radius['pill']}px; background: ${T.moss}; transition: width 1s cubic-bezier(.3,.8,.3,1); }
+        .pf3-next-pct { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.extrabold}; color: ${T.moss}; flex-shrink: 0; }
 
         .pf3-earned-strip { display: flex; gap: 7px; margin: 0 24px; }
-        .pf3-chip { position: relative; width: 36px; height: 36px; border-radius: 11px; background: ${T.card}; border: 1px solid ${T.line}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pf3-chip { position: relative; width: 36px; height: 36px; border-radius: ${radius['md']}px; background: ${T.card}; border: 1px solid ${T.line}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .pf3-chip.got { background: linear-gradient(150deg, ${T.moss}, ${T.mossBright}); border-color: transparent; }
-        .pf3-chip-tip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: max-content; max-width: 170px; padding: 8px 11px; border-radius: 10px; background: ${T.ink}; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 30; }
+        .pf3-chip-tip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: max-content; max-width: 170px; padding: 8px 11px; border-radius: ${radius['sm']}px; background: ${T.ink}; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 30; }
         .pf3-chip:hover .pf3-chip-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
         .pf3-chip-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: ${T.ink}; }
-        .pf3-chip-tip-name { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: ${palette.white}; }
-        .pf3-chip-tip-sub { font-family: 'Manrope', sans-serif; font-size: 10.5px; color: rgba(255,255,255,0.7); margin-top: 2px; line-height: 1.35; }
+        .pf3-chip-tip-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; }
+        .pf3-chip-tip-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; color: rgba(255,255,255,0.7); margin-top: 2px; line-height: 1.35; }
 
         /* tier ladder (hotel-style) */
-        .pf3-tierhero { display: flex; align-items: center; gap: 16px; margin: 20px 0 6px; padding: 16px; border-radius: 18px; background: linear-gradient(120deg, ${T.moss}14, ${T.mossBright}08); border: 1px solid ${T.moss}22; }
+        .pf3-tierhero { display: flex; align-items: center; gap: 16px; margin: 20px 0 6px; padding: 16px; border-radius: ${radius['lg']}px; background: linear-gradient(120deg, ${T.moss}14, ${T.mossBright}08); border: 1px solid ${T.moss}22; }
         .pf3-tierhero-ring { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
-        .pf3-tierhero-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 800; color: ${T.ink}; line-height: 1; }
-        .pf3-tierhero-num span { font-size: 9px; font-weight: 600; color: ${T.inkFaint}; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
-        .pf3-tierhero-kicker { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.moss}; }
-        .pf3-tierhero-next { font-family: 'Manrope', sans-serif; font-size: 19px; font-weight: 800; color: ${T.ink}; margin: 3px 0 4px; }
-        .pf3-tierhero-sub { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkSoft}; }
+        .pf3-tierhero-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; line-height: 1; }
+        .pf3-tierhero-num span { font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkFaint}; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+        .pf3-tierhero-kicker { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.moss}; }
+        .pf3-tierhero-next { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; margin: 3px 0 4px; }
+        .pf3-tierhero-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkSoft}; }
         .pf3-ladder { margin-top: 18px; }
         .pf3-tier { display: flex; gap: 14px; }
         .pf3-tier-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
@@ -3376,134 +3376,134 @@ export default function VerdureApp() {
         .pf3-tier-body { padding-bottom: 20px; }
         .pf3-tier.locked .pf3-tier-body { opacity: 0.5; }
         .pf3-tier-top { display: flex; align-items: center; gap: 8px; }
-        .pf3-tier-name { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 800; color: ${T.ink}; }
-        .pf3-tier-here { padding: 2px 8px; border-radius: 100px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
-        .pf3-tier-need { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; color: ${T.moss}; margin-top: 2px; }
-        .pf3-tier-perk { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${T.inkSoft}; margin-top: 4px; line-height: 1.4; }
+        .pf3-tier-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .pf3-tier-here { padding: 2px 8px; border-radius: ${radius['pill']}px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: 0.03em; text-transform: uppercase; }
+        .pf3-tier-need { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.moss}; margin-top: 2px; }
+        .pf3-tier-perk { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkSoft}; margin-top: 4px; line-height: 1.4; }
 
         .pf3-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 24px; }
-        .pf3-badge-card { position: relative; padding: 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; overflow: hidden; }
+        .pf3-badge-card { position: relative; padding: 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; overflow: hidden; }
         .pf3-badge-card.got { background: linear-gradient(150deg, ${T.moss}, ${T.mossBright}); border-color: transparent; box-shadow: 0 6px 18px ${T.moss}33; }
         .pf3-badge-card.got::after { content: ''; position: absolute; top: -40%; left: -30%; width: 60%; height: 180%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent); transform: rotate(20deg); }
         .pf3-badge-card.locked { opacity: 0.9; }
         .pf3-badge-check { position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; }
-        .pf3-badge-ic { width: 38px; height: 38px; border-radius: 11px; background: ${T.moss}12; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+        .pf3-badge-ic { width: 38px; height: 38px; border-radius: ${radius['md']}px; background: ${T.moss}12; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
         .pf3-badge-card.got .pf3-badge-ic { background: rgba(255,255,255,0.2); }
         .pf3-badge-card.locked .pf3-badge-ic { background: ${T.line}; }
-        .pf3-badge-label { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${T.ink}; }
+        .pf3-badge-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
         .pf3-badge-card.got .pf3-badge-label { color: ${palette.white}; }
-        .pf3-badge-sub { font-family: 'Manrope', sans-serif; font-size: 11px; color: ${T.inkFaint}; margin-top: 2px; line-height: 1.35; }
+        .pf3-badge-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 2px; line-height: 1.35; }
         .pf3-badge-card.got .pf3-badge-sub { color: rgba(255,255,255,0.82); }
         .pf3-badge-prog { display: flex; align-items: center; gap: 7px; margin-top: 10px; }
-        .pf3-badge-prog-bar { flex: 1; height: 5px; border-radius: 100px; background: ${T.bg}; overflow: hidden; }
-        .pf3-badge-prog-bar > div { height: 100%; border-radius: 100px; background: ${T.inkFaint}; }
-        .pf3-badge-prog span { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 700; color: ${T.inkFaint}; }
-        .pf3-signout { display: block; width: calc(100% - 48px); margin: 22px 24px 0; padding: 14px; border-radius: 14px; border: 1px solid ${T.line}; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.clay}; }
+        .pf3-badge-prog-bar { flex: 1; height: 5px; border-radius: ${radius['pill']}px; background: ${T.bg}; overflow: hidden; }
+        .pf3-badge-prog-bar > div { height: 100%; border-radius: ${radius['pill']}px; background: ${T.inkFaint}; }
+        .pf3-badge-prog span { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; color: ${T.inkFaint}; }
+        .pf3-signout { display: block; width: calc(100% - 48px); margin: 22px 24px 0; padding: 14px; border-radius: ${radius['md']}px; border: 1px solid ${T.line}; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.clay}; }
 
         .pf2-hero { display: flex; flex-direction: column; align-items: center; padding: 16px 24px 0; }
         .pf2-crest { position: relative; width: 88px; height: 88px; display: flex; align-items: center; justify-content: center; }
         .pf2-crest-mid { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .pf2-name { font-family: 'Manrope', sans-serif; font-size: 24px; font-weight: 800; color: ${T.ink}; margin-top: 14px; letter-spacing: -0.01em; }
-        .pf2-sub { font-family: 'Manrope', sans-serif; font-size: 13px; color: ${T.inkSoft}; margin-top: 4px; text-align: center; }
-        .pf2-sub b { font-weight: 700; }
+        .pf2-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; margin-top: 14px; letter-spacing: -0.01em; }
+        .pf2-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.inkSoft}; margin-top: 4px; text-align: center; }
+        .pf2-sub b { font-weight: ${ds.weight.bold}; }
 
-        .pf2-vitals { display: flex; align-items: center; margin: 22px 24px 0; padding: 16px 8px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 18px; }
+        .pf2-vitals { display: flex; align-items: center; margin: 22px 24px 0; padding: 16px 8px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
         .pf2-vital { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-        .pf2-vital-num { font-family: 'Manrope', sans-serif; font-size: 24px; font-weight: 800; color: ${T.ink}; line-height: 1; }
-        .pf2-vital-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 500; color: ${T.inkFaint}; }
+        .pf2-vital-num { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; line-height: 1; }
+        .pf2-vital-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.medium}; color: ${T.inkFaint}; }
         .pf2-vital-div { width: 1px; height: 30px; background: ${T.line}; }
 
-        .pf2-mood { margin: 12px 24px 0; padding: 15px 16px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 18px; }
-        .pf2-mood-bar { display: flex; height: 8px; border-radius: 100px; overflow: hidden; gap: 2px; }
-        .pf2-mood-bar > div { border-radius: 2px; transition: flex .5s ease; }
+        .pf2-mood { margin: 12px 24px 0; padding: 15px 16px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
+        .pf2-mood-bar { display: flex; height: 8px; border-radius: ${radius['pill']}px; overflow: hidden; gap: 2px; }
+        .pf2-mood-bar > div { border-radius: ${radius['xs']}px; transition: flex .5s ease; }
         .pf2-mood-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 11px; }
-        .pf2-mood-legend span { display: inline-flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; color: ${T.inkSoft}; }
+        .pf2-mood-legend span { display: inline-flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; }
         .pf2-mood-legend i { width: 8px; height: 8px; border-radius: 50%; }
 
-        .pf2-star { display: flex; align-items: center; gap: 13px; margin: 12px 24px 0; padding: 13px 15px; border-radius: 18px;
+        .pf2-star { display: flex; align-items: center; gap: 13px; margin: 12px 24px 0; padding: 13px 15px; border-radius: ${radius['lg']}px;
           background: linear-gradient(120deg, ${T.moss}14, ${T.moss}08); border: 1px solid ${T.moss}22; }
         .pf2-star-photo { border-radius: 50%; flex-shrink: 0; }
         .pf2-star-body { flex: 1; min-width: 0; }
-        .pf2-star-kicker { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.moss}; }
-        .pf2-star-name { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; margin-top: 3px; }
+        .pf2-star-kicker { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.moss}; }
+        .pf2-star-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; margin-top: 3px; }
         .pf2-star-badge { width: 34px; height: 34px; border-radius: 50%; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
         .pf2-sec { margin-top: 22px; }
-        .pf2-sec-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 9px; }
-        .pf2-list { margin: 0 24px; background: ${T.card}; border-radius: 18px; border: 1px solid ${T.line}; overflow: hidden; }
+        .pf2-sec-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.05em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 9px; }
+        .pf2-list { margin: 0 24px; background: ${T.card}; border-radius: ${radius['lg']}px; border: 1px solid ${T.line}; overflow: hidden; }
         .pf2-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border: none; background: transparent; border-top: 1px solid ${T.line}; cursor: pointer; }
         .pf2-row:first-child { border-top: none; }
-        .pf2-row-icon { width: 34px; height: 34px; border-radius: 10px; background: ${T.moss}12; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pf2-row-icon { width: 34px; height: 34px; border-radius: ${radius['sm']}px; background: ${T.moss}12; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .pf2-row-text { flex: 1; text-align: left; }
-        .pf2-row-label { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.ink}; }
-        .pf2-row-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 1px; }
+        .pf2-row-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
+        .pf2-row-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 1px; }
 
         /* profile bottom sheets */
         .pf2-scrim { position: absolute; inset: 0; background: rgba(20,26,20,0.4); z-index: 60; animation: dzFade .25s ease; }
-        .pf2-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 61; background: ${T.bg}; border-radius: 26px 26px 0 0; padding: 10px 22px calc(28px + env(safe-area-inset-bottom)); box-shadow: 0 -16px 40px rgba(0,0,0,0.2); animation: sheetUp .34s cubic-bezier(.2,.85,.25,1); }
+        .pf2-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 61; background: ${T.bg}; border-radius: ${radius['2xl']}px 26px 0 0; padding: 10px 22px calc(28px + env(safe-area-inset-bottom)); box-shadow: 0 -16px 40px rgba(0,0,0,0.2); animation: sheetUp .34s cubic-bezier(.2,.85,.25,1); }
         @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .pf2-sheet-grab { width: 38px; height: 4px; border-radius: 100px; background: ${T.line}; margin: 0 auto 16px; }
-        .pf2-sheet-title { font-family: 'Manrope', sans-serif; font-size: 19px; font-weight: 800; color: ${T.ink}; }
-        .pf2-sheet-sub { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${T.inkFaint}; margin-top: 4px; line-height: 1.45; }
-        .pf2-sheet-note { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkSoft}; margin-top: 14px; line-height: 1.5; padding: 12px 14px; background: ${T.moss}0d; border-radius: 12px; }
+        .pf2-sheet-grab { width: 38px; height: 4px; border-radius: ${radius['pill']}px; background: ${T.line}; margin: 0 auto 16px; }
+        .pf2-sheet-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .pf2-sheet-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkFaint}; margin-top: 4px; line-height: 1.45; }
+        .pf2-sheet-note { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkSoft}; margin-top: 14px; line-height: 1.5; padding: 12px 14px; background: ${T.moss}0d; border-radius: ${radius['md']}px; }
         .pf2-toggle-row { display: flex; align-items: center; gap: 12px; padding: 15px 0; background: none; border: 0; border-top: 1px solid ${T.line}; width: 100%; text-align: left; font-family: inherit; cursor: pointer; }
         .pf2-toggle-row:first-of-type { margin-top: 8px; }
         .pf2-toggle-text { flex: 1; }
-        .pf2-toggle-label { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
-        .pf2-toggle-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 2px; }
-        .pf2-switch { width: 46px; height: 28px; border-radius: 100px; background: ${T.line}; flex-shrink: 0; position: relative; transition: background .25s ease; }
+        .pf2-toggle-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .pf2-toggle-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 2px; }
+        .pf2-switch { width: 46px; height: 28px; border-radius: ${radius['pill']}px; background: ${T.line}; flex-shrink: 0; position: relative; transition: background .25s ease; }
         .pf2-switch.on { background: ${T.moss}; }
         .pf2-switch-knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: ${palette.white}; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transition: left .25s cubic-bezier(.3,1.4,.5,1); }
         .pf2-switch.on .pf2-switch-knob { left: 21px; }
         .pf2-climate-now { display: flex; gap: 10px; margin-top: 18px; }
-        .pf2-climate-item { flex: 1; padding: 14px 10px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 14px; text-align: center; }
-        .pf2-climate-v { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; color: ${T.ink}; }
-        .pf2-climate-l { font-family: 'Manrope', sans-serif; font-size: 10.5px; color: ${T.inkFaint}; margin-top: 4px; }
-        .pf2-about-mark { width: 60px; height: 60px; border-radius: 18px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; margin: 4px auto 14px; }
+        .pf2-climate-item { flex: 1; padding: 14px 10px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['md']}px; text-align: center; }
+        .pf2-climate-v { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .pf2-climate-l { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; color: ${T.inkFaint}; margin-top: 4px; }
+        .pf2-about-mark { width: 60px; height: 60px; border-radius: ${radius['lg']}px; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; margin: 4px auto 14px; }
         .pf2-about-rows { margin-top: 20px; }
-        .pf2-about-row { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 15px 2px; border: none; border-top: 1px solid ${T.line}; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: ${T.ink}; }
+        .pf2-about-row { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 15px 2px; border: none; border-top: 1px solid ${T.line}; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
         .pf2-about-row.danger { color: ${T.clay}; }
-        .pf2-acct-back { display: inline-flex; align-items: center; gap: 4px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: ${T.inkSoft}; padding: 0; margin-bottom: 14px; }
-        .pf2-acct-input { width: 100%; height: 50px; margin-top: 18px; padding: 0 16px; border-radius: 13px; border: 1.5px solid ${T.line}; background: ${T.bg}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: ${T.ink}; outline: none; }
+        .pf2-acct-back { display: inline-flex; align-items: center; gap: 4px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${T.inkSoft}; padding: 0; margin-bottom: 14px; }
+        .pf2-acct-input { width: 100%; height: 50px; margin-top: 18px; padding: 0 16px; border-radius: ${radius['md']}px; border: 1.5px solid ${T.line}; background: ${T.bg}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; outline: none; }
         .pf2-acct-input:focus { border-color: ${T.inkSoft}; }
-        .pf2-acct-save { width: 100%; height: 50px; margin-top: 16px; border-radius: 13px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .pf2-acct-save { width: 100%; height: 50px; margin-top: 16px; border-radius: ${radius['md']}px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         .pf2-acct-save:disabled { opacity: 0.45; cursor: default; }
-        .pf2-acct-delete { width: 100%; height: 50px; margin-top: 20px; border-radius: 13px; border: none; background: ${T.clay}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
-        .pf2-acct-cancel { width: 100%; height: 46px; margin-top: 10px; border-radius: 13px; border: none; background: transparent; color: ${T.inkSoft}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .pf2-acct-msg { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: ${T.mossBright}12; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: ${T.moss}; }
+        .pf2-acct-delete { width: 100%; height: 50px; margin-top: 20px; border-radius: ${radius['md']}px; border: none; background: ${T.clay}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
+        .pf2-acct-cancel { width: 100%; height: 46px; margin-top: 10px; border-radius: ${radius['md']}px; border: none; background: transparent; color: ${T.inkSoft}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
+        .pf2-acct-msg { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 12px 14px; border-radius: ${radius['md']}px; background: ${T.mossBright}12; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${T.moss}; }
 
         /* external demo controls (below the phone, not part of the app) */
-        .demo-panel { width: 402px; margin: 40px 0 48px; padding: 14px 18px; border-radius: 18px;
+        .demo-panel { width: 402px; margin: 40px 0 48px; padding: 14px 18px; border-radius: ${radius['lg']}px;
           background: rgba(255,255,255,0.55); border: 1px solid rgba(28,36,25,0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .demo-head { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
-        .demo-badge { font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
-          color: ${palette.white}; background: ${palette.moss500}; padding: 3px 7px; border-radius: 5px; }
-        .demo-title { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: rgba(28,36,25,0.55); }
+        .demo-badge { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; letter-spacing: 0.1em;
+          color: ${palette.white}; background: ${palette.moss500}; padding: 3px 7px; border-radius: ${radius['xs']}px; }
+        .demo-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: rgba(28,36,25,0.55); }
         .demo-row { display: flex; align-items: center; gap: 12px; }
-        .demo-clock { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: rgba(28,36,25,0.85);
+        .demo-clock { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: rgba(28,36,25,0.85);
           min-width: 44px; }
-        .demo-scrub { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 4px; outline: none; cursor: pointer; background: rgba(28,36,25,0.18); }
+        .demo-scrub { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: ${radius['xs']}px; outline: none; cursor: pointer; background: rgba(28,36,25,0.18); }
         .demo-scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: ${palette.moss500}; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
         .demo-scrub::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: ${palette.moss500}; border: none; }
-        .demo-play { display: flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600;
-          color: ${palette.white}; background: ${palette.moss500}; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; white-space: nowrap; }
+        .demo-play { display: flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold};
+          color: ${palette.white}; background: ${palette.moss500}; border: none; padding: 8px 14px; border-radius: ${radius['pill']}px; cursor: pointer; white-space: nowrap; }
         .demo-divider { height: 1px; background: rgba(28,36,25,0.1); margin: 14px 0; }
         .demo-jumps { display: flex; flex-wrap: wrap; gap: 7px; }
-        .demo-jump { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(28,36,25,0.82);
-          background: rgba(28,36,25,0.05); border: 1px solid rgba(28,36,25,0.14); padding: 7px 13px; border-radius: 100px; cursor: pointer; transition: background .15s ease, transform .12s ease; }
+        .demo-jump { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: rgba(28,36,25,0.82);
+          background: rgba(28,36,25,0.05); border: 1px solid rgba(28,36,25,0.14); padding: 7px 13px; border-radius: ${radius['pill']}px; cursor: pointer; transition: background .15s ease, transform .12s ease; }
         .demo-jump:hover { background: rgba(28,36,25,0.1); }
         .demo-jump:active { transform: scale(0.95); }
 
         /* nav — one continuous full-width bar; a single white pill slides across it */
         .nav-wrap { position: absolute; bottom: 20px; left: 16px; right: 16px; height: 60px; z-index: 55; }
         .nav-bar { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 100%;
-          padding: 6px 6px; border-radius: 38px; background: ${palette.black600}; box-shadow: 0 12px 30px rgba(0,0,0,0.32); }
+          padding: 6px 6px; border-radius: ${radius['2xl']}px; background: ${palette.black600}; box-shadow: 0 12px 30px rgba(0,0,0,0.32); }
         /* the sliding pill: travels + stretches between tabs */
-        .nav-glider { position: absolute; top: 6px; height: 48px; border-radius: 32px; background: ${color.surfaceAlt}; z-index: 1;
+        .nav-glider { position: absolute; top: 6px; height: 48px; border-radius: ${radius['2xl']}px; background: ${color.surfaceAlt}; z-index: 1;
           box-shadow: 0 2px 12px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.9);
           transition: left .55s cubic-bezier(.34,1.5,.5,1), width .55s cubic-bezier(.34,1.5,.5,1), opacity .3s ease; }
         .nav-item { position: relative; z-index: 2; height: 48px; display: flex; align-items: center; justify-content: center; gap: 7px;
-          border: none; background: transparent; cursor: pointer; color: ${color.surfaceAlt}; border-radius: 32px;
+          border: none; background: transparent; cursor: pointer; color: ${color.surfaceAlt}; border-radius: ${radius['2xl']}px;
           transition: color .35s ease, background-color .35s ease, box-shadow .35s ease; white-space: nowrap; flex-shrink: 0; padding: 0 12px; }
         /* FALLBACK pill: lives on the active button so the tab is legible even if the
            slide never initializes. Suppressed once the glider is ready (has-glider),
@@ -3513,7 +3513,7 @@ export default function VerdureApp() {
         .nav-bar.has-glider .nav-item.active { background: transparent; box-shadow: none; }
         .nav-item-ic { position: relative; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
         .nav-dot { position: absolute; top: -1px; right: -2px; width: 8px; height: 8px; border-radius: 50%; background: ${T.clay}; box-shadow: 0 0 0 2px ${palette.black600}; }
-        .nav-item-lbl { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600;
+        .nav-item-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.semibold};
           animation: navLblIn .4s cubic-bezier(.2,.85,.25,1); white-space: nowrap; }
         /* label fades in as the tab becomes active */
         @keyframes navLblIn { 0% { opacity: 0; } 100% { opacity: 1; } }
@@ -3558,12 +3558,12 @@ export default function VerdureApp() {
         .dz-confirm-body { padding: 6px 24px 26px; text-align: center; }
         .dz-confirm-ic { width: 52px; height: 52px; border-radius: 50%; background: ${T.clay}14; display: flex; align-items: center; justify-content: center; margin: 6px auto 16px; }
         .dz-sheet-confirm .dz-sheet-sub { text-align: center; max-width: 300px; margin: 8px auto 0; line-height: 1.5; }
-        .dz-confirm-keep { width: 100%; height: 52px; margin-top: 22px; border-radius: 15px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
-        .dz-confirm-remove { width: 100%; height: 48px; margin-top: 9px; border-radius: 15px; border: none; background: transparent; color: ${T.clay}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .dz-confirm-keep { width: 100%; height: 52px; margin-top: 22px; border-radius: ${radius['lg']}px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
+        .dz-confirm-remove { width: 100%; height: 48px; margin-top: 9px; border-radius: ${radius['lg']}px; border: none; background: transparent; color: ${T.clay}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         .dz-menu-scrim { position: fixed; inset: 0; z-index: 8; }
-        .dz-menu { position: absolute; top: 48px; right: 0; z-index: 9; min-width: 210px; background: ${T.card}; border-radius: 14px; padding: 6px; box-shadow: 0 16px 40px rgba(0,0,0,0.3); animation: dzMenuIn .16s ease; transform-origin: top right; }
+        .dz-menu { position: absolute; top: 48px; right: 0; z-index: 9; min-width: 210px; background: ${T.card}; border-radius: ${radius['md']}px; padding: 6px; box-shadow: 0 16px 40px rgba(0,0,0,0.3); animation: dzMenuIn .16s ease; transform-origin: top right; }
         @keyframes dzMenuIn { 0% { opacity: 0; transform: scale(.94); } 100% { opacity: 1; transform: scale(1); } }
-        .dz-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 12px; border: none; background: transparent; border-radius: 10px; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: ${T.ink}; text-align: left; }
+        .dz-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 12px; border: none; background: transparent; border-radius: ${radius['sm']}px; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; text-align: left; }
         .dz-menu-item:hover { background: ${T.bg}; }
         .dz-menu-item.danger { color: ${T.clay}; }
         /* identity sits low, after a flexible spacer that keeps the photo breathing above */
@@ -3571,153 +3571,153 @@ export default function VerdureApp() {
         .dz-id.in { opacity: 1; transform: translateY(0); }
         .dz-pulse-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .dz-pulse { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255,255,255,0.14); animation: dtpulse 1.8s ease-in-out infinite; }
-        .dz-pulse-lbl { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.92); }
-        .dz-name { font-family: 'Manrope', sans-serif; font-size: 46px; font-weight: 800; color: ${palette.white}; line-height: 0.98; letter-spacing: -0.025em; }
-        .dz-latin { font-family: 'Manrope', sans-serif; font-size: 14px; color: rgba(255,255,255,0.72); margin-top: 8px; }
+        .dz-pulse-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: rgba(255,255,255,0.92); }
+        .dz-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['6xl']}px; font-weight: ${ds.weight.extrabold}; color: ${palette.white}; line-height: 0.98; letter-spacing: -0.025em; }
+        .dz-latin { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; color: rgba(255,255,255,0.72); margin-top: 8px; }
         /* headline + the single action */
         .dz-call { padding: 22px 24px 0; opacity: 0; transform: translateY(14px); transition: opacity .7s ease .1s, transform .7s ease .1s; }
         .dz-call.in { opacity: 1; transform: translateY(0); }
-        .dz-headline { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 600; color: rgba(255,255,255,0.95); line-height: 1.4; margin-bottom: 16px; }
-        .dz-action { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: 18px; border: none; cursor: pointer; background: ${palette.white}; transition: background .3s ease; }
+        .dz-headline { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.95); line-height: 1.4; margin-bottom: 16px; }
+        .dz-action { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: ${radius['lg']}px; border: none; cursor: pointer; background: ${palette.white}; transition: background .3s ease; }
         .dz-action.urgent { justify-content: space-between; padding: 0 20px; background: linear-gradient(135deg, ${palette.clay450}, ${palette.clay700}); box-shadow: 0 10px 26px rgba(169,78,47,0.4); }
         .dz-action.urgent .dz-action-main { color: ${palette.white}; }
-        .dz-action-steps { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: 100px; }
+        .dz-action-steps { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: ${radius['pill']}px; }
         .dz-status.subtle { margin-top: 10px; background: rgba(255,255,255,0.05); }
         .dz-action.done { background: ${T.mossBright}; }
-        .dz-action-main { display: flex; align-items: center; gap: 9px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${T.ink}; }
+        .dz-action-main { display: flex; align-items: center; gap: 9px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
         .dz-action.done .dz-action-main { color: ${palette.white}; }
         .dz-action.done .dz-action-main svg { stroke: ${palette.white}; }
         /* explore — grouped list of rows, one frosted card */
-        .dz-explore { margin: 16px 24px 30px; border-radius: 20px; overflow: hidden;
+        .dz-explore { margin: 16px 24px 30px; border-radius: ${radius['xl']}px; overflow: hidden;
           background: rgba(255,255,255,0.08); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.12);
           opacity: 0; transform: translateY(14px); transition: opacity .7s ease .2s, transform .7s ease .2s; }
         .dz-explore.in { opacity: 1; transform: translateY(0); }
         .dz-row { display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px 16px; border: none; background: transparent; cursor: pointer; text-align: left; }
-        .dz-row-ic { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .dz-row-ic { width: 40px; height: 40px; border-radius: ${radius['md']}px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .dz-row-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-        .dz-row-lbl { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${palette.white}; }
-        .dz-row-prev { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.62); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dz-row-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; }
+        .dz-row-prev { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.62); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .dz-row-arr { flex-shrink: 0; }
         .dz-row-sep { height: 1px; background: rgba(255,255,255,0.1); margin-left: 70px; }
 
         /* ---------- BOTTOM SHEETS ---------- */
         .dz-sheet-scrim { position: absolute; inset: 0; background: rgba(10,14,10,0.5); z-index: 60; animation: dzFade .25s ease; }
         @keyframes dzFade { from { opacity: 0; } to { opacity: 1; } }
-        .dz-sheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: 82%; background: ${T.bg}; border-radius: 28px 28px 0 0; z-index: 61;
+        .dz-sheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: 82%; background: ${T.bg}; border-radius: ${radius['2xl']}px 28px 0 0; z-index: 61;
           display: flex; flex-direction: column; animation: dzSheetUp .4s cubic-bezier(.2,.85,.25,1); box-shadow: 0 -12px 40px rgba(0,0,0,0.3); }
         @keyframes dzSheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .dz-sheet-grip { width: 40px; height: 5px; border-radius: 3px; background: ${T.line}; margin: 12px auto 4px; flex-shrink: 0; }
+        .dz-sheet-grip { width: 40px; height: 5px; border-radius: ${radius['xs']}px; background: ${T.line}; margin: 12px auto 4px; flex-shrink: 0; }
         .dz-sheet-scroll { overflow-y: auto; padding: 12px 24px 30px; flex: 1; min-height: 0; }
         .dz-sheet-scroll::-webkit-scrollbar { display: none; }
         .dz-sheet-titlerow { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-        .dz-sheet-title { font-family: 'Manrope', sans-serif; font-size: 24px; font-weight: 800; color: ${T.ink}; letter-spacing: -0.01em; }
-        .dz-sheet-lead { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: ${T.inkSoft}; margin: 6px 0 18px; }
-        .dt-match-note { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 7px; }
+        .dz-sheet-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; letter-spacing: -0.01em; }
+        .dz-sheet-lead { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; margin: 6px 0 18px; }
+        .dt-match-note { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 7px; }
 
         /* calm status line (not a button) when no watering is due */
-        .dz-status { display: flex; align-items: center; gap: 9px; padding: 14px 16px; border-radius: 16px;
+        .dz-status { display: flex; align-items: center; gap: 9px; padding: 14px 16px; border-radius: ${radius['lg']}px;
           background: rgba(255,255,255,0.1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.14);
-          font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
+          font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.9); }
         .dz-status.done { color: ${T.mossBright}; }
         .dz-status-done-txt { flex: 1; min-width: 0; }
-        .dz-status-undo { flex-shrink: 0; margin-left: auto; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: ${palette.white}; background: rgba(255,255,255,0.16); border: none; padding: 6px 13px; border-radius: 100px; cursor: pointer; }
-        .dz-status-log { margin-left: auto; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: ${palette.white}; background: rgba(255,255,255,0.16); border: none; padding: 6px 12px; border-radius: 100px; cursor: pointer; }
+        .dz-status-undo { flex-shrink: 0; margin-left: auto; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; background: rgba(255,255,255,0.16); border: none; padding: 6px 13px; border-radius: ${radius['pill']}px; cursor: pointer; }
+        .dz-status-log { margin-left: auto; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; background: rgba(255,255,255,0.16); border: none; padding: 6px 12px; border-radius: ${radius['pill']}px; cursor: pointer; }
 
         /* door affordance */
 
         /* care-guide cards */
         .cg-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .cg-card { padding: 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; }
+        .cg-card { padding: 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
         .cg-card-wide { grid-column: 1 / -1; }
-        .cg-card-key { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.moss}; margin-bottom: 7px; }
-        .cg-card-val { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 500; color: ${T.ink}; line-height: 1.5; }
+        .cg-card-key { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.moss}; margin-bottom: 7px; }
+        .cg-card-val { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.medium}; color: ${T.ink}; line-height: 1.5; }
 
         /* pinned sheet CTA */
         .dz-sheet-scroll-pinned { padding-bottom: 12px; }
         .dz-sheet-cta { flex-shrink: 0; padding: 12px 24px calc(24px + env(safe-area-inset-bottom)); border-top: 1px solid ${T.line}; background: ${T.bg}; }
-        .dz-cta-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 54px; border-radius: 16px; border: none; cursor: pointer; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; }
+        .dz-cta-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 54px; border-radius: ${radius['lg']}px; border: none; cursor: pointer; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; }
 
         /* journal redesign */
-        .jn-chart { background: ${T.card}; border: 1px solid ${T.line}; border-radius: 18px; padding: 16px 16px 10px; margin: 6px 0 24px; }
+        .jn-chart { background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; padding: 16px 16px 10px; margin: 6px 0 24px; }
         .jn-chart-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
-        .jn-chart-lbl { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: ${T.ink}; }
-        .jn-chart-now { font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 800; }
-        .jn-chart-now-u { font-size: 11px; font-weight: 600; color: ${T.inkFaint}; }
-        .jn-tl-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 14px; }
+        .jn-chart-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .jn-chart-now { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; }
+        .jn-chart-now-u { font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkFaint}; }
+        .jn-tl-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 14px; }
         .jn-timeline { display: flex; flex-direction: column; }
         .jn-row { display: flex; gap: 14px; }
         .jn-marker { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding-top: 16px; }
         .jn-dot { width: 11px; height: 11px; border-radius: 50%; z-index: 1; box-shadow: 0 0 0 3px ${T.bg}; }
         .jn-line { flex: 1; width: 2px; background: ${T.line}; margin-top: 2px; }
-        .jn-card { flex: 1; display: flex; align-items: center; gap: 13px; padding: 12px; margin-bottom: 12px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; }
-        .jn-photo { border-radius: 12px; overflow: hidden; flex-shrink: 0; }
+        .jn-card { flex: 1; display: flex; align-items: center; gap: 13px; padding: 12px; margin-bottom: 12px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
+        .jn-photo { border-radius: ${radius['md']}px; overflow: hidden; flex-shrink: 0; }
         .jn-body { flex: 1; min-width: 0; }
-        .jn-note { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.ink}; line-height: 1.35; }
-        .jn-when { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 3px; }
-        .jn-health { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; flex-shrink: 0; }
+        .jn-note { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; line-height: 1.35; }
+        .jn-when { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 3px; }
+        .jn-health { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.extrabold}; flex-shrink: 0; }
 
         /* TIER 1 — canvas vitals strip */
-        .dz-vitals { display: flex; align-items: center; margin: 20px 24px 0; padding: 14px 4px; border-radius: 16px;
+        .dz-vitals { display: flex; align-items: center; margin: 20px 24px 0; padding: 14px 4px; border-radius: ${radius['lg']}px;
           background: rgba(255,255,255,0.1); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.14);
           opacity: 0; transform: translateY(12px); transition: opacity .7s ease .15s, transform .7s ease .15s; }
         .dz-vitals.in { opacity: 1; transform: translateY(0); }
         .dz-vital { flex: 1; text-align: center; }
-        .dz-vital-num { display: inline-block; font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800; color: ${palette.white}; line-height: 1; }
-        .dz-vital-lbl { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,0.65); margin-top: 5px; }
+        .dz-vital-num { display: inline-block; font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${palette.white}; line-height: 1; }
+        .dz-vital-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.65); margin-top: 5px; }
         .dz-vital-div { width: 1px; height: 30px; background: rgba(255,255,255,0.16); }
 
         /* trend band */
-        .dz-trend { display: flex; align-items: center; gap: 14px; margin: 10px 24px 0; padding: 12px 16px; border-radius: 16px;
+        .dz-trend { display: flex; align-items: center; gap: 14px; margin: 10px 24px 0; padding: 12px 16px; border-radius: ${radius['lg']}px;
           background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
           opacity: 0; transform: translateY(12px); transition: opacity .7s ease .2s, transform .7s ease .2s; }
         .dz-trend.in { opacity: 1; transform: translateY(0); }
         .dz-trend-l { flex: 1; min-width: 0; }
-        .dz-trend-dir { display: flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; }
-        .dz-trend-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 3px; }
+        .dz-trend-dir { display: flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.extrabold}; }
+        .dz-trend-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: rgba(255,255,255,0.6); margin-top: 3px; }
         .dz-trend-spark { width: 92px; flex-shrink: 0; }
 
         /* rhythm band */
-        .dz-rhythm { display: flex; align-items: center; margin: 10px 24px 0; padding: 13px 12px; border-radius: 16px;
+        .dz-rhythm { display: flex; align-items: center; margin: 10px 24px 0; padding: 13px 12px; border-radius: ${radius['lg']}px;
           background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
           opacity: 0; transform: translateY(12px); transition: opacity .7s ease .25s, transform .7s ease .25s; }
         .dz-rhythm.in { opacity: 1; transform: translateY(0); }
         .dz-rhythm-step { flex: 1; text-align: center; }
-        .dz-rhythm-k { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.04em; }
-        .dz-rhythm-v { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${palette.white}; margin-top: 4px; }
+        .dz-rhythm-k { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.04em; }
+        .dz-rhythm-v { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; margin-top: 4px; }
         .dz-rhythm-arrow { flex-shrink: 0; display: flex; padding: 0 2px; }
 
 
         /* sheet subtitle */
-        .dz-sheet-sub { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.inkSoft}; margin-top: 5px; }
+        .dz-sheet-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; margin-top: 5px; }
 
         /* TIER 2 — verdict + digest */
-        .dz-verdict { margin: 18px 0 0; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; border: 1px solid; border-radius: 16px; }
-        .dz-verdict-ic { flex-shrink: 0; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .dz-verdict { margin: 18px 0 0; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; border: 1px solid; border-radius: ${radius['lg']}px; }
+        .dz-verdict-ic { flex-shrink: 0; width: 34px; height: 34px; border-radius: ${radius['sm']}px; display: flex; align-items: center; justify-content: center; }
         .dz-verdict-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-        .dz-verdict-title { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${T.ink}; }
-        .dz-verdict-sub { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; color: ${T.inkSoft}; line-height: 1.4; }
-        .dz-verdict-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: ${palette.white}; background: ${color.watch}; border: none; padding: 8px 15px; border-radius: 100px; cursor: pointer; }
-        .dz-do-now { margin-top: 12px; padding: 15px 16px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; }
-        .dz-do-now-lbl { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.clay}; }
-        .dz-do-now-step { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${T.ink}; margin-top: 7px; }
-        .dz-do-now-detail { font-family: 'Manrope', sans-serif; font-size: 13px; color: ${T.inkSoft}; line-height: 1.5; margin-top: 4px; }
+        .dz-verdict-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .dz-verdict-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.medium}; color: ${T.inkSoft}; line-height: 1.4; }
+        .dz-verdict-cta { flex-shrink: 0; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; background: ${color.watch}; border: none; padding: 8px 15px; border-radius: ${radius['pill']}px; cursor: pointer; }
+        .dz-do-now { margin-top: 12px; padding: 15px 16px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
+        .dz-do-now-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.clay}; }
+        .dz-do-now-step { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; margin-top: 7px; }
+        .dz-do-now-detail { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.inkSoft}; line-height: 1.5; margin-top: 4px; }
 
         /* the one-tap expander to tier 3 */
-        .dz-more { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 16px; padding: 13px; border-radius: 14px;
-          border: none; background: transparent; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+        .dz-more { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 16px; padding: 13px; border-radius: ${radius['md']}px;
+          border: none; background: transparent; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         .dz-full { margin-top: 18px; animation: dxOpen .3s ease; }
         @keyframes dxOpen { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-        .dz-full-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 10px; margin-top: 4px; }
+        .dz-full-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 10px; margin-top: 4px; }
 
         /* care conditions (digest) */
-        .cg-cond { margin-top: 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; overflow: hidden; }
+        .cg-cond { margin-top: 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; overflow: hidden; }
         .cg-cond-row { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-top: 1px solid ${T.line}; }
         .cg-cond-row:first-child { border-top: none; }
-        .cg-cond-ic { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .cg-cond-ic { width: 26px; height: 26px; border-radius: ${radius['sm']}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .cg-cond-body { flex: 1; }
-        .cg-cond-label { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
-        .cg-cond-have { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 1px; }
-        .cg-cond-flag { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; }
+        .cg-cond-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .cg-cond-have { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 1px; }
+        .cg-cond-flag { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; }
         /* merged condition + slider rows */
         .cg-merge { padding: 15px; border-top: 1px solid ${T.line}; }
         .cg-merge:first-child { border-top: none; }
@@ -3729,272 +3729,272 @@ export default function VerdureApp() {
         /* care full detail */
         .cg-detail { margin-bottom: 20px; }
         .cg-detail-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
-        .cg-detail-label { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
-        .cg-detail-flag { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 700; }
-        .cg-detail-note { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${T.inkSoft}; margin-top: 9px; line-height: 1.5; }
+        .cg-detail-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .cg-detail-flag { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; }
+        .cg-detail-note { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkSoft}; margin-top: 9px; line-height: 1.5; }
         .cg-match-legend { display: flex; gap: 16px; margin-top: 9px; }
-        .cg-match-key { display: inline-flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; color: ${T.inkFaint}; }
+        .cg-match-key { display: inline-flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkFaint}; }
         .cg-match-key i { flex-shrink: 0; }
         .cg-key-have { width: 10px; height: 10px; border-radius: 50%; }
-        .cg-key-need { width: 2px; height: 12px; background: ${T.ink}; border-radius: 2px; }
-        .cg-know { margin-top: 14px; padding: 15px 16px; background: ${T.moss}0c; border: 1px solid ${T.moss}22; border-radius: 16px; }
-        .cg-know-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.moss}; margin-bottom: 6px; }
-        .cg-know-txt { font-family: 'Manrope', sans-serif; font-size: 13.5px; color: ${T.ink}; line-height: 1.55; }
+        .cg-key-need { width: 2px; height: 12px; background: ${T.ink}; border-radius: ${radius['xs']}px; }
+        .cg-know { margin-top: 14px; padding: 15px 16px; background: ${T.moss}0c; border: 1px solid ${T.moss}22; border-radius: ${radius['lg']}px; }
+        .cg-know-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.moss}; margin-bottom: 6px; }
+        .cg-know-txt { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.ink}; line-height: 1.55; }
 
         /* journal trend digest */
-        .jn-compare { display: flex; align-items: center; gap: 8px; margin-top: 18px; padding: 18px 14px; background: linear-gradient(135deg, ${T.moss}0c, ${T.card}); border: 1px solid ${T.line}; border-radius: 18px; }
+        .jn-compare { display: flex; align-items: center; gap: 8px; margin-top: 18px; padding: 18px 14px; background: linear-gradient(135deg, ${T.moss}0c, ${T.card}); border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
         .jn-compare-side { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; }
-        .jn-compare-photo { border-radius: 16px; overflow: hidden; opacity: 0.9; }
+        .jn-compare-photo { border-radius: ${radius['lg']}px; overflow: hidden; opacity: 0.9; }
         .jn-compare-photo.now { opacity: 1; }
-        .jn-compare-when { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; color: ${T.inkFaint}; }
-        .jn-compare-h { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800; line-height: 1; }
+        .jn-compare-when { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkFaint}; }
+        .jn-compare-h { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; line-height: 1; }
         .jn-compare-mid { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
-        .jn-compare-delta { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; }
-        .jn-trend { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 16px 18px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; }
-        .jn-trend-txt { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; line-height: 1.3; }
-        .jn-trend-sub { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 3px; }
-        .jn-trend-num { font-family: 'Manrope', sans-serif; font-size: 34px; font-weight: 800; line-height: 1; }
+        .jn-compare-delta { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.extrabold}; }
+        .jn-trend { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 16px 18px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
+        .jn-trend-txt { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; line-height: 1.3; }
+        .jn-trend-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 3px; }
+        .jn-trend-num { font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.extrabold}; line-height: 1; }
         .jn-latest { margin-top: 16px; }
-        .jn-latest-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 10px; }
+        .jn-latest-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 10px; }
 
-        .dt-section-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: ${T.ink}; margin-bottom: 12px; }
+        .dt-section-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.02em; color: ${T.ink}; margin-bottom: 12px; }
         .dt-match-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 22px; }
         .dt-match-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .dt-match-label { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${T.ink}; }
-        .dt-match-flag { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; }
-        .dt-match-track { position: relative; height: 8px; border-radius: 4px; background: ${T.bg}; }
-        .dt-match-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 4px; }
-        .dt-match-need { position: absolute; top: -3px; width: 2px; height: 14px; background: ${T.ink}; border-radius: 2px; z-index: 2; }
+        .dt-match-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .dt-match-flag { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; }
+        .dt-match-track { position: relative; height: 8px; border-radius: ${radius['xs']}px; background: ${T.bg}; }
+        .dt-match-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: ${radius['xs']}px; }
+        .dt-match-need { position: absolute; top: -3px; width: 2px; height: 14px; background: ${T.ink}; border-radius: ${radius['xs']}px; z-index: 2; }
         .dt-match-have { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid ${T.card}; z-index: 3; }
-        .dt-match-legend { display: flex; justify-content: space-between; margin-top: 8px; font-family: 'Manrope', sans-serif; font-size: 10.5px; color: ${T.inkFaint}; }
+        .dt-match-legend { display: flex; justify-content: space-between; margin-top: 8px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; color: ${T.inkFaint}; }
 
         .dt-diag-herotop { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
         .dt-diag-herotext { flex: 1; }
 
-        .dt-journal-chart { background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; padding: 14px 14px 8px; margin-bottom: 16px; }
+        .dt-journal-chart { background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; padding: 14px 14px 8px; margin-bottom: 16px; }
         .dt-jc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .dt-jc-now { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; }
+        .dt-jc-now { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; }
 
         .dt-topnav { padding: 12px 20px 0; }
         .dt-icon { width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${T.line}; background: ${T.card}; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .dt-hero { display: flex; gap: 16px; align-items: center; padding: 14px 24px 0; opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
         .dt-hero.in { opacity: 1; transform: translateY(0); }
-        .dt-photo-wrap { border-radius: 20px; overflow: hidden; box-shadow: 0 8px 22px rgba(28,36,25,0.14); }
-        .dt-nick { font-family: 'Manrope', sans-serif; font-size: 26px; font-weight: 700; color: ${T.ink}; line-height: 1.05; }
-        .dt-latin { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkFaint}; margin-top: 3px; }
+        .dt-photo-wrap { border-radius: ${radius['xl']}px; overflow: hidden; box-shadow: 0 8px 22px rgba(28,36,25,0.14); }
+        .dt-nick { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; line-height: 1.05; }
+        .dt-latin { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkFaint}; margin-top: 3px; }
         .dt-badges { display: flex; gap: 7px; margin-top: 10px; }
-        .dt-badge { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; padding: 5px 11px; border-radius: 100px; }
+        .dt-badge { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; padding: 5px 11px; border-radius: ${radius['pill']}px; }
         .dt-badge.ghost { background: ${T.bg}; color: ${T.inkSoft}; border: 1px solid ${T.line}; }
         .dt-topnav { padding: 12px 20px 0; display: flex; align-items: center; justify-content: space-between; }
-        .dt-topnav-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: ${T.ink}; opacity: 0.85; }
-        .dt-next { display: flex; align-items: center; gap: 12px; margin: 20px 24px 0; padding: 13px 15px; background: ${T.card}; border: 1.5px solid; border-radius: 16px; cursor: pointer;
+        .dt-topnav-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; opacity: 0.85; }
+        .dt-next { display: flex; align-items: center; gap: 12px; margin: 20px 24px 0; padding: 13px 15px; background: ${T.card}; border: 1.5px solid; border-radius: ${radius['lg']}px; cursor: pointer;
           opacity: 0; transform: translateY(8px); transition: opacity .6s ease .1s, transform .6s ease .1s; }
         .dt-next.in { opacity: 1; transform: translateY(0); }
-        .dt-next-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .dt-next-spark { width: 10px; height: 10px; border-radius: 3px; transform: rotate(45deg); animation: dtpulse 1.8s ease-in-out infinite; }
+        .dt-next-icon { width: 34px; height: 34px; border-radius: ${radius['sm']}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .dt-next-spark { width: 10px; height: 10px; border-radius: ${radius['xs']}px; transform: rotate(45deg); animation: dtpulse 1.8s ease-in-out infinite; }
         .dt-next-body { flex: 1; }
-        .dt-next-label { font-family: 'Manrope', sans-serif; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.inkFaint}; }
-        .dt-next-text { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.ink}; margin-top: 2px; line-height: 1.35; }
+        .dt-next-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.inkFaint}; }
+        .dt-next-text { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; margin-top: 2px; line-height: 1.35; }
 
         .dt-vitals { display: flex; gap: 10px; margin: 16px 24px 0; }
-        .dt-vital { flex: 1; padding: 12px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; }
+        .dt-vital { flex: 1; padding: 12px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
         .dt-vital-top { display: flex; align-items: baseline; gap: 5px; }
-        .dt-vital-num { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 600; color: ${T.ink}; line-height: 1; }
-        .dt-vital-unit { font-size: 11px; opacity: 0.6; }
-        .dt-vital-trend { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 600; }
-        .dt-vital-lbl { font-family: 'Manrope', sans-serif; font-size: 10px; color: ${T.inkFaint}; margin-top: 3px; }
+        .dt-vital-num { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; line-height: 1; }
+        .dt-vital-unit { font-size: ${ds.size['xs']}px; opacity: 0.6; }
+        .dt-vital-trend { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; }
+        .dt-vital-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; color: ${T.inkFaint}; margin-top: 3px; }
         .dt-vital-spark { margin-top: 8px; height: 32px; }
-        .dt-vital-bar { margin-top: 10px; height: 4px; border-radius: 3px; background: ${T.bg}; overflow: hidden; }
-        .dt-vital-fill { height: 100%; border-radius: 3px; }
-        .dt-water { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 48px); margin: 16px 24px 0; height: 50px; border-radius: 16px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 600; border: none; cursor: pointer; transition: background .3s ease; }
+        .dt-vital-bar { margin-top: 10px; height: 4px; border-radius: ${radius['xs']}px; background: ${T.bg}; overflow: hidden; }
+        .dt-vital-fill { height: 100%; border-radius: ${radius['xs']}px; }
+        .dt-water { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 48px); margin: 16px 24px 0; height: 50px; border-radius: ${radius['lg']}px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; border: none; cursor: pointer; transition: background .3s ease; }
         .dt-water.done { background: ${T.mossBright}; }
-        .dt-tabs { display: flex; gap: 6px; margin: 22px 24px 0; padding: 4px; background: ${T.bg}; border-radius: 14px; }
-        .dt-tab { flex: 1; height: 38px; border-radius: 11px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: ${T.inkSoft}; transition: all .2s ease; }
+        .dt-tabs { display: flex; gap: 6px; margin: 22px 24px 0; padding: 4px; background: ${T.bg}; border-radius: ${radius['md']}px; }
+        .dt-tab { flex: 1; height: 38px; border-radius: ${radius['md']}px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; transition: all .2s ease; }
         .dt-tab.active { background: ${T.card}; color: ${T.ink}; box-shadow: 0 1px 4px rgba(28,36,25,0.08); }
         .dt-panel { margin: 18px 24px 0; }
         .dt-env-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .dt-env-card { padding: 12px 13px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 14px; }
-        .dt-env-label { font-family: 'Manrope', sans-serif; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; }
-        .dt-env-val { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: ${T.ink}; margin-top: 4px; line-height: 1.3; }
-        .dt-env-bar { margin-top: 9px; height: 4px; border-radius: 3px; background: ${T.bg}; overflow: hidden; }
-        .dt-env-fill { height: 100%; border-radius: 3px; }
+        .dt-env-card { padding: 12px 13px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['md']}px; }
+        .dt-env-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; }
+        .dt-env-val { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; margin-top: 4px; line-height: 1.3; }
+        .dt-env-bar { margin-top: 9px; height: 4px; border-radius: ${radius['xs']}px; background: ${T.bg}; overflow: hidden; }
+        .dt-env-fill { height: 100%; border-radius: ${radius['xs']}px; }
         .dt-care-block { border-top: 1px solid ${T.line}; padding-top: 4px; }
         .dt-care-row { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-top: 1px solid ${T.line}; }
         .dt-care-row:first-child { border-top: none; }
-        .dt-care-icon { font-size: 18px; width: 24px; text-align: center; }
-        .dt-care-h { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.ink}; }
-        .dt-care-b { font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: ${T.inkSoft}; margin-top: 2px; }
+        .dt-care-icon { font-size: ${ds.size['xl']}px; width: 24px; text-align: center; }
+        .dt-care-h { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
+        .dt-care-b { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; line-height: 1.5; color: ${T.inkSoft}; margin-top: 2px; }
 
-        .dt-diag-hero { padding: 16px; border: 1px solid; border-radius: 18px; }
-        .dt-diag-badge { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 100px; font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; background: rgba(255,255,255,0.6); }
+        .dt-diag-hero { padding: 16px; border: 1px solid; border-radius: ${radius['lg']}px; }
+        .dt-diag-badge { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: ${radius['pill']}px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; background: rgba(255,255,255,0.6); }
         .dt-pulse { width: 7px; height: 7px; border-radius: 50%; animation: dtpulse 1.8s ease-in-out infinite; }
         @keyframes dtpulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .dt-diag-title { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 700; color: ${T.ink}; margin-top: 12px; }
-        .dt-diag-summary { font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.55; color: ${T.inkSoft}; margin-top: 8px; }
+        .dt-diag-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; margin-top: 12px; }
+        .dt-diag-summary { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; line-height: 1.55; color: ${T.inkSoft}; margin-top: 8px; }
         .dt-diag-meta { display: flex; gap: 8px; margin-top: 14px; }
-        .dt-diag-meta-item { flex: 1; display: flex; flex-direction: column; gap: 3px; padding: 9px 11px; background: rgba(255,255,255,0.55); border-radius: 11px; }
-        .dt-diag-meta-lbl { font-family: 'Manrope', sans-serif; font-size: 8.5px; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; }
-        .dt-diag-meta-val { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: ${T.ink}; text-transform: capitalize; }
-        .dt-diag-section-label { font-family: 'Manrope', sans-serif; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.inkFaint}; margin-top: 20px; margin-bottom: 8px; }
+        .dt-diag-meta-item { flex: 1; display: flex; flex-direction: column; gap: 3px; padding: 9px 11px; background: rgba(255,255,255,0.55); border-radius: ${radius['md']}px; }
+        .dt-diag-meta-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; }
+        .dt-diag-meta-val { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; text-transform: capitalize; }
+        .dt-diag-section-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.inkFaint}; margin-top: 20px; margin-bottom: 8px; }
         .dz-full-lbl-spacer { height: 0; }
-        .dt-ifignored { display: flex; align-items: flex-start; gap: 9px; margin-top: 16px; padding: 12px 14px; background: ${T.clay}0e; border: 1px solid ${T.clay}22; border-radius: 14px; font-family: 'Manrope', sans-serif; font-size: 12.5px; line-height: 1.5; color: ${T.ink}; }
+        .dt-ifignored { display: flex; align-items: flex-start; gap: 9px; margin-top: 16px; padding: 12px 14px; background: ${T.clay}0e; border: 1px solid ${T.clay}22; border-radius: ${radius['md']}px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; line-height: 1.5; color: ${T.ink}; }
         .dt-ifignored svg { flex-shrink: 0; margin-top: 1px; }
         .dt-revive-head { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; margin-bottom: 8px; }
-        .dt-revive-progress { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 600; color: ${T.inkSoft}; }
-        .dt-revive-track { height: 5px; border-radius: 3px; background: ${T.bg}; overflow: hidden; margin-bottom: 10px; }
-        .dt-revive-trackfill { height: 100%; border-radius: 3px; transition: width .4s cubic-bezier(.2,.8,.2,1); }
+        .dt-revive-progress { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; }
+        .dt-revive-track { height: 5px; border-radius: ${radius['xs']}px; background: ${T.bg}; overflow: hidden; margin-bottom: 10px; }
+        .dt-revive-trackfill { height: 100%; border-radius: ${radius['xs']}px; transition: width .4s cubic-bezier(.2,.8,.2,1); }
         .dt-revive { display: flex; gap: 12px; width: 100%; padding: 12px 0; border-top: 1px solid ${T.line}; background: transparent; border-left: none; border-right: none; border-bottom: none; cursor: pointer; text-align: left; }
-        .dt-revive-check { width: 22px; height: 22px; border-radius: 7px; border: 1.6px solid; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .2s ease; }
+        .dt-revive-check { width: 22px; height: 22px; border-radius: ${radius['sm']}px; border: 1.6px solid; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .2s ease; }
         .dt-revive-content { flex: 1; }
-        .dt-revive-step { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.ink}; transition: opacity .2s ease; }
+        .dt-revive-step { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; transition: opacity .2s ease; }
         .dt-revive.done .dt-revive-step { text-decoration: line-through; opacity: 0.5; }
-        .dt-revive-detail { font-family: 'Manrope', sans-serif; font-size: 12.5px; line-height: 1.45; color: ${T.inkSoft}; margin-top: 2px; }
+        .dt-revive-detail { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; line-height: 1.45; color: ${T.inkSoft}; margin-top: 2px; }
         .dt-revive.done .dt-revive-detail { opacity: 0.5; }
-        .dt-outlook { display: flex; align-items: flex-start; gap: 9px; margin-top: 10px; padding: 13px 15px; background: ${T.moss}11; border-radius: 14px; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: ${T.moss}; }
+        .dt-outlook { display: flex; align-items: flex-start; gap: 9px; margin-top: 10px; padding: 13px 15px; background: ${T.moss}11; border-radius: ${radius['md']}px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; line-height: 1.5; color: ${T.moss}; }
         .dt-outlook svg { flex-shrink: 0; margin-top: 2px; }
-        .dt-rescan { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; margin-top: 12px; border-radius: 14px; border: 1.4px solid ${T.moss}44; background: transparent; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .dt-add-photo { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; border-radius: 14px; border: 1.4px dashed ${T.moss}66; background: ${T.moss}0a; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 18px; }
+        .dt-rescan { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; margin-top: 12px; border-radius: ${radius['md']}px; border: 1.4px solid ${T.moss}44; background: transparent; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; cursor: pointer; }
+        .dt-add-photo { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; border-radius: ${radius['md']}px; border: 1.4px dashed ${T.moss}66; background: ${T.moss}0a; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; cursor: pointer; margin-bottom: 18px; }
         .dt-tl-row { display: flex; gap: 12px; }
         .dt-tl-marker { display: flex; flex-direction: column; align-items: center; padding-top: 6px; }
         .dt-tl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .dt-tl-line { width: 1.5px; flex: 1; background: ${T.line}; margin: 4px 0; min-height: 30px; }
         .dt-tl-card { flex: 1; display: flex; gap: 12px; align-items: center; padding-bottom: 16px; }
-        .dt-tl-photo { border-radius: 12px; overflow: hidden; }
-        .dt-tl-note { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: ${T.ink}; }
-        .dt-tl-when { font-family: 'Manrope', sans-serif; font-size: 10px; color: ${T.inkFaint}; margin-top: 2px; }
+        .dt-tl-photo { border-radius: ${radius['md']}px; overflow: hidden; }
+        .dt-tl-note { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
+        .dt-tl-when { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; color: ${T.inkFaint}; margin-top: 2px; }
 
         /* rooms */
-        .rx-weather { display: flex; align-items: flex-start; gap: 9px; margin: 16px 24px 0; padding: 11px 14px; background: ${T.bg}; border: 1px solid ${T.line}; border-radius: 14px; }
-        .rm-overview { margin: 18px 24px 0; padding: 18px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 18px; }
+        .rx-weather { display: flex; align-items: flex-start; gap: 9px; margin: 16px 24px 0; padding: 11px 14px; background: ${T.bg}; border: 1px solid ${T.line}; border-radius: ${radius['md']}px; }
+        .rm-overview { margin: 18px 24px 0; padding: 18px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
         .rm-ov-hero { display: flex; align-items: center; gap: 16px; }
         .rm-ov-ring { position: relative; width: 76px; height: 76px; flex-shrink: 0; }
-        .rm-ov-ring-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Manrope', sans-serif; font-size: 26px; font-weight: 800; }
+        .rm-ov-ring-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.extrabold}; }
         .rm-ov-hero-body { flex: 1; min-width: 0; }
-        .rm-ov-hero-lbl { font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 800; color: ${T.ink}; }
-        .rm-ov-hero-stats { display: flex; align-items: center; gap: 9px; margin-top: 6px; font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${T.inkSoft}; }
-        .rm-ov-hero-stats b { color: ${T.ink}; font-weight: 800; }
+        .rm-ov-hero-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .rm-ov-hero-stats { display: flex; align-items: center; gap: 9px; margin-top: 6px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkSoft}; }
+        .rm-ov-hero-stats b { color: ${T.ink}; font-weight: ${ds.weight.extrabold}; }
         .rm-ov-hero-dot { width: 3px; height: 3px; border-radius: 50%; background: ${T.inkFaint}; }
         .rm-ov-hero-weather { display: inline-flex; align-items: center; gap: 4px; color: ${T.inkFaint}; }
-        .rm-ov-bar { display: flex; height: 4.5px; border-radius: 100px; overflow: hidden; gap: 2px; margin-top: 18px; }
-        .rm-ov-bar > div { border-radius: 2px; }
+        .rm-ov-bar { display: flex; height: 4.5px; border-radius: ${radius['pill']}px; overflow: hidden; gap: 2px; margin-top: 18px; }
+        .rm-ov-bar > div { border-radius: ${radius['xs']}px; }
         .rm-ov-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 11px; }
-        .rm-ov-legend span { display: inline-flex; align-items: center; gap: 5px; font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; color: ${T.inkSoft}; }
+        .rm-ov-legend span { display: inline-flex; align-items: center; gap: 5px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; }
         .rm-ov-legend i { width: 7px; height: 7px; border-radius: 50%; }
         .rx-weather-ic { flex-shrink: 0; margin-top: 1px; }
-        .rx-weather-txt { font-family: 'Manrope', sans-serif; font-size: 11.5px; line-height: 1.45; color: ${T.inkSoft}; }
-        .rx-suggest-move { flex-shrink: 0; padding: 6px 14px; border-radius: 100px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .rx-weather-txt { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; line-height: 1.45; color: ${T.inkSoft}; }
+        .rx-suggest-move { flex-shrink: 0; padding: 6px 14px; border-radius: ${radius['pill']}px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         .rx-room-id { min-width: 0; flex: 1; }
         .rx-env-hum { border: none; cursor: pointer; }
-        .rx-env-src { font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkSoft}; background: rgba(28,36,25,0.06); padding: 1px 5px; border-radius: 5px; margin-left: 5px; }
+        .rx-env-src { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkSoft}; background: rgba(28,36,25,0.06); padding: 1px 5px; border-radius: ${radius['xs']}px; margin-left: 5px; }
         .rx-env-caret { margin-left: 4px; transition: transform .3s ease; }
         .rx-hum-reveal { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .32s cubic-bezier(.3,.8,.3,1), opacity .28s ease; }
         .rx-hum-reveal.open { grid-template-rows: 1fr; opacity: 1; }
         .rx-hum-reveal-inner { overflow: hidden; min-height: 0; }
-        .rx-hum-edit { margin-top: 14px; padding: 14px; background: ${T.bg}; border-radius: 14px; }
-        .rx-hum-edit-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 10px; }
+        .rx-hum-edit { margin-top: 14px; padding: 14px; background: ${T.bg}; border-radius: ${radius['md']}px; }
+        .rx-hum-edit-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; margin-bottom: 10px; }
         .rx-hum-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .rx-hum-chip { display: flex; align-items: center; justify-content: space-between; padding: 10px 13px; border-radius: 11px; border: 1.3px solid ${T.line}; background: ${T.card}; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: ${T.ink}; }
+        .rx-hum-chip { display: flex; align-items: center; justify-content: space-between; padding: 10px 13px; border-radius: ${radius['md']}px; border: 1.3px solid ${T.line}; background: ${T.card}; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
         .rx-hum-chip.on { border-color: ${T.moss}; background: ${T.moss}12; }
-        .rx-hum-chip-v { font-size: 11px; font-weight: 700; color: ${T.inkFaint}; }
-        .rx-hum-reset { margin-top: 10px; width: 100%; padding: 9px; border: none; background: transparent; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+        .rx-hum-chip-v { font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; color: ${T.inkFaint}; }
+        .rx-hum-reset { margin-top: 10px; width: 100%; padding: 9px; border: none; background: transparent; color: ${T.moss}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         /* plant chips — aligned columns, action only when it means something */
         .rx-plants { display: flex; gap: 16px; margin-top: 16px; overflow-x: auto; padding: 4px 2px 2px; }
         .rx-plants::-webkit-scrollbar { display: none; }
         .rx-plant { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; min-width: 72px; }
         .rx-plant-tap { display: flex; flex-direction: column; align-items: center; gap: 7px; border: none; background: transparent; cursor: pointer; width: 72px; padding: 0; }
         .rx-plant-photo { border-radius: 50%; }
-        .rx-plant-name { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: ${T.ink}; line-height: 1.25; text-align: center; width: 72px; word-break: break-word; }
-        .rx-plant-move { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 100px; border: none; background: ${color.watch}10; color: ${color.watch}; font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .rx-plant-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; line-height: 1.25; text-align: center; width: 72px; word-break: break-word; }
+        .rx-plant-move { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: ${radius['pill']}px; border: none; background: ${color.watch}10; color: ${color.watch}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; cursor: pointer; white-space: nowrap; }
         .rx-plant-move svg { flex-shrink: 0; }
-        .rx-plant-ok { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 2px; font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 600; color: ${T.moss}; opacity: 0.82; white-space: nowrap; pointer-events: none; user-select: none; }
+        .rx-plant-ok { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 2px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.moss}; opacity: 0.82; white-space: nowrap; pointer-events: none; user-select: none; }
         .rx-plant-ok.best { color: ${color.watch}; gap: 4px; }
         /* move picker sheet */
         .rx-move-scrim { position: absolute; inset: 0; background: rgba(10,14,10,0.5); z-index: 60; animation: dzFade .25s ease; }
-        .rx-move-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: ${T.bg}; border-radius: 28px 28px 0 0; z-index: 61; padding: 0 24px calc(28px + env(safe-area-inset-bottom)); animation: dzSheetUp .4s cubic-bezier(.2,.85,.25,1); box-shadow: 0 -12px 40px rgba(0,0,0,0.3); }
+        .rx-move-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: ${T.bg}; border-radius: ${radius['2xl']}px 28px 0 0; z-index: 61; padding: 0 24px calc(28px + env(safe-area-inset-bottom)); animation: dzSheetUp .4s cubic-bezier(.2,.85,.25,1); box-shadow: 0 -12px 40px rgba(0,0,0,0.3); }
         .rx-move-head { display: flex; align-items: center; gap: 13px; padding: 6px 0 18px; }
         .rx-move-photo { border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 2px ${T.line}; }
-        .rx-move-title { font-family: 'Manrope', sans-serif; font-size: 19px; font-weight: 800; color: ${T.ink}; }
-        .rx-move-sub { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${T.inkFaint}; margin-top: 2px; }
+        .rx-move-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .rx-move-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkFaint}; margin-top: 2px; }
         .rx-move-list { display: flex; flex-direction: column; gap: 10px; }
-        .rx-move-room { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid ${T.line}; background: ${T.card}; cursor: pointer; text-align: left; }
-        .rx-move-tip { display: flex; align-items: flex-start; gap: 10px; margin: 4px 0 16px; padding: 13px 14px; border-radius: 14px; background: ${T.moss}0f; border: 1px solid ${T.moss}22; }
+        .rx-move-room { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: ${radius['lg']}px; border: 1px solid ${T.line}; background: ${T.card}; cursor: pointer; text-align: left; }
+        .rx-move-tip { display: flex; align-items: flex-start; gap: 10px; margin: 4px 0 16px; padding: 13px 14px; border-radius: ${radius['md']}px; background: ${T.moss}0f; border: 1px solid ${T.moss}22; }
         .rx-move-tip.ok { background: ${T.bg}; border-color: ${T.line}; }
         .rx-move-tip-ic { flex-shrink: 0; margin-top: 1px; }
-        .rx-move-tip-txt { font-family: 'Manrope', sans-serif; font-size: 12.5px; line-height: 1.5; color: ${T.inkSoft}; }
-        .rx-move-tip-txt b { color: ${T.ink}; font-weight: 700; }
+        .rx-move-tip-txt { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; line-height: 1.5; color: ${T.inkSoft}; }
+        .rx-move-tip-txt b { color: ${T.ink}; font-weight: ${ds.weight.bold}; }
         .rx-move-room.best { border-color: ${T.moss}; background: ${T.moss}0d; }
-        .rx-move-besttag { display: inline-block; margin-left: 7px; padding: 1px 7px; border-radius: 100px; background: ${T.moss}; color: ${palette.white}; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; vertical-align: middle; }
+        .rx-move-besttag { display: inline-block; margin-left: 7px; padding: 1px 7px; border-radius: ${radius['pill']}px; background: ${T.moss}; color: ${palette.white}; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: 0.03em; text-transform: uppercase; vertical-align: middle; }
         .rx-move-room.current { opacity: 0.55; cursor: default; }
-        .rx-move-room-name { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: ${T.ink}; }
-        .rx-move-here { font-weight: 500; color: ${T.inkFaint}; font-size: 12px; }
-        .rx-move-room-env { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; margin-top: 3px; }
-        .rx-move-fit { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 800; text-align: right; flex-shrink: 0; }
-        .rx-move-fit-bar { display: block; width: 54px; height: 4px; border-radius: 2px; background: ${T.line}; margin-top: 5px; overflow: hidden; }
-        .rx-move-fit-bar > span { display: block; height: 100%; border-radius: 2px; }
+        .rx-move-room-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .rx-move-here { font-weight: ${ds.weight.medium}; color: ${T.inkFaint}; font-size: ${ds.size['sm']}px; }
+        .rx-move-room-env { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 3px; }
+        .rx-move-fit { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.extrabold}; text-align: right; flex-shrink: 0; }
+        .rx-move-fit-bar { display: block; width: 54px; height: 4px; border-radius: ${radius['xs']}px; background: ${T.line}; margin-top: 5px; overflow: hidden; }
+        .rx-move-fit-bar > span { display: block; height: 100%; border-radius: ${radius['xs']}px; }
         /* ---- rooms as micro-climates (rx-) ---- */
-        .rx-suggest { margin: 18px 24px 0; padding: 15px 16px; border-radius: 18px; background: ${T.moss}0c; border: 1px solid ${T.moss}22; }
+        .rx-suggest { margin: 18px 24px 0; padding: 15px 16px; border-radius: ${radius['lg']}px; background: ${T.moss}0c; border: 1px solid ${T.moss}22; }
         .rx-suggest-head { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
-        .rx-suggest-spark { width: 8px; height: 8px; border-radius: 2px; background: ${T.moss}; transform: rotate(45deg); }
-        .rx-suggest-lbl { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.moss}; }
+        .rx-suggest-spark { width: 8px; height: 8px; border-radius: ${radius['xs']}px; background: ${T.moss}; transform: rotate(45deg); }
+        .rx-suggest-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.moss}; }
         .rx-suggest-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 0; border: none; background: transparent; cursor: pointer; text-align: left; border-top: none; }
         .rx-suggest-row:first-of-type { border-top: none; }
-        .rx-suggest-txt { flex: 1; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: ${T.ink}; }
-        .rx-suggest-txt b { font-weight: 700; }
-        .rx-room { margin: 20px 24px 0; padding: 18px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 20px; }
+        .rx-suggest-txt { flex: 1; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; line-height: 1.5; color: ${T.ink}; }
+        .rx-suggest-txt b { font-weight: ${ds.weight.bold}; }
+        .rx-room { margin: 20px 24px 0; padding: 18px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['xl']}px; }
         .rx-room-top { display: flex; align-items: flex-start; justify-content: space-between; }
-        .rx-room-name { font-family: 'Manrope', sans-serif; font-size: 19px; font-weight: 800; color: ${T.ink}; letter-spacing: -0.01em; }
-        .rx-room-note { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkFaint}; margin-top: 3px; }
+        .rx-room-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; letter-spacing: -0.01em; }
+        .rx-room-note { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkFaint}; margin-top: 3px; }
         .rx-room-climate { text-align: right; flex-shrink: 0; }
-        .rx-room-avg { font-family: 'Manrope', sans-serif; font-size: 26px; font-weight: 800; line-height: 1; }
-        .rx-room-avg-lbl { font-family: 'Manrope', sans-serif; font-size: 9.5px; font-weight: 500; color: ${T.inkFaint}; margin-top: 3px; }
+        .rx-room-avg { font-family: 'Manrope', sans-serif; font-size: ${ds.size['3xl']}px; font-weight: ${ds.weight.extrabold}; line-height: 1; }
+        .rx-room-avg-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.medium}; color: ${T.inkFaint}; margin-top: 3px; }
         .rx-env { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-        .rx-env-item { display: flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 100px; background: ${T.bg}; font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 600; color: ${T.inkSoft}; }
+        .rx-env-item { display: flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: ${radius['pill']}px; background: ${T.bg}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; }
         .rx-env-item.warn { background: ${color.watch}14; color: ${color.watch}; }
         .rx-env-ic { display: flex; }
 
         /* ---- AI notification inbox (nx-) ---- */
         .nx-empty { margin: 40px 32px 0; text-align: center; }
         .nx-empty-ic { width: 56px; height: 56px; border-radius: 50%; background: ${T.moss}14; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-        .nx-empty-title { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; color: ${T.ink}; }
-        .nx-empty-sub { font-family: 'Manrope', sans-serif; font-size: 13.5px; color: ${T.inkFaint}; line-height: 1.5; margin-top: 8px; }
-        .nx-focus { margin: 18px 24px 0; padding: 18px; border: 1.5px solid; border-radius: 20px; background: ${T.card}; }
-        .nx-focus-lbl { display: flex; align-items: center; gap: 7px; font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+        .nx-empty-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .nx-empty-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.inkFaint}; line-height: 1.5; margin-top: 8px; }
+        .nx-focus { margin: 18px 24px 0; padding: 18px; border: 1.5px solid; border-radius: ${radius['xl']}px; background: ${T.card}; }
+        .nx-focus-lbl { display: flex; align-items: center; gap: 7px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.06em; text-transform: uppercase; }
         .nx-focus-spark { width: 8px; height: 8px; border-radius: 50%; animation: dtpulse 1.8s ease-in-out infinite; }
-        .nx-focus-title { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 800; color: ${T.ink}; margin-top: 11px; letter-spacing: -0.01em; }
-        .nx-focus-why { font-family: 'Manrope', sans-serif; font-size: 13.5px; color: ${T.inkSoft}; line-height: 1.5; margin-top: 6px; }
+        .nx-focus-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; margin-top: 11px; letter-spacing: -0.01em; }
+        .nx-focus-why { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.inkSoft}; line-height: 1.5; margin-top: 6px; }
         .nx-focus-acts { display: flex; gap: 10px; margin-top: 16px; }
-        .nx-focus-go { flex: 1; height: 46px; border-radius: 14px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .nx-focus-snooze { padding: 0 20px; height: 46px; border-radius: 14px; border: 1px solid ${T.line}; background: transparent; color: ${T.inkSoft}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .nx-batch { margin: 14px 24px 0; padding: 16px; background: ${T.mossBright}0e; border: 1px solid ${T.mossBright}2a; border-radius: 18px; }
+        .nx-focus-go { flex: 1; height: 46px; border-radius: ${radius['md']}px; border: none; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
+        .nx-focus-snooze { padding: 0 20px; height: 46px; border-radius: ${radius['md']}px; border: 1px solid ${T.line}; background: transparent; color: ${T.inkSoft}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; cursor: pointer; }
+        .nx-batch { margin: 14px 24px 0; padding: 16px; background: ${T.mossBright}0e; border: 1px solid ${T.mossBright}2a; border-radius: ${radius['lg']}px; }
         .nx-batch-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-        .nx-batch-title { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 800; color: ${T.ink}; }
-        .nx-batch-sub { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkSoft}; margin-top: 3px; line-height: 1.4; }
-        .nx-batch-go { flex-shrink: 0; padding: 0 16px; height: 40px; border-radius: 12px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .nx-batch-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .nx-batch-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${T.inkSoft}; margin-top: 3px; line-height: 1.4; }
+        .nx-batch-go { flex-shrink: 0; padding: 0 16px; height: 40px; border-radius: ${radius['md']}px; border: none; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
         .nx-batch-avatars { display: flex; margin-top: 14px; }
         .nx-batch-av { margin-right: -8px; border: none; border-radius: 50%; }
         .nx-batch-av > div { box-shadow: 0 0 0 2px ${T.bg}; }
         .nx-group { margin-top: 26px; }
-        .nx-group-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 10px; }
-        .nx-task { display: flex; align-items: center; margin: 0 24px 10px; padding: 12px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; }
+        .nx-group-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 10px; }
+        .nx-task { display: flex; align-items: center; margin: 0 24px 10px; padding: 12px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; }
         .nx-task-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; border: none; background: transparent; cursor: pointer; text-align: left; padding: 0; }
-        .nx-task-ic { width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .nx-task-ic { width: 36px; height: 36px; border-radius: ${radius['md']}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .nx-task-body { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-        .nx-task-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
-        .nx-task-why { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; line-height: 1.4; }
+        .nx-task-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .nx-task-why { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; line-height: 1.4; }
         .nx-task-acts { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: 10px; }
-        .nx-act { border: none; cursor: pointer; font-family: 'Manrope', sans-serif; font-weight: 700; }
-        .nx-act.primary { padding: 8px 14px; border-radius: 100px; background: ${T.moss}; color: ${palette.white}; font-size: 12.5px; }
+        .nx-act { border: none; cursor: pointer; font-family: 'Manrope', sans-serif; font-weight: ${ds.weight.bold}; }
+        .nx-act.primary { padding: 8px 14px; border-radius: ${radius['pill']}px; background: ${T.moss}; color: ${palette.white}; font-size: ${ds.size['sm']}px; }
         .nx-act.ghost { width: 34px; height: 34px; border-radius: 50%; background: ${T.bg}; display: flex; align-items: center; justify-content: center; }
         .rm-head { padding: 16px 24px 0; }
         /* view toggle (deck / list) */
-        .vtoggle { display: flex; gap: 3px; padding: 3px; background: ${T.bg}; border-radius: 12px; }
-        .vtoggle-btn { width: 34px; height: 30px; border-radius: 9px; border: none; background: transparent; cursor: pointer; color: ${T.inkFaint}; display: flex; align-items: center; justify-content: center; transition: all .2s ease; }
+        .vtoggle { display: flex; gap: 3px; padding: 3px; background: ${T.bg}; border-radius: ${radius['md']}px; }
+        .vtoggle-btn { width: 34px; height: 30px; border-radius: ${radius['sm']}px; border: none; background: transparent; cursor: pointer; color: ${T.inkFaint}; display: flex; align-items: center; justify-content: center; transition: all .2s ease; }
         .vtoggle-btn.active { background: ${T.card}; color: ${T.ink}; box-shadow: 0 1px 4px rgba(28,36,25,0.1); }
 
         /* Apple Wallet-style vertical card stack */
         .wal-wrap { padding: 16px 20px 0; }
         .wal-stage { position: relative; transition: height .45s cubic-bezier(.2,.8,.2,1); }
-        .wal-card { position: absolute; left: 0; right: 0; border-radius: 22px; overflow: hidden; cursor: pointer;
+        .wal-card { position: absolute; left: 0; right: 0; border-radius: ${radius['xl']}px; overflow: hidden; cursor: pointer;
           box-shadow: 0 8px 22px rgba(28,36,25,0.16);
           transition: top .45s cubic-bezier(.2,.8,.2,1), height .45s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, background .35s ease; will-change: top, height; }
         .wal-card.exp { box-shadow: 0 20px 48px rgba(28,36,25,0.28); }
@@ -4005,20 +4005,20 @@ export default function VerdureApp() {
         .wal-head-left { display: flex; align-items: center; min-width: 0; }
         .pl-id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
         .pl-id-top { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
-        .pl-id-name { font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; white-space: nowrap; color: ${T.ink}; }
-        .pl-id-species { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${T.inkFaint}; min-width: 0; }
-        .pl-id-room { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; color: ${T.inkFaint}; white-space: nowrap; }
+        .pl-id-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; white-space: nowrap; color: ${T.ink}; }
+        .pl-id-species { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.medium}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${T.inkFaint}; min-width: 0; }
+        .pl-id-room { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.medium}; color: ${T.inkFaint}; white-space: nowrap; }
         .pl-id.dark .pl-id-name { color: ${palette.white}; }
         .pl-id.dark .pl-id-species { color: rgba(255,255,255,0.7); }
         .pl-id.dark .pl-id-room { color: rgba(255,255,255,0.6); }
         .wal-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; align-self: center; }
         .wal-head-right { display: flex; align-items: center; flex-shrink: 0; }
-        .wal-action { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.18); padding: 4px 11px; border-radius: 100px; }
+        .wal-action { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.18); padding: 4px 11px; border-radius: ${radius['pill']}px; }
         .wal-action.attn { box-shadow: 0 2px 10px rgba(0,0,0,0.28); }
         .wal-action.attn .wal-action-sep { color: rgba(255,255,255,0.65); }
-        .wal-action-health { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 800; color: ${palette.white}; }
-        .wal-action-sep { color: rgba(255,255,255,0.5); font-size: 11px; }
-        .wal-action-txt { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.92); white-space: nowrap; }
+        .wal-action-health { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.extrabold}; color: ${palette.white}; }
+        .wal-action-sep { color: rgba(255,255,255,0.5); font-size: ${ds.size['xs']}px; }
+        .wal-action-txt { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.92); white-space: nowrap; }
         .wal-collapse { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.18); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .wal-body { position: absolute; inset: 0; }
         .wal-photo { position: absolute; inset: 0; }
@@ -4027,61 +4027,61 @@ export default function VerdureApp() {
         .wal-heart { position: absolute; top: 14px; right: 16px; width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 5; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
         .wal-info { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px; z-index: 5; }
         .wal-meta-row { display: flex; align-items: center; gap: 8px; }
-        .wal-status { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 100px; }
-        .wal-vitals { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 13px 16px; border-radius: 16px; background: rgba(255,255,255,0.14); backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%); border: 1px solid rgba(255,255,255,0.22); }
+        .wal-status { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; padding: 4px 11px; border-radius: ${radius['pill']}px; }
+        .wal-vitals { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 13px 16px; border-radius: ${radius['lg']}px; background: rgba(255,255,255,0.14); backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%); border: 1px solid rgba(255,255,255,0.22); }
         .wal-vital { flex: 1; text-align: center; }
-        .wal-vital-num { font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; color: ${palette.white}; line-height: 1; }
-        .wal-vital-lbl { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.7); margin-top: 4px; }
+        .wal-vital-num { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xl']}px; font-weight: ${ds.weight.extrabold}; color: ${palette.white}; line-height: 1; }
+        .wal-vital-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.7); margin-top: 4px; }
         .wal-vital-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
-        .wal-open { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 12px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); }
-        .wal-hint { text-align: center; font-family: 'Manrope', sans-serif; font-size: 11px; color: ${T.inkFaint}; margin-top: 18px; }
+        .wal-open { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 12px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.85); }
+        .wal-hint { text-align: center; font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; margin-top: 18px; }
 
         /* all-plants flat list */
         .ap-search { position: relative; display: flex; align-items: center; margin: 16px 24px 0; }
         .ap-search-ic { position: absolute; left: 15px; pointer-events: none; }
-        .ap-search-input { width: 100%; height: 44px; padding: 0 40px 0 42px; border-radius: 13px; border: 1.3px solid ${T.line}; background: ${T.card}; font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 600; color: ${T.ink}; outline: none; }
-        .ap-search-input::placeholder { color: ${T.inkFaint}; font-weight: 500; }
+        .ap-search-input { width: 100%; height: 44px; padding: 0 40px 0 42px; border-radius: ${radius['md']}px; border: 1.3px solid ${T.line}; background: ${T.card}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; outline: none; }
+        .ap-search-input::placeholder { color: ${T.inkFaint}; font-weight: ${ds.weight.medium}; }
         .ap-search-input:focus { border-color: ${T.inkSoft}; }
         .ap-search-clear { position: absolute; right: 10px; width: 26px; height: 26px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .ap-sorts { display: flex; gap: 7px; padding: 14px 24px 0; }
-        .ap-sort { padding: 7px 13px; border-radius: 100px; border: 1.3px solid ${T.line}; background: ${T.card}; cursor: pointer;
-          font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: ${T.inkSoft}; }
+        .ap-sort { padding: 7px 13px; border-radius: ${radius['pill']}px; border: 1.3px solid ${T.line}; background: ${T.card}; cursor: pointer;
+          font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; }
         .ap-sort.active { background: ${T.ink}; border-color: ${T.ink}; color: ${T.bg}; }
         .apl-list { margin: 16px 24px 0; display: flex; flex-direction: column; gap: 10px; }
         .apl-row { position: relative; display: flex; align-items: center; gap: 13px; width: 100%; padding: 13px 14px; border: 1px solid ${T.line}; background: ${T.card};
-          border-radius: 16px; cursor: pointer; text-align: left; transition: transform .15s ease, box-shadow .2s ease; overflow: hidden; }
+          border-radius: ${radius['lg']}px; cursor: pointer; text-align: left; transition: transform .15s ease, box-shadow .2s ease; overflow: hidden; }
         .apl-row:active { transform: scale(0.99); }
         .apl-row.attn { border-color: ${T.clay}44; background: ${T.clay}07; }
         .apl-photo { border-radius: 50%; flex-shrink: 0; }
         .apl-body { flex: 1; min-width: 0; }
         .apl-side { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
-        .apl-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 100px; background: ${T.bg}; white-space: nowrap; }
-        .apl-pill-health { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 800; color: ${T.ink}; }
-        .apl-pill-sep { color: ${T.inkFaint}; font-size: 10px; }
-        .apl-pill-txt { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: ${T.inkSoft}; }
+        .apl-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: ${radius['pill']}px; background: ${T.bg}; white-space: nowrap; }
+        .apl-pill-health { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; }
+        .apl-pill-sep { color: ${T.inkFaint}; font-size: ${ds.size['2xs']}px; }
+        .apl-pill-txt { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; }
         .apl-pill.attn { box-shadow: 0 2px 9px rgba(0,0,0,0.13); }
         .apl-pill.attn .apl-pill-health { color: ${palette.white}; }
         .apl-pill.attn .apl-pill-sep { color: rgba(255,255,255,0.6); }
         .apl-pill.attn .apl-pill-txt { color: rgba(255,255,255,0.95); }
-        .rm-title { font-family: 'Manrope', sans-serif; font-size: 28px; font-weight: 800; color: ${T.ink}; letter-spacing: -0.01em; }
-        .rm-sub { font-family: 'Manrope', sans-serif; font-size: 13.5px; color: ${T.inkSoft}; margin-top: 4px; }
+        .rm-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.extrabold}; color: ${T.ink}; letter-spacing: -0.01em; }
+        .rm-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: ${T.inkSoft}; margin-top: 4px; }
         .rm-room { margin: 24px 24px 0; }
         .rm-room-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
-        .rm-room-name { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: ${T.ink}; }
-        .rm-room-count { font-family: 'Manrope', sans-serif; font-size: 11px; color: ${T.inkFaint}; }
+        .rm-room-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
+        .rm-room-count { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; }
         .rm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .rm-card { display: flex; gap: 12px; align-items: center; padding: 12px; background: ${T.card}; border-radius: 16px; border: 1px solid ${T.line}; cursor: pointer; }
-        .rm-card-name { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: ${T.ink}; }
-        .rm-card-status { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; margin-top: 2px; }
+        .rm-card { display: flex; gap: 12px; align-items: center; padding: 12px; background: ${T.card}; border-radius: ${radius['lg']}px; border: 1px solid ${T.line}; cursor: pointer; }
+        .rm-card-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.ink}; }
+        .rm-card-status { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; margin-top: 2px; }
 
         /* add plant */
         .ap-viewfinder { position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, ${palette.black550} 0%, ${color.chrome} 75%); }
         .ap-close { position: absolute; top: 64px; left: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 25; cursor: pointer; border: none; }
         .ap-close.light { background: rgba(28,36,25,0.08); }
-        .ap-hint { position: absolute; top: 78px; left: 0; right: 0; text-align: center; font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(255,255,255,0.6); }
+        .ap-hint { position: absolute; top: 78px; left: 0; right: 0; text-align: center; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; color: rgba(255,255,255,0.6); }
         .ap-frame { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 220px; height: 220px; }
         .ap-corner { position: absolute; width: 26px; height: 26px; border-color: ${palette.white}; opacity: 0.85; }
-        .ap-corner.tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; border-radius: 6px 0 0 0; }
+        .ap-corner.tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; border-radius: ${radius['xs']}px 0 0 0; }
         .ap-corner.tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; border-radius: 0 6px 0 0; }
         .ap-corner.bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; border-radius: 0 0 0 6px; }
         .ap-corner.br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; border-radius: 0 0 6px 0; }
@@ -4104,14 +4104,14 @@ export default function VerdureApp() {
         .ap-frame.wide { width: 280px; height: 300px; transition: all .5s cubic-bezier(.3,1,.4,1); }
         /* subtle two-step progress lines */
         .ap-seg { position: absolute; top: 74px; left: 0; right: 0; display: flex; gap: 6px; justify-content: center; z-index: 20; }
-        .ap-seg-line { width: 24px; height: 3px; border-radius: 100px; background: rgba(255,255,255,0.22); transition: all .4s ease; }
+        .ap-seg-line { width: 24px; height: 3px; border-radius: ${radius['pill']}px; background: rgba(255,255,255,0.22); transition: all .4s ease; }
         .ap-seg-line.past { background: rgba(255,255,255,0.5); }
         .ap-seg-line.on { width: 30px; background: ${palette.white}; }
         /* why copy */
         .ap-why { position: absolute; top: 104px; left: 34px; right: 34px; text-align: center; z-index: 20; animation: apWhyIn .45s ease; }
         @keyframes apWhyIn { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
-        .ap-why-t { font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.92); letter-spacing: -0.01em; margin-bottom: 7px; }
-        .ap-why-b { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6); line-height: 1.5; }
+        .ap-why-t { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; color: rgba(255,255,255,0.92); letter-spacing: -0.01em; margin-bottom: 7px; }
+        .ap-why-b { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.6); line-height: 1.5; }
         /* gentle freeze-frame: the plant 'snaps' like a captured still */
         .ap-specimen.frozen { animation: apFreeze .62s cubic-bezier(.25,.9,.3,1); }
         @keyframes apFreeze {
@@ -4132,11 +4132,11 @@ export default function VerdureApp() {
         .ap-frame.snap .ap-corner { animation: apCornerSnap .62s ease; }
         @keyframes apCornerSnap { 0%,100% { opacity: 0.85; } 20% { opacity: 1; border-color: ${color.onDark}; } }
         /* a single soft capture ring that blooms once */
-        .ap-snap-ring { position: absolute; top: 50%; left: 50%; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 24px; border: 2px solid rgba(234,240,228,0.7); transform: translateY(-8%); animation: apSnapRing .62s ease-out; pointer-events: none; }
+        .ap-snap-ring { position: absolute; top: 50%; left: 50%; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: ${radius['xl']}px; border: 2px solid rgba(234,240,228,0.7); transform: translateY(-8%); animation: apSnapRing .62s ease-out; pointer-events: none; }
         @keyframes apSnapRing { 0% { opacity: 0; transform: translateY(-8%) scale(1.15); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-8%) scale(0.92); } }
-        .apx-care-sub { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 600; color: ${T.mossBright}; margin-top: 2px; letter-spacing: 0.01em; }
+        .apx-care-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.mossBright}; margin-top: 2px; letter-spacing: 0.01em; }
         .ap-frame { transition: width .5s cubic-bezier(.3,1,.4,1), height .5s cubic-bezier(.3,1,.4,1); }
-        .ap-shutter-cap { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+        .ap-shutter-cap { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
         .ap-scanline { position: absolute; left: 90px; right: 90px; height: 2px; background: linear-gradient(90deg, transparent, ${T.mossBright}, transparent); box-shadow: 0 0 12px ${T.mossBright}; animation: apsweep 1.8s ease-in-out infinite; }
         @keyframes apsweep { 0% { top: 60%; opacity: 0; } 10% { opacity: 1; } 50% { top: 38%; } 90% { opacity: 1; } 100% { top: 60%; opacity: 0; } }
         .ap-shutter-wrap { position: absolute; bottom: 60px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -4144,22 +4144,22 @@ export default function VerdureApp() {
         .ap-shutter-in { width: 56px; height: 56px; flex: 0 0 auto; border-radius: 50%; background: ${palette.white}; transition: transform .15s ease; }
         .ap-shutter:active .ap-shutter-in { transform: scale(0.86); }
         .ap-stages { position: absolute; bottom: 90px; left: 0; right: 0; text-align: center; }
-        .ap-stage-text { font-family: 'Manrope', sans-serif; font-size: 15px; color: ${palette.white}; }
+        .ap-stage-text { font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; color: ${palette.white}; }
         .ap-dots { display: flex; gap: 6px; justify-content: center; margin-top: 12px; }
         .ap-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: all .3s ease; }
         .ap-dot.on { background: ${T.mossBright}; transform: scale(1.4); }
         .ap-result { position: absolute; inset: 0; background: ${T.bg}; display: flex; flex-direction: column; align-items: center; padding: 80px 28px 28px; overflow-y: auto; }
-        .ap-result-photo { border-radius: 24px; overflow: hidden; box-shadow: 0 10px 28px rgba(28,36,25,0.18); }
-        .ap-result-match { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; color: ${T.moss}; margin-top: 16px; padding: 4px 12px; background: ${T.moss}14; border-radius: 100px; }
-        .ap-result-name { font-family: 'Manrope', sans-serif; font-size: 28px; font-weight: 500; color: ${T.ink}; margin-top: 12px; }
-        .ap-result-latin { font-family: 'Manrope', sans-serif; font-style: italic; font-size: 13px; color: ${T.inkFaint}; margin-top: 2px; }
+        .ap-result-photo { border-radius: ${radius['xl']}px; overflow: hidden; box-shadow: 0 10px 28px rgba(28,36,25,0.18); }
+        .ap-result-match { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.moss}; margin-top: 16px; padding: 4px 12px; background: ${T.moss}14; border-radius: ${radius['pill']}px; }
+        .ap-result-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.medium}; color: ${T.ink}; margin-top: 12px; }
+        .ap-result-latin { font-family: 'Manrope', sans-serif; font-style: italic; font-size: ${ds.size['base']}px; color: ${T.inkFaint}; margin-top: 2px; }
         .ap-form { width: 100%; margin-top: 26px; }
-        .ap-field-label { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; color: ${T.inkSoft}; margin-bottom: 8px; }
-        .ap-input { width: 100%; height: 46px; border-radius: 14px; border: 1px solid ${T.line}; background: ${T.card}; padding: 0 16px; font-family: 'Manrope', sans-serif; font-size: 14px; color: ${T.ink}; outline: none; margin-bottom: 18px; }
+        .ap-field-label { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; margin-bottom: 8px; }
+        .ap-input { width: 100%; height: 46px; border-radius: ${radius['md']}px; border: 1px solid ${T.line}; background: ${T.card}; padding: 0 16px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; color: ${T.ink}; outline: none; margin-bottom: 18px; }
         .ap-rooms { display: flex; flex-wrap: wrap; gap: 8px; }
-        .ap-room { padding: 9px 16px; border-radius: 100px; border: 1.3px solid ${T.line}; background: ${T.card}; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: ${T.inkSoft}; }
+        .ap-room { padding: 9px 16px; border-radius: ${radius['pill']}px; border: 1.3px solid ${T.line}; background: ${T.card}; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkSoft}; }
         .ap-room.sel { background: ${T.moss}; border-color: ${T.moss}; color: ${palette.white}; }
-        .ap-confirm { width: 100%; height: 52px; border-radius: 16px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; border: none; cursor: pointer; margin-top: 28px; }
+        .ap-confirm { width: 100%; height: 52px; border-radius: ${radius['lg']}px; background: ${T.moss}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.semibold}; border: none; cursor: pointer; margin-top: 28px; }
 
         /* ---- immersive plant reveal ---- */
         .apx { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 0%, ${palette.moss850} 0%, ${palette.black750} 55%, ${palette.black800} 100%); display: flex; flex-direction: column; overflow: hidden; }
@@ -4171,67 +4171,67 @@ export default function VerdureApp() {
 
         .apx-hero { display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; transform: translateY(18px) scale(0.96); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
         .apx-hero.in { opacity: 1; transform: translateY(0) scale(1); }
-        .apx-badge { font-family: 'Manrope', sans-serif; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; color: ${palette.leaf100}; background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); padding: 6px 14px; border-radius: 100px; margin-bottom: 22px; }
-        .apx-photo { border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08); }
-        .apx-name { font-family: 'Manrope', sans-serif; font-size: 34px; font-weight: 800; color: ${palette.white}; letter-spacing: -0.02em; margin-top: 20px; line-height: 1; }
-        .apx-latin { font-family: 'Manrope', sans-serif; font-style: italic; font-size: 13.5px; color: rgba(255,255,255,0.6); margin-top: 7px; }
-        .apx-dispute { margin-top: 16px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.55); text-decoration: underline; text-underline-offset: 3px; }
+        .apx-badge { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.04em; color: ${palette.leaf100}; background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); padding: 6px 14px; border-radius: ${radius['pill']}px; margin-bottom: 22px; }
+        .apx-photo { border-radius: ${radius['2xl']}px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08); }
+        .apx-name { font-family: 'Manrope', sans-serif; font-size: ${ds.size['4xl']}px; font-weight: ${ds.weight.extrabold}; color: ${palette.white}; letter-spacing: -0.02em; margin-top: 20px; line-height: 1; }
+        .apx-latin { font-family: 'Manrope', sans-serif; font-style: italic; font-size: ${ds.size['base']}px; color: rgba(255,255,255,0.6); margin-top: 7px; }
+        .apx-dispute { margin-top: 16px; border: none; background: transparent; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: rgba(255,255,255,0.55); text-decoration: underline; text-underline-offset: 3px; }
         .ap-failed { display: flex; align-items: center; justify-content: center; padding: 0 30px; }
         .ap-fail-card { text-align: center; max-width: 320px; animation: navLblIn .3s ease; }
         .ap-fail-ic { width: 62px; height: 62px; border-radius: 50%; background: rgba(232,176,75,0.14); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
-        .ap-fail-title { font-family: 'Manrope', sans-serif; font-size: 21px; font-weight: 800; color: ${palette.white}; }
-        .ap-fail-sub { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,0.68); line-height: 1.5; margin-top: 10px; }
+        .ap-fail-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xl']}px; font-weight: ${ds.weight.extrabold}; color: ${palette.white}; }
+        .ap-fail-sub { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.medium}; color: rgba(255,255,255,0.68); line-height: 1.5; margin-top: 10px; }
         .ap-fail-tips { text-align: left; margin: 20px 0 4px; display: flex; flex-direction: column; gap: 11px; }
-        .ap-fail-tip { display: flex; align-items: center; gap: 11px; font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.82); }
-        .ap-fail-tip span { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: ${palette.white}; }
-        .ap-fail-retry { width: 100%; height: 52px; margin-top: 24px; border-radius: 15px; border: none; background: ${palette.white}; color: ${palette.black600}; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
-        .ap-fail-cancel { width: 100%; height: 46px; margin-top: 8px; border-radius: 15px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .ap-fail-tip { display: flex; align-items: center; gap: 11px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.82); }
+        .ap-fail-tip span { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; }
+        .ap-fail-retry { width: 100%; height: 52px; margin-top: 24px; border-radius: ${radius['lg']}px; border: none; background: ${palette.white}; color: ${palette.black600}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
+        .ap-fail-cancel { width: 100%; height: 46px; margin-top: 8px; border-radius: ${radius['lg']}px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
 
-        .apx-care { margin-top: 28px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; opacity: 0; transform: translateY(18px); transition: opacity .7s ease .12s, transform .7s ease .12s; }
+        .apx-care { margin-top: 28px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: ${radius['xl']}px; overflow: hidden; opacity: 0; transform: translateY(18px); transition: opacity .7s ease .12s, transform .7s ease .12s; }
         .apx-care.in { opacity: 1; transform: translateY(0); }
         /* early AI care signal */
-        .apx-alert { margin-top: 22px; padding: 16px; background: rgba(232,176,75,0.1); border: 1px solid rgba(232,176,75,0.28); border-radius: 18px; opacity: 0; transform: translateY(18px); transition: opacity .7s ease .1s, transform .7s ease .1s; }
+        .apx-alert { margin-top: 22px; padding: 16px; background: rgba(232,176,75,0.1); border: 1px solid rgba(232,176,75,0.28); border-radius: ${radius['lg']}px; opacity: 0; transform: translateY(18px); transition: opacity .7s ease .1s, transform .7s ease .1s; }
         .apx-alert.in { opacity: 1; transform: translateY(0); }
         .apx-alert-top { display: flex; align-items: center; gap: 11px; }
-        .apx-alert-ic { width: 32px; height: 32px; border-radius: 10px; background: rgba(232,176,75,0.16); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .apx-alert-title { font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 800; color: ${palette.white}; }
-        .apx-alert-conf { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,0.55); margin-top: 1px; }
-        .apx-alert-body { font-family: 'Manrope', sans-serif; font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,0.78); margin-top: 12px; }
-        .apx-alert-first { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${palette.white}; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(232,176,75,0.2); }
-        .apx-alert-first-lbl { font-weight: 800; color: ${color.watchSoft}; }
+        .apx-alert-ic { width: 32px; height: 32px; border-radius: ${radius['sm']}px; background: rgba(232,176,75,0.16); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .apx-alert-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.extrabold}; color: ${palette.white}; }
+        .apx-alert-conf { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; color: rgba(255,255,255,0.55); margin-top: 1px; }
+        .apx-alert-body { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; line-height: 1.5; color: rgba(255,255,255,0.78); margin-top: 12px; }
+        .apx-alert-first { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: ${palette.white}; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(232,176,75,0.2); }
+        .apx-alert-first-lbl { font-weight: ${ds.weight.extrabold}; color: ${color.watchSoft}; }
         /* add-room */
         .apx-room-add { display: inline-flex; align-items: center; gap: 5px; border-style: dashed; color: rgba(255,255,255,0.7); }
         .apx-room-new { display: flex; gap: 9px; margin-top: 11px; }
         .apx-room-new-input { margin-bottom: 0 !important; flex: 1; }
-        .apx-room-new-save { flex-shrink: 0; padding: 0 20px; border-radius: 14px; border: none; background: ${T.mossBright}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .apx-care-lbl { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.5); padding: 14px 16px 4px; }
+        .apx-room-new-save { flex-shrink: 0; padding: 0 20px; border-radius: ${radius['md']}px; border: none; background: ${T.mossBright}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; cursor: pointer; }
+        .apx-care-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.5); padding: 14px 16px 4px; }
         .apx-care-row { display: flex; align-items: center; gap: 13px; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.07); }
         .apx-care-row:first-of-type { border-top: none; }
-        .apx-care-ic { width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: ${palette.leaf150}; flex-shrink: 0; }
-        .apx-care-k { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: ${palette.white}; }
-        .apx-care-v { font-family: 'Manrope', sans-serif; font-size: 12px; color: rgba(255,255,255,0.66); margin-top: 2px; line-height: 1.4; }
+        .apx-care-ic { width: 34px; height: 34px; border-radius: ${radius['sm']}px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: ${palette.leaf150}; flex-shrink: 0; }
+        .apx-care-k { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: ${palette.white}; }
+        .apx-care-v { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; color: rgba(255,255,255,0.66); margin-top: 2px; line-height: 1.4; }
 
         .apx-form { margin-top: 24px; opacity: 0; transform: translateY(18px); transition: opacity .7s ease .24s, transform .7s ease .24s; }
         .apx-form.in { opacity: 1; transform: translateY(0); }
-        .apx-field-lbl { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 9px; }
-        .apx-input { width: 100%; height: 50px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08); padding: 0 16px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: ${palette.white}; outline: none; margin-bottom: 22px; }
-        .apx-input::placeholder { color: rgba(255,255,255,0.4); font-weight: 500; }
+        .apx-field-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['sm']}px; font-weight: ${ds.weight.bold}; color: rgba(255,255,255,0.85); margin-bottom: 9px; }
+        .apx-input { width: 100%; height: 50px; border-radius: ${radius['md']}px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08); padding: 0 16px; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.semibold}; color: ${palette.white}; outline: none; margin-bottom: 22px; }
+        .apx-input::placeholder { color: rgba(255,255,255,0.4); font-weight: ${ds.weight.medium}; }
         .apx-rooms { display: flex; flex-wrap: wrap; gap: 9px; }
-        .apx-room { position: relative; padding: 11px 17px; border-radius: 100px; border: 1.4px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 700; color: rgba(255,255,255,0.82); transition: all .2s ease; }
+        .apx-room { position: relative; padding: 11px 17px; border-radius: ${radius['pill']}px; border: 1.4px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); cursor: pointer; font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.bold}; color: rgba(255,255,255,0.82); transition: all .2s ease; }
         .apx-room.sel { background: ${palette.white}; border-color: ${palette.white}; color: ${T.ink}; }
-        .apx-room-rec { position: absolute; top: -8px; right: -6px; font-size: 8.5px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: ${palette.black750}; background: ${T.mossBright}; padding: 2px 6px; border-radius: 100px; white-space: nowrap; }
+        .apx-room-rec { position: absolute; top: -8px; right: -6px; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.extrabold}; letter-spacing: 0.03em; text-transform: uppercase; color: ${palette.black750}; background: ${T.mossBright}; padding: 2px 6px; border-radius: ${radius['pill']}px; white-space: nowrap; }
 
         .apx-cta-wrap { flex-shrink: 0; z-index: 2; padding: 12px 24px calc(24px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, ${palette.black800} 30%); opacity: 0; transform: translateY(14px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
         .apx-cta-wrap.in { opacity: 1; transform: translateY(0); }
-        .apx-cta { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: 18px; border: none; cursor: pointer; background: ${T.mossBright}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: 15.5px; font-weight: 700; box-shadow: 0 10px 30px rgba(76,115,80,0.4); transition: opacity .2s ease; }
+        .apx-cta { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 56px; border-radius: ${radius['lg']}px; border: none; cursor: pointer; background: ${T.mossBright}; color: ${palette.white}; font-family: 'Manrope', sans-serif; font-size: ${ds.size['lg']}px; font-weight: ${ds.weight.bold}; box-shadow: 0 10px 30px rgba(76,115,80,0.4); transition: opacity .2s ease; }
         .apx-cta:disabled { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.6); box-shadow: none; cursor: default; }
 
         /* reminders */
         .ax-group { margin-top: 24px; }
-        .ax-group-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 10px; }
-        .ax-item { display: flex; align-items: center; gap: 12px; margin: 0 24px 9px; padding: 13px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; text-align: left; font-family: inherit; width: auto; cursor: pointer; }
+        .ax-group-lbl { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 10px; }
+        .ax-item { display: flex; align-items: center; gap: 12px; margin: 0 24px 9px; padding: 13px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; text-align: left; font-family: inherit; width: auto; cursor: pointer; }
         /* grouped similar notifications */
-        .ax-cluster { margin: 0 24px 9px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; overflow: hidden; }
+        .ax-cluster { margin: 0 24px 9px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: ${radius['lg']}px; overflow: hidden; }
         .ax-cluster-head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 14px; background: transparent; border: none; cursor: pointer; text-align: left; }
         .ax-cluster-chev { flex-shrink: 0; transition: transform .3s ease; }
         .ax-cluster-chev.open { transform: rotate(180deg); }
@@ -4240,16 +4240,16 @@ export default function VerdureApp() {
         .ax-cluster-inner { overflow: hidden; padding: 0 8px; }
         .ax-cluster-inner .ax-item { margin: 0 0 8px; background: ${T.bg}; border-color: transparent; }
         .ax-cluster-inner .ax-item:first-child { margin-top: 2px; }
-        .ax-item-ic { width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .ax-item-ic { width: 36px; height: 36px; border-radius: ${radius['md']}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .ax-item-body { flex: 1; min-width: 0; }
-        .ax-item-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
-        .ax-item-why { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: ${T.inkFaint}; line-height: 1.35; margin-top: 2px; }
-        .ax-item-stamp { font-family: 'Manrope', sans-serif; font-size: 10.5px; font-weight: 600; color: ${T.inkFaint}; flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
+        .ax-item-title { font-family: 'Manrope', sans-serif; font-size: ${ds.size['md']}px; font-weight: ${ds.weight.bold}; color: ${T.ink}; }
+        .ax-item-why { font-family: 'Manrope', sans-serif; font-size: ${ds.size['xs']}px; color: ${T.inkFaint}; line-height: 1.35; margin-top: 2px; }
+        .ax-item-stamp { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; font-weight: ${ds.weight.semibold}; color: ${T.inkFaint}; flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
         .rd-row { display: flex; align-items: center; gap: 14px; margin: 0 24px; padding: 14px 0; border-bottom: 1px solid ${T.line}; cursor: pointer; }
-        .rd-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .rd-icon { width: 38px; height: 38px; border-radius: ${radius['md']}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .rd-body { flex: 1; }
-        .rd-text { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 500; color: ${T.ink}; line-height: 1.4; }
-        .rd-when { font-family: 'Manrope', sans-serif; font-size: 10px; color: ${T.inkFaint}; margin-top: 3px; }
+        .rd-text { font-family: 'Manrope', sans-serif; font-size: ${ds.size['base']}px; font-weight: ${ds.weight.medium}; color: ${T.ink}; line-height: 1.4; }
+        .rd-when { font-family: 'Manrope', sans-serif; font-size: ${ds.size['2xs']}px; color: ${T.inkFaint}; margin-top: 3px; }
 
         .v-overlay { position: absolute; inset: 0; z-index: 55; }
         .ov-push-in { animation: pushIn .34s cubic-bezier(.2,.85,.25,1); }
