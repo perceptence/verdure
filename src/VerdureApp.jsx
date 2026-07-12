@@ -2726,155 +2726,338 @@ function DynamicIsland({ activity, onDismiss, nudge, onNudgeTap }) {
 }
 
 /* ==========================================================================
-   DESIGN SYSTEM — living styleguide. Data-driven: it maps over the token
-   objects from ./tokens.js, so it always reflects the real system.
+   DESIGN SYSTEM — FULL SCREEN. An editorial, interactive reference that lives
+   outside the phone frame. Click any token to copy it. Components are live.
 ========================================================================== */
-function DesignSystemScreen({ onBack }) {
-  const Section = ({ label, children }) => (
-    <div style={{ marginTop: space[28] }}>
-      <div style={{ fontFamily: ds.family, fontSize: ds.size.xs, fontWeight: ds.weight.bold,
-        letterSpacing: ds.tracking.wide, textTransform: "uppercase", color: color.inkFaint, marginBottom: space[12] }}>{label}</div>
-      {children}
-    </div>
-  );
-
-  const colorGroups = [
-    { title: "Surface", items: [["surface", color.surface], ["surfaceRaised", color.surfaceRaised], ["surfaceAlt", color.surfaceAlt], ["surfaceWarm", color.surfaceWarm]] },
-    { title: "Ink", items: [["ink", color.ink], ["inkSoft", color.inkSoft], ["inkFaint", color.inkFaint]] },
-    { title: "Brand", items: [["brand", color.brand], ["brandBright", color.brandBright], ["brandDeep", color.brandDeep]] },
-    { title: "Status", items: [["thriving", color.thriving], ["watch", color.watch], ["needsCare", color.needsCare], ["water", color.water]] },
-  ];
-  const typeSteps = Object.entries(ds.size).sort((a, b) => a[1] - b[1]);
-  const spaceSteps = Object.entries(space).filter(([, v]) => v > 0 && v <= 32);
-  const radiusSteps = Object.entries(radius).filter(([k]) => k !== "device");
-  const shadowSteps = [["e1", shadow.e1], ["e2", shadow.e2], ["e3", shadow.e3], ["e4", shadow.e4]];
-
-  const swatch = (name, hex) => {
-    const dark = ["ink", "brand", "brandDeep", "thriving", "needsCare", "watch", "water"].includes(name);
-    return (
-      <div key={name} style={{ display: "flex", alignItems: "center", gap: space[12], padding: `${space[8]}px 0` }}>
-        <div style={{ width: 40, height: 40, borderRadius: radius.md, background: hex, border: `1px solid ${color.line}`, flexShrink: 0 }} />
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: ds.family, fontSize: ds.size.md, fontWeight: ds.weight.semibold, color: color.ink }}>{name}</div>
-          <div style={{ fontFamily: ds.family, fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint, textTransform: "uppercase", letterSpacing: "0.04em" }}>{hex}</div>
-        </div>
-      </div>
-    );
+function DesignSystemFullScreen({ onClose }) {
+  const [copied, setCopied] = useState(null);
+  const [toggles, setToggles] = useState({ water: true, health: true, weekly: false });
+  const [pressed, setPressed] = useState(false);
+  const copy = (label, value) => {
+    try { navigator.clipboard && navigator.clipboard.writeText(value); } catch (e) {}
+    setCopied({ label, value });
+    clearTimeout(copy._t); copy._t = setTimeout(() => setCopied(null), 1700);
   };
 
+  const colorGroups = [
+    { title: "Brand", items: [["color.brand", color.brand], ["color.brandBright", color.brandBright], ["color.brandDeep", color.brandDeep], ["leaf300", palette.leaf300], ["leaf200", palette.leaf200], ["leaf100", palette.leaf100]] },
+    { title: "Ink", items: [["color.ink", color.ink], ["color.inkSoft", color.inkSoft], ["color.inkFaint", color.inkFaint]] },
+    { title: "Surface", items: [["color.surface", color.surface], ["color.surfaceRaised", color.surfaceRaised], ["color.surfaceAlt", color.surfaceAlt], ["color.surfaceWarm", color.surfaceWarm]] },
+    { title: "Status", items: [["color.thriving", color.thriving], ["color.watch", color.watch], ["color.needsCare", color.needsCare], ["color.water", color.water]] },
+  ];
+  const typeSteps = Object.entries(ds.size).sort((a, b) => a[1] - b[1]);
+  const spaceSteps = Object.entries(space).filter(([, v]) => v > 0);
+  const radiusSteps = Object.entries(radius).filter(([k]) => k !== "device");
+  const shadowSteps = [["e1", shadow.e1], ["e2", shadow.e2], ["e3", shadow.e3], ["e4", shadow.e4], ["e5", shadow.e5]];
+  const easings = Object.entries(motion.easing);
+  const nav = [["color", "Color"], ["type", "Type"], ["scale", "Scale"], ["elevation", "Elevation"], ["motion", "Motion"], ["components", "Components"]];
+  const jumpTo = (id) => document.getElementById("dsf-" + id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const Swatch = ({ name, hex }) => {
+    const dark = ["color.ink", "color.brand", "color.brandDeep", "color.thriving", "color.needsCare", "color.watch", "color.water", "color.inkSoft"].includes(name);
+    return (
+      <button className="dsf-swatch" onClick={() => copy(name, hex)} title="Click to copy">
+        <span className="dsf-chip" style={{ background: hex }}><span className="dsf-chip-copy" style={{ color: dark ? "#fff" : color.ink }}>copy</span></span>
+        <span className="dsf-swatch-name">{name}</span>
+        <span className="dsf-swatch-hex">{hex}</span>
+      </button>
+    );
+  };
+  const Section = ({ id, kicker, title, children }) => (
+    <section id={"dsf-" + id} className="dsf-section">
+      <div className="dsf-kicker">{kicker}</div>
+      <h2 className="dsf-h2">{title}</h2>
+      {children}
+    </section>
+  );
+
   return (
-    <div style={{ position: "absolute", inset: 0, background: color.surface, overflowY: "auto", fontFamily: ds.family }}>
-      {/* header */}
-      <div style={{ position: "sticky", top: 0, zIndex: 2, display: "flex", alignItems: "center", gap: space[12],
-        padding: `54px ${space[24]}px ${space[12]}px`, background: color.surface, borderBottom: `1px solid ${color.line}` }}>
-        <button type="button" onClick={onBack} aria-label="Back" style={{ width: 36, height: 36, borderRadius: radius.pill, border: `1px solid ${color.line}`,
-          background: color.surfaceRaised, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color.ink} strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
+    <div className="dsf-root">
+      <style>{dsfCss}</style>
+
+      {/* top bar */}
+      <header className="dsf-bar">
+        <div className="dsf-brand"><span className="dsf-brand-mark" />VERDURE<span className="dsf-brand-sub">Design System</span></div>
+        <nav className="dsf-nav">{nav.map(([id, label]) => <button key={id} onClick={() => jumpTo(id)}>{label}</button>)}</nav>
+        <button className="dsf-close" onClick={onClose} aria-label="Close design system">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
         </button>
-        <div>
-          <h1 style={{ margin: 0, fontFamily: ds.family, fontSize: ds.size["2xl"], fontWeight: ds.weight.extrabold, letterSpacing: ds.tracking.tight, color: color.ink }}>Design System</h1>
-          <div style={{ fontFamily: ds.family, fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint }}>Verdure — tokens &amp; primitives</div>
+      </header>
+
+      {/* hero */}
+      <div className="dsf-hero">
+        <div className="dsf-hero-glow" />
+        <div className="dsf-hero-inner">
+          <div className="dsf-kicker dsf-hero-kicker">Living styleguide</div>
+          <h1 className="dsf-hero-title">The system behind<br /><em>Verdure</em>.</h1>
+          <p className="dsf-hero-sub">Every color, size, and motion the app is built from — organized, named, and one click from your clipboard.</p>
+          <div className="dsf-stats">
+            {[["12", "type steps"], ["60+", "colors"], ["7", "radii"], ["5", "elevations"], ["3", "easings"]].map(([n, l]) => (
+              <div key={l} className="dsf-stat"><div className="dsf-stat-n">{n}</div><div className="dsf-stat-l">{l}</div></div>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div style={{ padding: `0 ${space[24]}px ${space[48]}px` }}>
+      <main className="dsf-main">
         {/* COLOR */}
-        {colorGroups.map((g) => (
-          <Section key={g.title} label={`Color · ${g.title}`}>
-            <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, padding: `${space[6]}px ${space[16]}px` }}>
-              {g.items.map(([n, h]) => swatch(n, h))}
+        <Section id="color" kicker="Foundations" title="Color">
+          {colorGroups.map((g) => (
+            <div key={g.title} className="dsf-cgroup">
+              <div className="dsf-cgroup-title">{g.title}</div>
+              <div className="dsf-swatches">{g.items.map(([n, h]) => <Swatch key={n} name={n} hex={h} />)}</div>
             </div>
-          </Section>
-        ))}
+          ))}
+        </Section>
 
         {/* TYPE */}
-        <Section label="Type scale">
-          <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, padding: `${space[8]}px ${space[16]}px` }}>
+        <Section id="type" kicker="Foundations" title="Typography">
+          <div className="dsf-panel">
             {typeSteps.map(([name, px]) => (
-              <div key={name} style={{ display: "flex", alignItems: "baseline", gap: space[14], padding: `${space[8]}px 0`, borderBottom: `1px solid ${color.line}` }}>
-                <span style={{ fontSize: Math.min(px, 30), fontWeight: ds.weight.bold, color: color.ink, lineHeight: 1, flex: 1, whiteSpace: "nowrap", overflow: "hidden" }}>Verdant</span>
-                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.semibold, color: color.inkSoft }}>{name}</span>
-                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint, minWidth: 34, textAlign: "right" }}>{px}px</span>
-              </div>
+              <button key={name} className="dsf-type-row" onClick={() => copy("ds.size." + name, px + "px")} title="Click to copy">
+                <span className="dsf-type-spec" style={{ fontSize: Math.min(px, 44) }}>Verdant garden</span>
+                <span className="dsf-type-meta"><b>{name}</b>{px}px</span>
+              </button>
             ))}
           </div>
-        </Section>
-
-        {/* WEIGHT */}
-        <Section label="Weight">
-          <div style={{ display: "flex", flexWrap: "wrap", gap: space[8] }}>
+          <div className="dsf-weights">
             {Object.entries(ds.weight).map(([name, w]) => (
-              <div key={name} style={{ background: color.surfaceRaised, border: `1px solid ${color.line}`, borderRadius: radius.md, padding: `${space[10]}px ${space[14]}px` }}>
-                <div style={{ fontSize: ds.size.lg, fontWeight: w, color: color.ink }}>Aa</div>
-                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.medium, color: color.inkFaint, marginTop: 2 }}>{name} · {w}</div>
-              </div>
+              <button key={name} className="dsf-weight" onClick={() => copy("ds.weight." + name, String(w))} title="Click to copy">
+                <span style={{ fontWeight: w, fontSize: 26 }}>Aa</span><span className="dsf-weight-l">{name} · {w}</span>
+              </button>
             ))}
           </div>
         </Section>
 
-        {/* SPACING */}
-        <Section label="Spacing">
-          <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, padding: `${space[12]}px ${space[16]}px` }}>
-            {spaceSteps.map(([name, v]) => (
-              <div key={name} style={{ display: "flex", alignItems: "center", gap: space[12], padding: `${space[4]}px 0` }}>
-                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.semibold, color: color.inkSoft, minWidth: 24 }}>{name}</span>
-                <div style={{ height: 10, width: v, background: color.brandBright, borderRadius: radius.xs }} />
-                <span style={{ fontSize: ds.size.sm, fontWeight: ds.weight.medium, color: color.inkFaint }}>{v}px</span>
+        {/* SCALE: spacing + radius */}
+        <Section id="scale" kicker="Foundations" title="Spacing & Radius">
+          <div className="dsf-two">
+            <div className="dsf-panel dsf-grow">
+              <div className="dsf-sub">Spacing</div>
+              {spaceSteps.map(([name, v]) => (
+                <div key={name} className="dsf-space-row"><span className="dsf-space-n">{name}</span><span className="dsf-space-bar" style={{ width: v }} /><span className="dsf-space-v">{v}px</span></div>
+              ))}
+            </div>
+            <div className="dsf-panel dsf-grow">
+              <div className="dsf-sub">Radius</div>
+              <div className="dsf-radii">
+                {radiusSteps.map(([name, v]) => (
+                  <div key={name} className="dsf-radius"><div className="dsf-radius-box" style={{ borderRadius: Math.min(v, 30) }} /><span>{name}</span><small>{v}px</small></div>
+                ))}
               </div>
-            ))}
-          </div>
-        </Section>
-
-        {/* RADIUS */}
-        <Section label="Radius">
-          <div style={{ display: "flex", flexWrap: "wrap", gap: space[10] }}>
-            {radiusSteps.map(([name, v]) => (
-              <div key={name} style={{ textAlign: "center" }}>
-                <div style={{ width: 52, height: 52, background: color.brand, borderRadius: Math.min(v, 26) }} />
-                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.semibold, color: color.ink, marginTop: 5 }}>{name}</div>
-                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.medium, color: color.inkFaint }}>{v}px</div>
-              </div>
-            ))}
+            </div>
           </div>
         </Section>
 
         {/* ELEVATION */}
-        <Section label="Elevation">
-          <div style={{ display: "flex", flexWrap: "wrap", gap: space[16], padding: `${space[4]}px 0 ${space[8]}px` }}>
+        <Section id="elevation" kicker="Foundations" title="Elevation">
+          <div className="dsf-elevs">
             {shadowSteps.map(([name, sh]) => (
-              <div key={name} style={{ textAlign: "center" }}>
-                <div style={{ width: 64, height: 44, background: color.surfaceRaised, borderRadius: radius.md, boxShadow: sh }} />
-                <div style={{ fontSize: ds.size.xs, fontWeight: ds.weight.semibold, color: color.inkSoft, marginTop: 8 }}>{name}</div>
+              <div key={name} className="dsf-elev"><div className="dsf-elev-box" style={{ boxShadow: sh }} /><span>shadow.{name}</span></div>
+            ))}
+          </div>
+        </Section>
+
+        {/* MOTION */}
+        <Section id="motion" kicker="Foundations" title="Motion">
+          <p className="dsf-note">Hover a track — the dot travels with that easing. Named durations keep the app's rhythm consistent.</p>
+          <div className="dsf-panel">
+            {easings.map(([name, curve]) => (
+              <div key={name} className="dsf-motion-row">
+                <span className="dsf-motion-name">easing.{name}</span>
+                <div className="dsf-track"><span className="dsf-dot" style={{ transitionTimingFunction: curve }} /></div>
+                <span className="dsf-motion-curve">{curve}</span>
               </div>
             ))}
           </div>
         </Section>
 
         {/* COMPONENTS */}
-        <Section label="Components">
-          <div style={{ display: "flex", flexDirection: "column", gap: space[12] }}>
-            <div style={{ display: "flex", gap: space[10], flexWrap: "wrap" }}>
-              <button type="button" style={{ height: 44, padding: `0 ${space[20]}px`, borderRadius: radius.pill, border: "none", background: color.brand, color: palette.white, fontFamily: ds.family, fontSize: ds.size.lg, fontWeight: ds.weight.bold, cursor: "pointer" }}>Primary</button>
-              <button type="button" style={{ height: 44, padding: `0 ${space[20]}px`, borderRadius: radius.pill, border: `1px solid ${color.lineStrong}`, background: color.surfaceRaised, color: color.ink, fontFamily: ds.family, fontSize: ds.size.lg, fontWeight: ds.weight.bold, cursor: "pointer" }}>Secondary</button>
+        <Section id="components" kicker="Built from tokens" title="Components">
+          <div className="dsf-comp-grid">
+            <div className="dsf-card">
+              <div className="dsf-sub">Buttons</div>
+              <div className="dsf-btn-row">
+                <button className="dsf-btn dsf-btn-primary" onMouseDown={() => setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => setPressed(false)}>Primary</button>
+                <button className="dsf-btn dsf-btn-secondary">Secondary</button>
+                <button className="dsf-btn dsf-btn-ghost">Ghost</button>
+                <button className="dsf-btn dsf-btn-primary" disabled>Disabled</button>
+              </div>
             </div>
-            <div style={{ display: "flex", gap: space[8], flexWrap: "wrap" }}>
-              {[["Thriving", color.thriving, color.thrivingText], ["Watch", color.watch, color.watchText], ["Needs care", color.needsCare, color.needsCareText], ["Water", color.water, color.waterText]].map(([lbl, dot, txt]) => (
-                <span key={lbl} style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: `0 ${space[12]}px`, borderRadius: radius.pill, background: `${dot}1e`, color: txt, fontFamily: ds.family, fontSize: ds.size.sm, fontWeight: ds.weight.bold }}>
-                  <span style={{ width: 7, height: 7, borderRadius: radius.pill, background: dot }} />{lbl}
-                </span>
+            <div className="dsf-card">
+              <div className="dsf-sub">Toggles <span className="dsf-live">live</span></div>
+              {[["water", "Watering reminders"], ["health", "Health alerts"], ["weekly", "Weekly digest"]].map(([k, label]) => (
+                <button key={k} className="dsf-toggle-row" role="switch" aria-checked={toggles[k]} onClick={() => setToggles((t) => ({ ...t, [k]: !t[k] }))}>
+                  <span>{label}</span>
+                  <span className={`dsf-switch${toggles[k] ? " on" : ""}`}><span className="dsf-knob" /></span>
+                </button>
               ))}
             </div>
-            <div style={{ background: color.surfaceRaised, borderRadius: radius.lg, border: `1px solid ${color.line}`, boxShadow: shadow.e1, padding: space[16] }}>
-              <div style={{ fontSize: ds.size.lg, fontWeight: ds.weight.bold, color: color.ink }}>Card primitive</div>
-              <div style={{ fontSize: ds.size.md, fontWeight: ds.weight.medium, color: color.inkSoft, marginTop: 4 }}>surfaceRaised · radius.lg · shadow.e1 · line border</div>
+            <div className="dsf-card">
+              <div className="dsf-sub">Status</div>
+              <div className="dsf-pills">
+                {[["Thriving", color.thriving, color.thrivingText], ["Watch", color.watch, color.watchText], ["Needs care", color.needsCare, color.needsCareText], ["Water", color.water, color.waterText]].map(([lbl, dot, txt]) => (
+                  <span key={lbl} className="dsf-pill" style={{ background: `${dot}22`, color: txt }}><span className="dsf-pill-dot" style={{ background: dot }} />{lbl}</span>
+                ))}
+              </div>
+            </div>
+            <div className="dsf-card">
+              <div className="dsf-sub">Input</div>
+              <input className="dsf-input" placeholder="Search plants…" aria-label="Demo search" />
             </div>
           </div>
         </Section>
+
+        <footer className="dsf-footer">
+          <span>Verdure Design System</span>
+          <span>Source of truth · <code>src/tokens.js</code></span>
+        </footer>
+      </main>
+
+      {/* copy toast */}
+      <div className={`dsf-toast${copied ? " show" : ""}`}>
+        {copied && <><span className="dsf-toast-swatch" style={{ background: copied.value?.[0] === "#" ? copied.value : color.brand }} />Copied <b>{copied.label}</b> · {copied.value}</>}
       </div>
     </div>
   );
 }
 
+const dsfCss = `
+  .dsf-root { position: fixed; inset: 0; z-index: 200; overflow-y: auto; background: ${color.surface};
+    color: ${color.ink}; font-family: ${ds.family}; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    animation: dsfIn .4s ease; }
+  @keyframes dsfIn { from { opacity: 0; } to { opacity: 1; } }
+  .dsf-root *, .dsf-root *::before, .dsf-root *::after { box-sizing: border-box; }
+  .dsf-root button { font-family: inherit; cursor: pointer; }
+  .dsf-kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: ${color.brandBright}; }
+
+  /* top bar */
+  .dsf-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 24px;
+    padding: 14px 28px; background: ${color.surface}e8; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid ${color.line}; }
+  .dsf-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: 0.14em; font-size: 14px; }
+  .dsf-brand-mark { width: 20px; height: 20px; border-radius: 50%; background: ${color.brand}; box-shadow: inset 0 0 0 3px ${color.surface}, 0 0 0 1.5px ${color.brand}; }
+  .dsf-brand-sub { font-weight: 500; letter-spacing: 0; font-size: 12.5px; color: ${color.inkFaint}; margin-left: 2px; }
+  .dsf-nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+  .dsf-nav button { border: none; background: none; color: ${color.inkSoft}; font-size: 13.5px; font-weight: 600; padding: 7px 12px; border-radius: 100px; transition: background .15s, color .15s; }
+  .dsf-nav button:hover { background: ${color.brand}14; color: ${color.brand}; }
+  .dsf-close { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1px solid ${color.line}; background: ${color.surfaceRaised}; color: ${color.ink}; transition: transform .15s, background .15s; }
+  .dsf-close:hover { transform: rotate(90deg); background: ${color.brand}; color: #fff; }
+
+  /* hero */
+  .dsf-hero { position: relative; overflow: hidden; padding: clamp(56px, 9vw, 120px) 28px clamp(48px, 7vw, 96px); border-bottom: 1px solid ${color.line}; }
+  .dsf-hero-glow { position: absolute; top: -30%; right: -10%; width: 60vw; height: 120%; pointer-events: none;
+    background: radial-gradient(closest-side, ${color.brand}22, transparent 70%); }
+  .dsf-hero-inner { position: relative; max-width: 1080px; margin: 0 auto; }
+  .dsf-hero-kicker { margin-bottom: 18px; }
+  .dsf-hero-title { font-size: clamp(40px, 7vw, 84px); font-weight: 800; line-height: 1.02; letter-spacing: -0.03em; margin: 0; }
+  .dsf-hero-title em { font-style: italic; font-weight: 500; color: ${color.brand}; }
+  .dsf-hero-sub { max-width: 520px; margin: 22px 0 0; font-size: clamp(15px, 1.6vw, 18px); font-weight: 500; line-height: 1.55; color: ${color.inkSoft}; }
+  .dsf-stats { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+  .dsf-stat { padding: 16px 22px; border-radius: 18px; background: ${color.surfaceRaised}; border: 1px solid ${color.line}; box-shadow: ${shadow.e1}; }
+  .dsf-stat-n { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+  .dsf-stat-l { font-size: 12.5px; font-weight: 600; color: ${color.inkFaint}; margin-top: 2px; }
+
+  .dsf-main { max-width: 1080px; margin: 0 auto; padding: 0 28px 80px; }
+  .dsf-section { padding: clamp(48px, 6vw, 84px) 0 0; scroll-margin-top: 76px; }
+  .dsf-h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.02em; margin: 8px 0 28px; }
+  .dsf-sub { font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: ${color.inkFaint}; margin-bottom: 14px; }
+  .dsf-note { font-size: 14.5px; color: ${color.inkSoft}; margin: -12px 0 22px; max-width: 560px; line-height: 1.5; }
+  .dsf-panel { background: ${color.surfaceRaised}; border: 1px solid ${color.line}; border-radius: 20px; padding: 10px 22px; box-shadow: ${shadow.e1}; }
+  .dsf-two { display: flex; gap: 20px; flex-wrap: wrap; }
+  .dsf-grow { flex: 1 1 320px; }
+
+  /* color swatches */
+  .dsf-cgroup { margin-bottom: 28px; }
+  .dsf-cgroup-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .dsf-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .dsf-swatch { text-align: left; border: 1px solid ${color.line}; background: ${color.surfaceRaised}; border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 3px; transition: transform .16s ${motion.easing.spring}, box-shadow .16s; }
+  .dsf-swatch:hover { transform: translateY(-4px); box-shadow: ${shadow.e2}; }
+  .dsf-chip { position: relative; height: 68px; border-radius: 11px; border: 1px solid ${color.line}; margin-bottom: 8px; overflow: hidden; display: grid; place-items: center; }
+  .dsf-chip-copy { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transition: opacity .16s; }
+  .dsf-swatch:hover .dsf-chip-copy { opacity: 0.9; }
+  .dsf-swatch-name { font-size: 13px; font-weight: 700; }
+  .dsf-swatch-hex { font-size: 12px; font-weight: 600; color: ${color.inkFaint}; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  /* type */
+  .dsf-type-row { display: flex; align-items: baseline; gap: 18px; width: 100%; text-align: left; border: none; background: none; padding: 12px 0; border-bottom: 1px solid ${color.line}; transition: padding-left .16s; }
+  .dsf-type-row:last-child { border-bottom: none; }
+  .dsf-type-row:hover { padding-left: 8px; }
+  .dsf-type-spec { flex: 1; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${color.ink}; }
+  .dsf-type-meta { display: flex; gap: 10px; font-size: 13px; font-weight: 600; color: ${color.inkFaint}; flex-shrink: 0; }
+  .dsf-type-meta b { color: ${color.inkSoft}; }
+  .dsf-weights { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .dsf-weight { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; border: 1px solid ${color.line}; background: ${color.surfaceRaised}; border-radius: 14px; padding: 12px 16px; transition: transform .15s; }
+  .dsf-weight:hover { transform: translateY(-3px); }
+  .dsf-weight-l { font-size: 12px; font-weight: 600; color: ${color.inkFaint}; }
+
+  /* spacing + radius */
+  .dsf-space-row { display: flex; align-items: center; gap: 14px; padding: 6px 0; }
+  .dsf-space-n { font-size: 13px; font-weight: 700; color: ${color.inkSoft}; min-width: 26px; }
+  .dsf-space-bar { height: 12px; background: ${color.brandBright}; border-radius: 4px; }
+  .dsf-space-v { font-size: 13px; font-weight: 600; color: ${color.inkFaint}; }
+  .dsf-radii { display: flex; flex-wrap: wrap; gap: 14px; }
+  .dsf-radius { text-align: center; }
+  .dsf-radius-box { width: 58px; height: 58px; background: ${color.brand}; margin-bottom: 6px; }
+  .dsf-radius span { display: block; font-size: 12.5px; font-weight: 700; }
+  .dsf-radius small { font-size: 12px; color: ${color.inkFaint}; }
+
+  /* elevation */
+  .dsf-elevs { display: flex; flex-wrap: wrap; gap: 28px; }
+  .dsf-elev { text-align: center; }
+  .dsf-elev-box { width: 120px; height: 78px; background: ${color.surfaceRaised}; border-radius: 16px; margin-bottom: 12px; }
+  .dsf-elev span { font-size: 12.5px; font-weight: 600; color: ${color.inkSoft}; }
+
+  /* motion */
+  .dsf-motion-row { display: flex; align-items: center; gap: 18px; padding: 14px 0; border-bottom: 1px solid ${color.line}; }
+  .dsf-motion-row:last-child { border-bottom: none; }
+  .dsf-motion-name { font-size: 13.5px; font-weight: 700; min-width: 130px; }
+  .dsf-track { flex: 1; height: 10px; background: ${color.brand}14; border-radius: 100px; position: relative; }
+  .dsf-dot { position: absolute; top: -5px; left: 0; width: 20px; height: 20px; border-radius: 50%; background: ${color.brand}; box-shadow: ${shadow.e2}; transition: left .7s; }
+  .dsf-motion-row:hover .dsf-dot { left: calc(100% - 20px); }
+  .dsf-motion-curve { font-size: 11.5px; font-weight: 600; color: ${color.inkFaint}; min-width: 150px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* components */
+  .dsf-comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+  .dsf-card { background: ${color.surfaceRaised}; border: 1px solid ${color.line}; border-radius: 20px; padding: 22px; box-shadow: ${shadow.e1}; }
+  .dsf-live { font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; color: ${color.brand}; background: ${color.brand}1e; padding: 2px 6px; border-radius: 100px; vertical-align: middle; margin-left: 6px; }
+  .dsf-btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .dsf-btn { height: 44px; padding: 0 20px; border-radius: 100px; font-size: 14.5px; font-weight: 700; border: 1px solid transparent; transition: transform .12s, filter .15s, box-shadow .15s; }
+  .dsf-btn:active { transform: scale(0.96); }
+  .dsf-btn-primary { background: ${color.brand}; color: #fff; box-shadow: ${shadow.e2}; }
+  .dsf-btn-primary:hover { filter: brightness(1.08); }
+  .dsf-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+  .dsf-btn-secondary { background: ${color.surface}; color: ${color.ink}; border-color: ${color.lineStrong}; }
+  .dsf-btn-secondary:hover { background: ${color.brand}0e; }
+  .dsf-btn-ghost { background: none; color: ${color.brand}; }
+  .dsf-btn-ghost:hover { background: ${color.brand}12; }
+  .dsf-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; text-align: left; background: none; border: none; padding: 12px 0; border-top: 1px solid ${color.line}; font-size: 14px; font-weight: 600; color: ${color.ink}; }
+  .dsf-toggle-row:first-of-type { border-top: none; }
+  .dsf-switch { width: 44px; height: 26px; border-radius: 100px; background: ${color.inkFaint}44; position: relative; transition: background .22s; flex-shrink: 0; }
+  .dsf-switch.on { background: ${color.brand}; }
+  .dsf-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); transition: left .22s ${motion.easing.spring}; }
+  .dsf-switch.on .dsf-knob { left: 21px; }
+  .dsf-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dsf-pill { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 13px; border-radius: 100px; font-size: 13px; font-weight: 700; }
+  .dsf-pill-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dsf-input { width: 100%; height: 46px; border-radius: 12px; border: 1px solid ${color.lineStrong}; background: ${color.surface}; padding: 0 16px; font-size: 15px; font-weight: 500; color: ${color.ink}; outline: none; transition: border-color .18s, box-shadow .18s; }
+  .dsf-input:focus { border-color: ${color.brand}; box-shadow: 0 0 0 3px ${color.brand}22; }
+
+  .dsf-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 72px; padding-top: 28px; border-top: 1px solid ${color.line}; font-size: 13px; font-weight: 600; color: ${color.inkFaint}; }
+  .dsf-footer code { background: ${color.brand}12; color: ${color.brand}; padding: 2px 7px; border-radius: 6px; font-size: 12.5px; }
+
+  /* copy toast */
+  .dsf-toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); z-index: 20;
+    display: flex; align-items: center; gap: 9px; padding: 12px 18px; border-radius: 100px;
+    background: ${color.ink}; color: #fff; font-size: 13.5px; font-weight: 600; box-shadow: ${shadow.e4};
+    opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s ${motion.easing.spring}; }
+  .dsf-toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .dsf-toast b { font-weight: 800; }
+  .dsf-toast-swatch { width: 16px; height: 16px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.3); }
+
+  @media (max-width: 640px) { .dsf-nav { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .dsf-root *, .dsf-dot { animation: none !important; transition: none !important; } }
+`;
 
 export default function VerdureApp() {
   const realHour = new Date().getHours() + new Date().getMinutes() / 60;
@@ -2912,6 +3095,7 @@ export default function VerdureApp() {
 
   // Scale the phone to fill the viewport at any window size (preview framing).
   const [phoneScale, setPhoneScale] = useState(1);
+  const [dsFull, setDsFull] = useState(false); // full-screen design system
   useEffect(() => {
     const PW = 402, PH = 874, PAD = 20; // frame footprint + a little breathing room
     const fit = () => setPhoneScale(0.98 * Math.min((window.innerWidth - PAD) / PW, (window.innerHeight - PAD) / PH));
@@ -3035,6 +3219,7 @@ export default function VerdureApp() {
 
   return (
     <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", background: "transparent", minHeight: "100vh", fontFamily: "Manrope, sans-serif" }}>
+      {dsFull && <DesignSystemFullScreen onClose={() => setDsFull(false)} />}
       <style>{`
         ${FONT_IMPORT}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -4345,9 +4530,6 @@ export default function VerdureApp() {
         {top?.type === "add" && (
           <div className="v-overlay ov-modal-in"><AddPlantScreen onClose={back} onAdd={addPlant} /></div>
         )}
-        {top?.type === "designsystem" && (
-          <div className="v-overlay ov-push-in"><DesignSystemScreen onBack={back} /></div>
-        )}
 
         {/* exiting screen — animates out in the reverse direction */}
         {exiting?.type === "allplants" && (
@@ -4396,7 +4578,7 @@ export default function VerdureApp() {
             ["Rooms", () => { setPhase("app"); resetTo("rooms"); }],
             ["Activity", () => { setPhase("app"); resetTo("reminders"); }],
             ["Profile", () => { setPhase("app"); resetTo("profile"); }],
-            ["Design system", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "designsystem" }), 30); }],
+            ["Design system", () => setDsFull(true)],
             ["Plants deck", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "allplants" }), 30); }],
             ["Add plant", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "add" }), 30); }],
             ["Plant detail", () => { setPhase("app"); resetTo("home"); setTimeout(() => push({ type: "detail", id: plants[1].id }), 30); }],
