@@ -4550,7 +4550,7 @@ export default function VerdureApp() {
       {/* DEMO CONTROLS — outside the phone frame. Not part of the shipping app;
           these exist only to showcase the real-time light engine. In production
           the scene simply follows the device clock. */}
-      <div className="demo-panel">
+      <div className="demo-panel" style={{ zoom: phoneScale }}>
         <div className="demo-head">
           <span className="demo-badge">DEMO</span>
           <span className="demo-title">Time-of-day engine · not in the shipping app</span>
