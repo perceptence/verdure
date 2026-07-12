@@ -1816,7 +1816,8 @@ function RemindersScreen({ plants, onBack, onOpenPlant, onWater }) {
   function Row({ e }) {
     const cfg = EV[e.type];
     return (
-      <button type="button" className="ax-item" onClick={() => onOpenPlant(e.plant.id)}>
+      <div className="ax-item" role="button" tabIndex={0} onClick={() => onOpenPlant(e.plant.id)}
+        onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); onOpenPlant(e.plant.id); } }}>
         <div className="ax-item-ic" style={{ background: `${cfg.color}18`, color: cfg.color }}>
           <svg width={e.type === "dry" ? 17 : 16} height={e.type === "dry" ? 17 : 16} viewBox="0 0 24 24" fill="none" stroke={cfg.color} strokeWidth="1.8">{cfg.ic}</svg>
         </div>
@@ -1825,7 +1826,7 @@ function RemindersScreen({ plants, onBack, onOpenPlant, onWater }) {
           <div className="ax-item-why">{e.why}</div>
         </div>
         <div className="ax-item-stamp">{e.stamp}</div>
-      </button>
+      </div>
     );
   }
 
@@ -4230,7 +4231,7 @@ export default function VerdureApp() {
         /* reminders */
         .ax-group { margin-top: 24px; }
         .ax-group-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 10px; }
-        .ax-item { display: flex; align-items: center; gap: 12px; margin: 0 24px 9px; padding: 13px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; text-align: left; font-family: inherit; width: auto; cursor: pointer; }
+        .ax-item { display: flex; align-items: center; gap: 12px; margin: 0 24px 9px; padding: 13px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; cursor: pointer; }
         /* grouped similar notifications */
         .ax-cluster { margin: 0 24px 9px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; overflow: hidden; }
         .ax-cluster-head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 14px; background: transparent; border: none; cursor: pointer; text-align: left; }
