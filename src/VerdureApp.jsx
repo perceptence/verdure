@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
+import { T, color, type as ds, space, radius, shadow, motion, palette, google, tokens } from "./tokens.js";
 
 /* Drag-to-close for bottom sheets. Returns props to spread on the sheet element.
    Dragging down translates the sheet live; releasing past a threshold calls onClose. */
@@ -107,10 +108,9 @@ function celestialRealistic(hour) {
 }
 
 /* ----------------------------- tokens ----------------------------- */
-const T = {
-  bg: "#EDEEE6", card: "#FBF9F4", ink: "#1C241B", inkSoft: "#5C6657", inkFaint: "#858E78",
-  moss: "#34503A", mossBright: "#4C7350", clay: "#B5602F", line: "rgba(28,36,25,0.10)",
-};
+/* Design tokens now live in ./tokens.js — `T` is the backward-compatible flat
+   alias; `color`, `ds` (type), `space`, `radius`, `shadow`, `motion` are the
+   structured tokens used going forward. */
 const ADD_STAGES = ["Matching the species", "Reading its condition", "Measuring the room light"];
 function healthColor(h) { return h >= 70 ? T.moss : h >= 45 ? "#8A6820" : T.clay; }
 function healthColorLight(h) { return h >= 70 ? "#ffffff" : h >= 45 ? "#E8B04B" : "#E8875A"; }
@@ -1816,7 +1816,7 @@ function RemindersScreen({ plants, onBack, onOpenPlant, onWater }) {
   function Row({ e }) {
     const cfg = EV[e.type];
     return (
-      <div className="ax-item" onClick={() => onOpenPlant(e.plant.id)}>
+      <button type="button" className="ax-item" onClick={() => onOpenPlant(e.plant.id)}>
         <div className="ax-item-ic" style={{ background: `${cfg.color}18`, color: cfg.color }}>
           <svg width={e.type === "dry" ? 17 : 16} height={e.type === "dry" ? 17 : 16} viewBox="0 0 24 24" fill="none" stroke={cfg.color} strokeWidth="1.8">{cfg.ic}</svg>
         </div>
@@ -1825,7 +1825,7 @@ function RemindersScreen({ plants, onBack, onOpenPlant, onWater }) {
           <div className="ax-item-why">{e.why}</div>
         </div>
         <div className="ax-item-stamp">{e.stamp}</div>
-      </div>
+      </button>
     );
   }
 
@@ -2163,10 +2163,10 @@ function ProfileScreenSignedIn({ plants, onBack, onOpenRooms, onOpenActivity, ac
           <div className="pf2-sheet-title">Notifications</div>
           <div className="pf2-sheet-sub">Choose what Verdure reminds you about.</div>
           {[["watering", "Watering reminders", "When a plant is due for water"], ["health", "Health alerts", "When a plant needs attention"], ["weekly", "Weekly digest", "A Sunday summary of your garden"], ["tips", "Care tips", "Seasonal advice for your plants"]].map(([k, label, sub]) => (
-            <div key={k} className="pf2-toggle-row" onClick={() => toggle(k)}>
+            <button key={k} type="button" className="pf2-toggle-row" role="switch" aria-checked={!!notif[k]} aria-label={label} onClick={() => toggle(k)}>
               <div className="pf2-toggle-text"><div className="pf2-toggle-label">{label}</div><div className="pf2-toggle-sub">{sub}</div></div>
               <div className={`pf2-switch${notif[k] ? " on" : ""}`}><div className="pf2-switch-knob" /></div>
-            </div>
+            </button>
           ))}
         </div>
       )}
@@ -2437,7 +2437,7 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
 
             <div className={`apx-form${revealed ? " in" : ""}`}>
               <div className="apx-field-lbl">Give it a name</div>
-              <input className="apx-input" placeholder={`e.g. ${s.common === "Peace Lily" ? "Lily" : s.common}`} value={nickname} onChange={function (e) { setNickname(e.target.value); }} />
+              <input className="apx-input" aria-label="Plant nickname" placeholder={`e.g. ${s.common === "Peace Lily" ? "Lily" : s.common}`} value={nickname} onChange={function (e) { setNickname(e.target.value); }} />
 
               <div className="apx-field-lbl">Where will it live?</div>
               <div className="apx-rooms">
@@ -2458,7 +2458,7 @@ function AddPlantScreen({ onClose, onAdd, firstRun = false, skyHour }) {
               </div>
               {addingRoom && (
                 <div className="apx-room-new">
-                  <input className="apx-input apx-room-new-input" autoFocus placeholder="Room name (e.g. Balcony)" value={newRoomName}
+                  <input className="apx-input apx-room-new-input" aria-label="New room name" autoFocus placeholder="Room name (e.g. Balcony)" value={newRoomName}
                     onChange={function (e) { setNewRoomName(e.target.value); }}
                     onKeyDown={function (e) { if (e.key === "Enter") addRoom(); }} />
                   <button className="apx-room-new-save" onClick={addRoom}>Add</button>
@@ -2631,7 +2631,7 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
 
           {emailStep === "email" && (
             <div className="ob2-email in">
-              <input className="ob2-input" type="email" inputMode="email" autoFocus placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input className="ob2-input" type="email" inputMode="email" autoFocus placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email address" />
               <button className="ob2-email-next" disabled={!/.+@.+\..+/.test(email)} onClick={() => setEmailStep("name")}>
                 Continue
               </button>
@@ -2642,7 +2642,7 @@ function OnboardingFlow({ hour, onComplete, resumePlant }) {
           {emailStep === "name" && (
             <div className="ob2-email in">
               <div className="ob2-email-cap">What should we call you?</div>
-              <input className="ob2-input" autoFocus placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
+              <input className="ob2-input" autoFocus placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} aria-label="Your name" />
               <button className="ob2-email-next" disabled={!name.trim()} onClick={() => onComplete(savePlant, true, { name: name.trim(), email: email.trim() })}>
                 {plant ? `Save ${plant.nickname.split(" ")[0]} & finish` : "Create account"}
               </button>
@@ -2759,6 +2759,16 @@ export default function VerdureApp() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [auto]);
 
+  // Scale the phone to fill the viewport at any window size (preview framing).
+  const [phoneScale, setPhoneScale] = useState(1);
+  useEffect(() => {
+    const PW = 402, PH = 874, PAD = 20; // frame footprint + a little breathing room
+    const fit = () => setPhoneScale(0.98 * Math.min((window.innerWidth - PAD) / PW, (window.innerHeight - PAD) / PH));
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
+
   const top = stack[stack.length - 1] || null;
   const [exiting, setExiting] = useState(null);
   const selectedPlant = top?.type === "detail" ? plants.find((p) => p.id === top.id) : null;
@@ -2851,13 +2861,16 @@ export default function VerdureApp() {
   useLayoutEffect(() => {
     let raf1 = 0, raf2 = 0;
     const measure = () => {
-      const wrap = navWrapRef.current;
       const el = tabRefs.current[tab];
-      if (!wrap || !el) return;
-      const w = wrap.getBoundingClientRect();
-      const b = el.getBoundingClientRect();
-      if (b.width === 0) return; // not laid out yet — a later pass will catch it
-      setGlider({ left: b.left - w.left, width: b.width, ready: true });
+      if (!el) return;
+      // offsetLeft/offsetWidth are LAYOUT metrics — unaffected by the preview
+      // scale transform on the phone shell — and are relative to the glider's
+      // own offset parent (the nav bar). Using getBoundingClientRect here would
+      // return scaled pixels that then get scaled again inside the transformed
+      // subtree, sizing the pill too small (label overflows).
+      const width = el.offsetWidth;
+      if (width === 0) return; // not laid out yet — a later pass will catch it
+      setGlider({ left: el.offsetLeft, width, ready: true });
     };
     // measure now (pre-paint), next two frames, after font load, and after a settle —
     // whichever lands first flips `ready`; the rest keep it snapped as the label reflows.
@@ -2870,16 +2883,28 @@ export default function VerdureApp() {
   }, [tab, stack]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#0a0b08", padding: "32px 0", minHeight: "100vh", fontFamily: "Manrope, sans-serif" }}>
+    <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", background: "transparent", minHeight: "100vh", fontFamily: "Manrope, sans-serif" }}>
       <style>{`
         ${FONT_IMPORT}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         /* keyboard focus only — pointer taps stay clean */
         .v-phone :focus-visible:not(input):not(textarea):not(select) { outline: 2.5px solid ${T.mossBright}; outline-offset: 2px; border-radius: 8px; }
         .v-phone .dz :focus-visible:not(input):not(textarea), .v-phone .apx :focus-visible:not(input):not(textarea), .v-phone .ap-viewfinder :focus-visible:not(input):not(textarea) { outline-color: #EAF0E6; }
-        .v-phone { width: 390px; height: 844px; border-radius: 54px; overflow: hidden; position: relative; background: ${T.bg};
-          box-shadow: 0 0 0 10px #0B0C09, 0 40px 80px rgba(0,0,0,0.6); }
+        .v-phone { width: 402px; height: 874px; border-radius: 55px; overflow: hidden; position: relative; background: ${T.bg};
+          box-shadow: 0 0 0 9px #0B0C09, 0 40px 80px rgba(0,0,0,0.6); }
         .v-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: #0B0C09; border-radius: 20px; z-index: 80; }
+
+        /* ---------- HARDWARE BUTTONS (iPhone 17 Pro) ---------- */
+        .v-stage { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .v-phone-shell { position: relative; transform-origin: center; }
+        .v-btn { position: absolute; width: 4px; background: linear-gradient(90deg, #050604, #16170f 55%, #050604); box-shadow: 0 1px 2px rgba(0,0,0,0.4); z-index: 5; }
+        .v-btn.left { left: -12px; border-radius: 3px 0 0 3px; }
+        .v-btn.right { right: -12px; border-radius: 0 3px 3px 0; }
+        .v-btn-action { top: 150px; height: 34px; }   /* Action button */
+        .v-btn-volup  { top: 204px; height: 58px; }    /* Volume up */
+        .v-btn-voldn  { top: 274px; height: 58px; }    /* Volume down */
+        .v-btn-side   { top: 210px; height: 96px; }    /* Side / power button */
+        .v-btn-cam    { top: 338px; height: 42px; }    /* Camera Control */
 
         /* ---------- DYNAMIC ISLAND (live activity) ---------- */
         .di-wrap { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 60; cursor: pointer;
@@ -3092,6 +3117,18 @@ export default function VerdureApp() {
           100% { transform: translate(-6px, -34px); opacity: 0; }
         }
         @media (prefers-reduced-motion: reduce) { .vd-sway, .vd-firefly { animation: none !important; } }
+        /* Catch-all: honor the OS "Reduce Motion" setting across ALL animations and
+           transitions. Only active when the user has opted in — no effect otherwise.
+           Snaps animations to their end state (0.01ms) rather than removing them, so
+           nothing that depends on an end state breaks. */
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+          }
+        }
         /* (comprehensive reduced-motion handling near end of stylesheet) */
         .vd-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 200px; pointer-events: none; }
         .vd-plant { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s ease; }
@@ -3259,7 +3296,7 @@ export default function VerdureApp() {
         .pf2-sheet-title { font-family: 'Manrope', sans-serif; font-size: 19px; font-weight: 800; color: ${T.ink}; }
         .pf2-sheet-sub { font-family: 'Manrope', sans-serif; font-size: 12.5px; color: ${T.inkFaint}; margin-top: 4px; line-height: 1.45; }
         .pf2-sheet-note { font-family: 'Manrope', sans-serif; font-size: 12px; color: ${T.inkSoft}; margin-top: 14px; line-height: 1.5; padding: 12px 14px; background: ${T.moss}0d; border-radius: 12px; }
-        .pf2-toggle-row { display: flex; align-items: center; gap: 12px; padding: 15px 0; border-top: 1px solid ${T.line}; cursor: pointer; }
+        .pf2-toggle-row { display: flex; align-items: center; gap: 12px; padding: 15px 0; background: none; border: 0; border-top: 1px solid ${T.line}; width: 100%; text-align: left; font-family: inherit; cursor: pointer; }
         .pf2-toggle-row:first-of-type { margin-top: 8px; }
         .pf2-toggle-text { flex: 1; }
         .pf2-toggle-label { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: ${T.ink}; }
@@ -3286,25 +3323,25 @@ export default function VerdureApp() {
         .pf2-acct-msg { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: ${T.mossBright}12; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: ${T.moss}; }
 
         /* external demo controls (below the phone, not part of the app) */
-        .demo-panel { width: 390px; margin-top: 22px; padding: 14px 18px; border-radius: 18px;
-          background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        .demo-panel { width: 402px; margin: 40px 0 48px; padding: 14px 18px; border-radius: 18px;
+          background: rgba(255,255,255,0.55); border: 1px solid rgba(28,36,25,0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .demo-head { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
         .demo-badge { font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
-          color: #0a0b08; background: #c9cbb8; padding: 3px 7px; border-radius: 5px; }
-        .demo-title { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: rgba(255,255,255,0.5); }
+          color: #fff; background: #4b5d3f; padding: 3px 7px; border-radius: 5px; }
+        .demo-title { font-family: 'Manrope', sans-serif; font-size: 11.5px; color: rgba(28,36,25,0.55); }
         .demo-row { display: flex; align-items: center; gap: 12px; }
-        .demo-clock { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85);
+        .demo-clock { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: rgba(28,36,25,0.85);
           min-width: 44px; }
-        .demo-scrub { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 4px; outline: none; cursor: pointer; background: rgba(255,255,255,0.2); }
-        .demo-scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-        .demo-scrub::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: none; }
+        .demo-scrub { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 4px; outline: none; cursor: pointer; background: rgba(28,36,25,0.18); }
+        .demo-scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #4b5d3f; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        .demo-scrub::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #4b5d3f; border: none; }
         .demo-play { display: flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600;
-          color: #0a0b08; background: #c9cbb8; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; white-space: nowrap; }
-        .demo-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 14px 0; }
+          color: #fff; background: #4b5d3f; border: none; padding: 8px 14px; border-radius: 100px; cursor: pointer; white-space: nowrap; }
+        .demo-divider { height: 1px; background: rgba(28,36,25,0.1); margin: 14px 0; }
         .demo-jumps { display: flex; flex-wrap: wrap; gap: 7px; }
-        .demo-jump { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.82);
-          background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); padding: 7px 13px; border-radius: 100px; cursor: pointer; transition: background .15s ease, transform .12s ease; }
-        .demo-jump:hover { background: rgba(255,255,255,0.14); }
+        .demo-jump { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: rgba(28,36,25,0.82);
+          background: rgba(28,36,25,0.05); border: 1px solid rgba(28,36,25,0.14); padding: 7px 13px; border-radius: 100px; cursor: pointer; transition: background .15s ease, transform .12s ease; }
+        .demo-jump:hover { background: rgba(28,36,25,0.1); }
         .demo-jump:active { transform: scale(0.95); }
 
         /* nav — one continuous full-width bar; a single white pill slides across it */
@@ -3698,7 +3735,7 @@ export default function VerdureApp() {
         .rx-suggest-move { flex-shrink: 0; padding: 6px 14px; border-radius: 100px; border: none; background: ${T.moss}; color: #fff; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
         .rx-room-id { min-width: 0; flex: 1; }
         .rx-env-hum { border: none; cursor: pointer; }
-        .rx-env-src { font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkFaint}; background: rgba(28,36,25,0.06); padding: 1px 5px; border-radius: 5px; margin-left: 5px; }
+        .rx-env-src { font-family: 'Manrope', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: ${T.inkSoft}; background: rgba(28,36,25,0.06); padding: 1px 5px; border-radius: 5px; margin-left: 5px; }
         .rx-env-caret { margin-left: 4px; transition: transform .3s ease; }
         .rx-hum-reveal { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .32s cubic-bezier(.3,.8,.3,1), opacity .28s ease; }
         .rx-hum-reveal.open { grid-template-rows: 1fr; opacity: 1; }
@@ -3954,7 +3991,7 @@ export default function VerdureApp() {
         @keyframes apsweep { 0% { top: 60%; opacity: 0; } 10% { opacity: 1; } 50% { top: 38%; } 90% { opacity: 1; } 100% { top: 60%; opacity: 0; } }
         .ap-shutter-wrap { position: absolute; bottom: 60px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .ap-shutter { width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .ap-shutter-in { width: 56px; height: 56px; border-radius: 50%; background: #fff; transition: transform .15s ease; }
+        .ap-shutter-in { width: 56px; height: 56px; flex: 0 0 auto; border-radius: 50%; background: #fff; transition: transform .15s ease; }
         .ap-shutter:active .ap-shutter-in { transform: scale(0.86); }
         .ap-stages { position: absolute; bottom: 90px; left: 0; right: 0; text-align: center; }
         .ap-stage-text { font-family: 'Manrope', sans-serif; font-size: 15px; color: #fff; }
@@ -4042,7 +4079,7 @@ export default function VerdureApp() {
         /* reminders */
         .ax-group { margin-top: 24px; }
         .ax-group-lbl { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${T.inkFaint}; margin: 0 24px 10px; }
-        .ax-item { display: flex; align-items: center; gap: 12px; margin: 0 24px 9px; padding: 13px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; cursor: pointer; }
+        .ax-item { display: flex; align-items: center; gap: 12px; margin: 0 24px 9px; padding: 13px 14px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; text-align: left; font-family: inherit; width: auto; cursor: pointer; }
         /* grouped similar notifications */
         .ax-cluster { margin: 0 24px 9px; background: ${T.card}; border: 1px solid ${T.line}; border-radius: 16px; overflow: hidden; }
         .ax-cluster-head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 14px; background: transparent; border: none; cursor: pointer; text-align: left; }
@@ -4084,6 +4121,13 @@ export default function VerdureApp() {
         }
       `}</style>
 
+      <div className="v-stage">
+      <div className="v-phone-shell" style={{ transform: `scale(${phoneScale})` }}>
+      <div className="v-btn left v-btn-action" aria-hidden="true" />
+      <div className="v-btn left v-btn-volup" aria-hidden="true" />
+      <div className="v-btn left v-btn-voldn" aria-hidden="true" />
+      <div className="v-btn right v-btn-side" aria-hidden="true" />
+      <div className="v-btn right v-btn-cam" aria-hidden="true" />
       <div className="v-phone">
         <div className="v-island" />
 
@@ -4155,6 +4199,8 @@ export default function VerdureApp() {
           <div className="v-overlay ov-modal-out"><AddPlantScreen onClose={() => {}} onAdd={() => {}} /></div>
         )}
         </>}
+      </div>
+      </div>
       </div>
 
       {/* DEMO CONTROLS — outside the phone frame. Not part of the shipping app;
