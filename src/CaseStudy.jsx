@@ -176,6 +176,25 @@ export default function CaseStudy() {
   const L = lightAt(hour);
   const cel = celestialPos(hour);
 
+  /* Narrow viewports crop the garden inward instead of scaling the whole
+     1440-wide strip down, which made the plants thin and spindly. Each step
+     keeps the middle of the planting and drops what's at the edges. */
+  const [gardenViewBox, setGardenViewBox] = useState("0 0 1440 220");
+  useEffect(() => {
+    const pick = () => {
+      const w = window.innerWidth;
+      setGardenViewBox(
+        w >= 1200 ? "0 0 1440 220"
+        : w >= 900 ? "150 0 1140 220"
+        : w >= 640 ? "330 0 780 220"
+        : "470 0 500 220"
+      );
+    };
+    pick();
+    window.addEventListener("resize", pick);
+    return () => window.removeEventListener("resize", pick);
+  }, []);
+
   /* The bar is part of the hero until you leave it, then it takes on a surface. */
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -245,7 +264,11 @@ export default function CaseStudy() {
         <div className="cs-hero-scrim" aria-hidden="true" />
 
         {/* the garden, echoing the product's shelf */}
-        <svg className="cs-hero-garden" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
+        {/* Proportional, never stretched: preserveAspectRatio keeps the shapes
+            true, and the viewBox narrows on small screens so plants are cropped
+            from the ends rather than squeezed into skinny slivers. */}
+        <svg className="cs-hero-garden" viewBox={gardenViewBox}
+          preserveAspectRatio="xMidYMax slice" aria-hidden="true">
           {HERO_PLANTS.map(([x, shape, s, o], i) => (
             <g key={i} transform={`translate(${x} 220) scale(${s})`} opacity={o}>
               {HERO_SHAPES[shape].map((d, j) => (
@@ -885,13 +908,16 @@ const css = `
 
   /* research → response */
   .cs-research { display: flex; flex-direction: column; gap: ${space[12]}px; margin-top: ${space[28]}px; }
-  .cs-finding { display: grid; grid-template-columns: 44px minmax(0, 1.05fr) minmax(0, 0.95fr);
+  .cs-finding { display: grid; grid-template-columns: 62px minmax(0, 1.05fr) minmax(0, 0.95fr);
     gap: ${space[18]}px; align-items: start;
     background: ${color.surfaceRaised}; border: 1px solid ${color.line};
     border-radius: ${radius.xl}px; padding: ${space[20]}px; box-shadow: ${shadow.e1}; }
-  /* was brand at 20% alpha — 1.38:1, unreadable. Muted but legible instead. */
-  .cs-finding-n { font-size: ${ds.size["2xl"]}px; font-weight: ${ds.weight.extrabold};
-    color: ${color.inkFaint}; line-height: 1; letter-spacing: -0.03em; }
+  /* Colour: was brand at 20% alpha — 1.38:1, unreadable. Muted but legible now.
+     Alignment: cap-height sits ~0.26em below the em box at this weight, so the
+     negative margin pulls the numeral's visible top level with the heading's. */
+  .cs-finding-n { font-size: 46px; font-weight: ${ds.weight.extrabold};
+    color: ${color.inkFaint}; line-height: 1; letter-spacing: -0.04em;
+    margin-top: 8px; font-variant-numeric: tabular-nums; }
   .cs-finding-body { min-width: 0; }
   .cs-source { display: inline-block; margin-top: ${space[10]}px;
     font-size: ${ds.size.sm}px; font-weight: ${ds.weight.bold}; color: ${color.brand}; text-decoration: none; }
