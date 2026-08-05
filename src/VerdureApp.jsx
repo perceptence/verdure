@@ -97,7 +97,7 @@ export function celestialPos(hour) {
    day (6am→6pm), moon runs the night (6pm→6am); BOTH rise on the left (east) and
    set on the right (west), each arcing over the top. Each body is below the horizon
    (alt < 0 → faded out) while off-duty, so its off-screen reset is never visible. */
-function celestialRealistic(hour) {
+export function celestialRealistic(hour) {
   const dayT = (hour - 6) / 12;                    // 0 at 6am, 1 at 6pm
   const sunAlt = Math.sin(dayT * Math.PI);         // +1 at noon, 0 at horizons, <0 at night
   const sun = { cx: 4 + dayT * 92, cy: 50 - sunAlt * 38, alt: sunAlt };

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { color, type as ds, space, radius, shadow, motion, palette } from "./tokens.js";
-import VerdureApp, { lightAt, rgb, celestialPos } from "./VerdureApp.jsx";
+import VerdureApp, { lightAt, rgb, celestialRealistic } from "./VerdureApp.jsx";
 
 /* ==========================================================================
    VERDURE — DESIGN CASE STUDY
@@ -174,7 +174,11 @@ export default function CaseStudy() {
     return () => cancelAnimationFrame(raf);
   }, []);
   const L = lightAt(hour);
-  const cel = celestialPos(hour);
+  /* Two-arc model, same as the product's Garden page: sun and moon BOTH rise
+     east (left) and set west (right), each arcing over the top. Whichever is
+     below the horizon fades out, so neither resets on screen. */
+  const cel = celestialRealistic(hour);
+  const fade = (alt) => Math.max(0, Math.min(1, alt / 0.16));
 
   /* Narrow viewports crop the garden inward instead of scaling the whole
      1440-wide strip down, which made the plants thin and spindly. Each step
@@ -253,10 +257,17 @@ export default function CaseStudy() {
         <div className="cs-sky" aria-hidden="true"
           style={{ background: `linear-gradient(180deg, ${rgb(L.top)} 0%, ${rgb(L.bot)} 100%)` }}>
           <div className="cs-stars" style={{ opacity: Math.max(0, 1 - L.warmth * 2.2) }} />
+          {/* sun — runs the day arc. rgb() returns "rgb(r,g,b)", so an alpha
+              suffix would be invalid CSS; rgba() is built explicitly. */}
           <div className="cs-orb" style={{
-            left: `${cel.cx}%`, top: `${cel.cy}%`,
-            background: `radial-gradient(circle, ${rgb(L.sun)} 0%, ${rgb(L.sun)}88 42%, transparent 70%)`,
-            opacity: 0.35 + L.warmth * 0.65,
+            left: `${cel.sun.cx}%`, top: `${cel.sun.cy}%`,
+            background: `radial-gradient(circle, ${rgb(L.sun)} 0%, rgba(${L.sun[0]},${L.sun[1]},${L.sun[2]},0.55) 42%, transparent 70%)`,
+            opacity: fade(cel.sun.alt),
+          }} />
+          {/* moon — runs the night arc, same direction, slightly lower peak */}
+          <div className="cs-orb cs-orb-moon" style={{
+            left: `${cel.moon.cx}%`, top: `${cel.moon.cy}%`,
+            opacity: fade(cel.moon.alt) * 0.9,
           }} />
         </div>
 
@@ -288,7 +299,7 @@ export default function CaseStudy() {
           </p>
           <dl className="cs-meta">
             <div><dt>Role</dt><dd>Design &amp; build</dd></div>
-            <div><dt>Surface</dt><dd>iOS · one screen size</dd></div>
+            <div><dt>Surface</dt><dd>iOS · one canvas, any screen</dd></div>
             <div><dt>Stack</dt><dd>React 18 · Vite</dd></div>
             <div><dt>Deploy</dt><dd>Vercel · one build, two routes</dd></div>
           </dl>
@@ -790,9 +801,10 @@ const css = `
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom-color: ${color.line}; }
   .cs-bar-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .cs-brand { display: flex; align-items: center; gap: ${space[10]}px; text-decoration: none;
-    font-weight: ${ds.weight.extrabold}; letter-spacing: 0.1em; font-size: ${ds.size.md}px; }
-  .cs-brand-mark { width: 26px; height: 26px; flex-shrink: 0; }
+  .cs-brand { display: flex; align-items: center; gap: ${space[12]}px; text-decoration: none;
+    font-weight: ${ds.weight.extrabold}; letter-spacing: 0.09em;
+    font-size: clamp(17px, 1.35vw, 20px); }
+  .cs-brand-mark { width: 30px; height: 30px; flex-shrink: 0; }
   .cs-brand-sub { font-weight: ${ds.weight.medium}; letter-spacing: 0; font-size: ${ds.size.base}px;
     opacity: 0.62; }
   .cs-bar-cta { display: inline-flex; align-items: center; gap: ${space[6]}px; text-decoration: none;
@@ -825,6 +837,8 @@ const css = `
   /* position and colour come from the product's own celestialPos()/lightAt() */
   .cs-orb { position: absolute; width: clamp(90px, 10vw, 150px); aspect-ratio: 1;
     border-radius: 50%; transform: translate(-50%, -50%); filter: blur(1px); }
+  .cs-orb-moon { width: clamp(64px, 7vw, 104px);
+    background: radial-gradient(circle, #EEF2FA 0%, rgba(226,232,244,0.55) 40%, transparent 70%); }
   /* the headline sits over a constant dark base, so contrast never depends on
      which phase the sky happens to be in */
   .cs-hero-scrim { position: absolute; inset: 0; pointer-events: none;
@@ -913,11 +927,12 @@ const css = `
     background: ${color.surfaceRaised}; border: 1px solid ${color.line};
     border-radius: ${radius.xl}px; padding: ${space[20]}px; box-shadow: ${shadow.e1}; }
   /* Colour: was brand at 20% alpha — 1.38:1, unreadable. Muted but legible now.
-     Alignment: cap-height sits ~0.26em below the em box at this weight, so the
-     negative margin pulls the numeral's visible top level with the heading's. */
+     Alignment: aligning line boxes is NOT aligning ink. At line-height 1 the
+     numeral's cap top sits ~7.4px below its box top (46px), the heading's ~4.4px
+     (17px) — so the numeral reads low by ~3px and needs pulling up, not down. */
   .cs-finding-n { font-size: 46px; font-weight: ${ds.weight.extrabold};
     color: ${color.inkFaint}; line-height: 1; letter-spacing: -0.04em;
-    margin-top: 8px; font-variant-numeric: tabular-nums; }
+    margin-top: 1px; font-variant-numeric: tabular-nums; }
   .cs-finding-body { min-width: 0; }
   .cs-source { display: inline-block; margin-top: ${space[10]}px;
     font-size: ${ds.size.sm}px; font-weight: ${ds.weight.bold}; color: ${color.brand}; text-decoration: none; }
