@@ -1,3 +1,8 @@
+/* Manrope is the product's typeface. The app also imports it inside its own
+   <style> block; hoisting it here makes it available to every route (the case
+   study renders without the app mounted). @import must precede other rules. */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
 /* Match Claude's artifact/preview rendering: use grayscale antialiasing
    instead of macOS default subpixel smoothing, which renders text heavier
    and darker. Applied globally so all Verdure text matches the design. */

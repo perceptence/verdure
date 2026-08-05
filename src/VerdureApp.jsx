@@ -3059,7 +3059,38 @@ const dsfCss = `
   @media (prefers-reduced-motion: reduce) { .dsf-root *, .dsf-dot { animation: none !important; transition: none !important; } }
 `;
 
+/* ==========================================================================
+   DEEP LINKS — `?screen=<name>` lands on a specific screen deterministically,
+   driving the SAME state transitions the in-app JUMP panel uses (phase / tab /
+   overlay stack). `?embed=1` additionally hides the demo panel so the running
+   app can be embedded elsewhere (e.g. the case study) as itself, not a mock.
+
+   Without a deep link the app behaves exactly as before: splash -> app.
+========================================================================== */
+const SCREEN_ROUTES = {
+  garden:         { phase: "app", tab: "home" },
+  rooms:          { phase: "app", tab: "rooms" },
+  activity:       { phase: "app", tab: "reminders" },
+  profile:        { phase: "app", tab: "profile" },
+  plants:         { phase: "app", tab: "home", overlay: { type: "allplants" } },
+  add:            { phase: "app", tab: "home", overlay: { type: "add" } },
+  detail:         { phase: "app", tab: "home", overlay: { type: "detail", id: INITIAL[1].id } },
+  "design-system":{ phase: "app", tab: "home", dsFull: true },
+  onboarding:     { phase: "onboarding", tab: "home" },
+  splash:         { phase: "splash", tab: "home" },
+};
+function readDeepLink() {
+  if (typeof window === "undefined") return { route: null, embed: false };
+  const q = new URLSearchParams(window.location.search);
+  return { route: SCREEN_ROUTES[q.get("screen")] || null, embed: q.get("embed") === "1" };
+}
+
 export default function VerdureApp() {
+  // Resolved once on mount, so a deep-linked app renders its target screen on
+  // the FIRST paint — no splash flash, no post-mount jump.
+  const [deep] = useState(readDeepLink);
+  const dl = deep.route;
+
   const realHour = new Date().getHours() + new Date().getMinutes() / 60;
   const [hour, setHour] = useState(realHour);
   const [auto, setAuto] = useState(false);
@@ -3068,7 +3099,9 @@ export default function VerdureApp() {
   const [favorites, setFavorites] = useState({}); // id -> true
   const toggleFavorite = (id) => setFavorites((f) => ({ ...f, [id]: !f[id] }));
   const [liveActivity, setLiveActivity] = useState(null);
-  const [signedIn, setSignedIn] = useState(false);
+  // Deep links land in the returning-user state that the seeded garden represents
+  // (7 plants already tended), matching what the JUMP panel produces post-splash.
+  const [signedIn, setSignedIn] = useState(!!dl);
   const [account, setAccount] = useState(null); // { name, email } from sign-in
   const [unsavedNudge, setUnsavedNudge] = useState(null); // { nickname, plant } when user skipped sign-in with a scanned plant
   const [resumeSignin, setResumeSignin] = useState(null); // plant data to resume sign-in with (from nudge tap)
@@ -3079,9 +3112,9 @@ export default function VerdureApp() {
   }, [liveActivity]);
   const [doneTasks, setDoneTasks] = useState({});
   const markTaskDone = (id) => setDoneTasks((d) => ({ ...d, [id]: true }));
-  const [tab, setTab] = useState("home"); // home | rooms | reminders | profile
-  const [phase, setPhase] = useState("splash"); // splash | onboarding | app
-  const [stack, setStack] = useState([]); // navigation stack of overlays on top of the current tab
+  const [tab, setTab] = useState(dl ? dl.tab : "home"); // home | rooms | reminders | profile
+  const [phase, setPhase] = useState(dl ? dl.phase : "splash"); // splash | onboarding | app
+  const [stack, setStack] = useState(dl && dl.overlay ? [dl.overlay] : []); // overlay stack on top of the current tab
   const rafRef = useRef(null);
 
   useEffect(() => { const t = setTimeout(() => setMounted(true), 60); return () => clearTimeout(t); }, []);
@@ -3095,7 +3128,7 @@ export default function VerdureApp() {
 
   // Scale the phone to fill the viewport at any window size (preview framing).
   const [phoneScale, setPhoneScale] = useState(1);
-  const [dsFull, setDsFull] = useState(false); // full-screen design system
+  const [dsFull, setDsFull] = useState(!!(dl && dl.dsFull)); // full-screen design system
   useEffect(() => {
     const PW = 402, PH = 874, PAD = 20; // frame footprint + a little breathing room
     const fit = () => setPhoneScale(0.98 * Math.min((window.innerWidth - PAD) / PW, (window.innerHeight - PAD) / PH));
@@ -4549,8 +4582,9 @@ export default function VerdureApp() {
 
       {/* DEMO CONTROLS — outside the phone frame. Not part of the shipping app;
           these exist only to showcase the real-time light engine. In production
-          the scene simply follows the device clock. */}
-      <div className="demo-panel" style={{ zoom: phoneScale }}>
+          the scene simply follows the device clock. Hidden when embedded (?embed=1)
+          so the embed shows the product alone. */}
+      {!deep.embed && <div className="demo-panel" style={{ zoom: phoneScale }}>
         <div className="demo-head">
           <span className="demo-badge">DEMO</span>
           <span className="demo-title">Time-of-day engine · not in the shipping app</span>
@@ -4587,7 +4621,7 @@ export default function VerdureApp() {
             <button key={label} className="demo-jump" onClick={fn}>{label}</button>
           ))}
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
