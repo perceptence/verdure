@@ -3067,7 +3067,7 @@ const dsfCss = `
 
    Without a deep link the app behaves exactly as before: splash -> app.
 ========================================================================== */
-const SCREEN_ROUTES = {
+export const SCREEN_ROUTES = {
   garden:         { phase: "app", tab: "home" },
   // the light model, playing fast — `auto` drives the existing rAF day cycle
   "time-of-day":  { phase: "app", tab: "home", auto: true },

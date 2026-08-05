@@ -11,7 +11,7 @@ import VerdureApp from "./VerdureApp.jsx";
 
 /* One content width for the entire page — the width the product's own
    design-system screen already uses, so the two pages line up. */
-const MAXW = 1080;
+export const MAXW = 1080;
 
 /* --------------------------------------------------------------------------
    FACTS — measured from this repository, not estimated.
@@ -20,17 +20,17 @@ const MAXW = 1080;
      tokens      Object.keys(...) on ./tokens.js
      a11y        axe-core 4.10.2 vs WCAG 2.1 AA on each core screen
 -------------------------------------------------------------------------- */
-const FACTS = {
+export const FACTS = {
   commits: 19, tags: 0, components: 22, appLines: 4627,
   paletteColors: 64, semanticColors: 28, typeSizes: 12, spaceSteps: 17,
   radii: 8, elevations: 6, easings: 3,
   seededPlants: 7, seededRooms: 4,
   axeVersion: "4.10.2", axeViolations: 0, axeScreens: 4,
-  automatedTests: 0, measured: "5 Aug 2026",
+  testFiles: 3, assertions: 42, measured: "5 Aug 2026",
 };
 
 /* Journeys — one line each. The detail lives in the phone, not the copy. */
-const SCREENS = [
+export const SCREENS = [
   ["garden", "Garden", "The living home scene, lit by the real hour."],
   ["time-of-day", "Time-of-day engine", "The light model, played fast — dawn to night."],
   ["rooms", "Rooms", "Plants grouped by the light they actually get."],
@@ -128,12 +128,12 @@ export default function CaseStudy() {
         <div className="cs-facts">
           {[[FACTS.components, "components"], [`${FACTS.paletteColors}/${FACTS.semanticColors}`, "colours"],
             [FACTS.typeSizes, "type steps"], [FACTS.spaceSteps, "spacing steps"],
-            [FACTS.commits, "commits"], [FACTS.axeViolations, "a11y violations"]].map(([n, l]) => (
+            [FACTS.assertions, "tests, passing"], [FACTS.axeViolations, "a11y violations"]].map(([n, l]) => (
             <div key={l} className="cs-fact"><div className="cs-fact-n">{n}</div><div className="cs-fact-l">{l}</div></div>
           ))}
         </div>
         <p className="cs-footnote">
-          Measured from this repository on {FACTS.measured}. No automated test suite — see <a href="#limits">limits</a>.
+          Measured from this repository on {FACTS.measured}. Run the suite with <code>npm test</code> — see <a href="#tests">what it covers</a>.
         </p>
       </div>
 
@@ -413,6 +413,51 @@ export default function CaseStudy() {
         </div>
       </Section>
 
+      {/* ---------- tests ---------- */}
+      <Section id="tests" kicker="Tests" title="What the suite actually guards"
+        lede={`${FACTS.assertions} tests across ${FACTS.testFiles} files. They don't chase coverage — each one pins a rule that a real bug broke, so the same mistake can't return quietly.`}>
+        <div className="cs-tests">
+          {[
+            ["Contrast can't regress", "Every ink colour is checked against every surface it sits on, and the status label colours against cards. The original audit found ~20 failures from one token; if a future palette edit drops any text below the 4.5:1 threshold, the build fails instead of shipping."],
+            ["Spacing stays on the grid", "Asserts no spacing token is an odd number, and that the screen gutter is a single token set to 20. That's the rule the spacing pass established — this stops it eroding one hand-typed value at a time."],
+            ["The embed can't land on splash", "The case study drives the phone by route name. If a journey key and a route key ever drift apart, the embed would silently fall back to the splash screen. A test compares the two lists directly."],
+            ["The page can't lie", "Every token count printed on this page is asserted against the module it describes, and the test-file count counts the files on disk. A number here cannot go stale without turning the suite red."],
+          ].map(([t, d]) => (
+            <div key={t} className="cs-test"><h3 className="cs-h3">{t}</h3><p className="cs-body cs-tight">{d}</p></div>
+          ))}
+        </div>
+
+        <div className="cs-prob" style={{ marginTop: space[16] }}>
+          <header><span className="cs-tag">Example</span><h3 className="cs-h3">The test that keeps this page honest</h3></header>
+          <div className="cs-prob-body">
+            {/* focusable: it can scroll on narrow screens, and a scrollable
+                region has to be reachable by keyboard */}
+            <pre className="cs-code" tabIndex={0} aria-label="Example test">
+              <code>{`it("testFiles matches disk", () => {
+  const found =
+    import.meta.glob("./**/*.test.{js,jsx}");
+
+  // glob omits the importing module
+  expect(FACTS.testFiles).toBe(
+    Object.keys(found).length + 1
+  );
+});`}</code></pre>
+            <div className="cs-explain">
+              <div className="cs-explain-label">In plain English</div>
+              <p className="cs-body cs-tight">
+                This page claims a number of test files. Rather than trusting me to update that number, the
+                test asks the build tool to list the test files that actually exist and compares the two. Add
+                a test file, or delete one, and forget to update the page — the suite goes red.
+              </p>
+              <p className="cs-why">
+                It's a small thing, but it's the difference between a portfolio number that was true once and
+                one that's still true. The same pattern covers the colour, type and spacing counts above.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Section>
+
       {/* ---------- accessibility ---------- */}
       <Section id="a11y" kicker="Accessibility" title="Audited, fixed, re-audited">
         <div className="cs-a11y">
@@ -437,7 +482,7 @@ export default function CaseStudy() {
       <Section id="limits" kicker="Scope" title="Limits, and what's next"
         lede="What this prototype deliberately doesn't do — and what I'd build first if it continued.">
         <div className="cs-gaps">
-          {[["No automated tests", `${FACTS.automatedTests} test files. Everything here was verified by hand or measured. First thing I'd add.`],
+          {[["No end-to-end tests", `The ${FACTS.assertions} tests cover tokens, routing and rendering. Nothing drives a real browser, so the layout checks in this build were still done by hand.`],
             ["One screen size", "No tablet, landscape or responsive behaviour inside the product. Needs a size-class strategy."],
             ["No backend", "State lives in the session. Real interactions, fake persistence."],
             ["Simulated identification", "The scan runs a scripted three-stage sequence. Faithful mock, not a vision model."]].map(([t, d]) => (
@@ -662,7 +707,18 @@ const css = `
   .cs-ratio-hex { font-size: ${ds.size.base}px; font-weight: ${ds.weight.bold}; min-width: 68px; }
   .cs-ratio-val { font-size: ${ds.size["2xs"]}px; font-weight: ${ds.weight.extrabold};
     letter-spacing: 0.06em; text-transform: uppercase; }
+  .cs-tests { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: ${space[16]}px; margin-top: ${space[28]}px; }
+  .cs-test { background: ${color.surfaceRaised}; border: 1px solid ${color.line};
+    border-radius: ${radius.lg}px; padding: ${space[18]}px; }
+  .cs-code { margin: 0; padding: ${space[16]}px; overflow-x: auto;
+    background: ${color.brandDeep}; border-radius: ${radius.lg}px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: ${ds.size.base}px; line-height: 1.6; color: ${palette.leaf100}; }
+  .cs-code code { background: none; color: inherit; padding: 0; font-size: inherit; }
   .cs-explain { min-width: 0; }
+  .cs-explain-label { font-size: ${ds.size["2xs"]}px; font-weight: ${ds.weight.extrabold};
+    letter-spacing: 0.12em; text-transform: uppercase; color: ${color.brandBright}; }
   .cs-why { font-size: ${ds.size.md}px; font-weight: ${ds.weight.medium}; font-style: italic;
     line-height: ${ds.leading.snug}; color: ${color.inkFaint}; margin-top: ${space[12]}px;
     padding-top: ${space[12]}px; border-top: 1px solid ${color.line}; }
