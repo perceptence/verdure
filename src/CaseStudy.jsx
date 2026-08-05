@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { color, type as ds, space, radius, shadow, motion, palette } from "./tokens.js";
-import VerdureApp from "./VerdureApp.jsx";
+import VerdureApp, { lightAt, rgb, celestialPos } from "./VerdureApp.jsx";
 
 /* ==========================================================================
    VERDURE — DESIGN CASE STUDY
@@ -40,6 +40,52 @@ export const SCREENS = [
   ["add", "Add plant", "Two-shot scan: the plant, then the room's light."],
 ];
 
+/* The hero runs the product's ACTUAL light model rather than an approximation:
+   lightAt() interpolates between eight keyframes and celestialPos() sweeps one
+   continuous circle, so the sky and the sun/moon move together and never jump. */
+const HERO_DAY_SECONDS = 48; // one full 24h cycle
+
+/* Secondary research: recurring complaints about existing plant-care apps, and
+   the design decision each one drove. Sources are linked on the page — these
+   are other people's findings, not claims of my own. */
+const RESEARCH = [
+  {
+    finding: "Apps push generic watering reminders",
+    detail: "Reviews of the category single out reminders that fire on a fixed interval rather than adapting to the plant, the climate or how the owner actually cares for it.",
+    response: "The home screen isn't a reminder queue. State is shown on the plant itself, and Activity records what you did and what the app noticed — a diary rather than a nag.",
+    source: "PlantIn UI/UX review",
+    href: "https://dev.to/emmaexplores/why-even-the-best-plant-care-app-fails-without-a-thoughtful-uiux-5725",
+  },
+  {
+    finding: "Schedules don't bend to real life",
+    detail: "A common complaint: miss a watering and you can't log the day you actually did it, and the schedule won't shift to match.",
+    response: "Logging is the primary action, not a correction. Watering a plant updates its record and its next window, so the plan follows the behaviour instead of fighting it.",
+    source: "Garden.com, tracking watering schedules",
+    href: "https://www.garden.com/tools/how-to-track-watering-schedules-with-plant-care-apps",
+  },
+  {
+    finding: "“Bright, indirect light” means nothing to beginners",
+    detail: "It's described as the most common and most confusing instruction in houseplant care — and insufficient light is a leading reason houseplants die indoors.",
+    response: "Rooms are defined by the light they actually get, not by a label. Each plant shows how well its room suits it, so “wrong spot” becomes visible rather than inferred.",
+    source: "House Plant Journal",
+    href: "https://www.houseplantjournal.com/bright-indirect-light-requirements-by-plant/",
+  },
+  {
+    finding: "Light falls off faster than people expect",
+    detail: "Every doubling of distance from a window drops light intensity by roughly 75% — so a plant a few steps further in is in a materially different place.",
+    response: "Placement is a first-class action. Plants carry a “best spot” or a prompt to move, and moving one is a supported flow rather than an edit buried in settings.",
+    source: "JOMO Studio lighting guide",
+    href: "https://jomostudio.com/blogs/plant-with-jomo/the-ultimate-houseplant-lighting-guide",
+  },
+  {
+    finding: "Phone light meters oversell their accuracy",
+    detail: "Phone-based light measurement is reasonable at the extremes but jumpy and inconsistent in the middle range, where most rooms sit.",
+    response: "Measured values are labelled as estimates in the UI rather than presented as fact. The app commits to a plain-language band — bright, medium, low — and marks the number “est.”",
+    source: "Are light meters handy or hopeless?",
+    href: "https://britbrief.co.uk/environment/agriculture/houseplant-hacks-are-light-meters-handy-or-hopeless.html",
+  },
+];
+
 /* Phases of the light model, for the diagram. */
 const PHASES = [
   ["Night", "#16203A", "22–05"],
@@ -73,17 +119,54 @@ const Section = ({ id, kicker, title, lede, children }) => (
 
 export default function CaseStudy() {
   const [screen, setScreen] = useState("garden");
+  const leftColRef = useRef(null);
   const journeysRef = useRef(null);
+  const badgeRef = useRef(null);
   const [deviceH, setDeviceH] = useState(null);
 
-  /* Match the phone's height to the journey list beside it. */
+  /* Hero day cycle — one continuously advancing hour drives both the sky and the
+     sun/moon, exactly as the product does. Honors reduce-motion by parking at
+     midday instead of animating. */
+  const [hour, setHour] = useState(13);
   useEffect(() => {
-    const el = journeysRef.current;
-    if (!el) return;
-    const sync = () => setDeviceH(el.getBoundingClientRect().height);
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0, last = performance.now();
+    const loop = (now) => {
+      const dt = (now - last) / 1000; last = now;
+      setHour((h) => (h + dt * (24 / HERO_DAY_SECONDS)) % 24);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  const L = lightAt(hour);
+  const cel = celestialPos(hour);
+
+  /* The bar is part of the hero until you leave it, then it takes on a surface. */
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight - 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* The phone spans the left column — section title down to the bottom of the
+     last journey card — minus the badge above it.
+     Measured as (journeys bottom − column top) rather than the column's own
+     height: the grid stretches both columns to match, so reading the column
+     box would feed its own result back in and never settle. */
+  useEffect(() => {
+    const col = leftColRef.current, list = journeysRef.current;
+    if (!col || !list) return;
+    const sync = () => {
+      // the frame spans the journey list exactly: top of the first card to the
+      // bottom of the last. The live badge sits above that span.
+      setDeviceH(Math.max(320, list.getBoundingClientRect().height));
+    };
     sync();
     const ro = new ResizeObserver(sync);
-    ro.observe(el);
+    ro.observe(col); ro.observe(list);
     return () => ro.disconnect();
   }, []);
 
@@ -91,10 +174,18 @@ export default function CaseStudy() {
     <div className="cs-root">
       <style>{css}</style>
 
-      <header className="cs-bar">
+      <header className={`cs-bar${scrolled ? " solid" : ""}`}>
         <div className="cs-wrap cs-bar-inner">
           <a className="cs-brand" href="/">
-            <span className="cs-brand-mark" />Verdure
+            {/* the product's own mark, from the splash screen */}
+            <svg className="cs-brand-mark" viewBox="0 0 96 96" fill="none" aria-hidden="true">
+              <circle cx="48" cy="48" r="44" stroke="currentColor" strokeOpacity="0.35" strokeWidth="4" />
+              <path d="M48 76V44" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
+              <path d="M48 52c0-9-5-15-14-17 0 9 5 15 14 17Z" fill={palette.leaf300} />
+              <path d="M48 46c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf200} />
+              <circle cx="48" cy="78" r="4" fill="currentColor" />
+            </svg>
+            Verdure
             <span className="cs-brand-sub">Design case study</span>
           </a>
           <a className="cs-bar-cta" href="/?screen=garden">
@@ -104,15 +195,41 @@ export default function CaseStudy() {
         </div>
       </header>
 
-      {/* ---------- hero ---------- */}
+      {/* ---------- hero: a full-viewport day, on a loop ---------- */}
       <div className="cs-hero">
-        <div className="cs-hero-sun" aria-hidden="true" />
+        <div className="cs-sky" aria-hidden="true"
+          style={{ background: `linear-gradient(180deg, ${rgb(L.top)} 0%, ${rgb(L.bot)} 100%)` }}>
+          <div className="cs-stars" style={{ opacity: Math.max(0, 1 - L.warmth * 2.2) }} />
+          <div className="cs-orb" style={{
+            left: `${cel.cx}%`, top: `${cel.cy}%`,
+            background: `radial-gradient(circle, ${rgb(L.sun)} 0%, ${rgb(L.sun)}88 42%, transparent 70%)`,
+            opacity: 0.35 + L.warmth * 0.65,
+          }} />
+        </div>
+
+        {/* keeps the headline readable at every phase of the cycle */}
+        <div className="cs-hero-scrim" aria-hidden="true" />
+
+        {/* the garden, echoing the product's shelf */}
+        <svg className="cs-hero-garden" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
+          {[
+            [80, 1, .34], [190, .8, .28], [300, 1.1, .4], [430, .7, .24], [560, .95, .32],
+            [700, 1.15, .42], [850, .75, .26], [980, 1, .34], [1120, .85, .3], [1260, 1.1, .38], [1380, .8, .28],
+          ].map(([x, s, o], i) => (
+            <g key={i} transform={`translate(${x} 220) scale(${s})`} opacity={o}>
+              <path d="M0 0 C-46 -30 -62 -92 -30 -140 C6 -104 22 -50 0 0 Z" fill="#0A1710" />
+              <path d="M0 0 C46 -30 62 -92 30 -140 C-6 -104 -22 -50 0 0 Z" fill="#0A1710" />
+              <path d="M0 0 C-18 -52 -8 -128 4 -172 C18 -122 20 -50 0 0 Z" fill="#08120C" />
+            </g>
+          ))}
+        </svg>
+
         <div className="cs-wrap cs-hero-inner">
           <div className="cs-kicker cs-kicker-dark">Product design · Design systems · Front-end</div>
           <h1 className="cs-h1">A plant app that<br /><em>knows what time it is.</em></h1>
           <p className="cs-standfirst">
             The home screen isn't a checklist with leaves on it — it's a living scene, lit by a model
-            that tracks the real hour of the day.
+            that tracks the real hour of the day. This sky is running that model now.
           </p>
           <dl className="cs-meta">
             <div><dt>Role</dt><dd>Design &amp; build</dd></div>
@@ -121,6 +238,8 @@ export default function CaseStudy() {
             <div><dt>Deploy</dt><dd>Vercel · one build, two routes</dd></div>
           </dl>
         </div>
+
+        <div className="cs-hero-cue" aria-hidden="true"><span />Scroll</div>
       </div>
 
       {/* ---------- facts ---------- */}
@@ -137,35 +256,68 @@ export default function CaseStudy() {
         </p>
       </div>
 
-      {/* ---------- live product ---------- */}
-      <Section id="live" kicker="The product" title="It's running right here"
-        lede="Not a screenshot — the real component, mounted in this page. Pick a journey; the phone reloads into it.">
-        <div className="cs-demo">
-          <div className="cs-demo-side">
-            <div className="cs-journeys" ref={journeysRef} role="group" aria-label="Choose a journey">
-              {SCREENS.map(([key, label, desc]) => (
-                <button key={key} className={`cs-journey${screen === key ? " on" : ""}`}
-                  aria-pressed={screen === key} onClick={() => setScreen(key)}>
-                  <span className="cs-journey-name">
-                    {label}{screen === key && <span className="cs-journey-now">showing</span>}
-                  </span>
-                  <span className="cs-journey-desc">{desc}</span>
-                </button>
-              ))}
+      {/* ---------- live product ----------
+          The heading lives inside the grid so the phone can span the full
+          column — from the section title down to the last journey card. */}
+      <section id="live" className="cs-section">
+        <div className="cs-wrap">
+          <div className="cs-demo">
+            <div className="cs-demo-side" ref={leftColRef}>
+              <div className="cs-kicker">The product</div>
+              <h2 className="cs-h2">It's running right here</h2>
+              <p className="cs-lede">
+                Not a screenshot — the real component, mounted in this page. Pick a journey; the phone
+                reloads into it.
+              </p>
+              <div className="cs-journeys" ref={journeysRef} role="group" aria-label="Choose a journey">
+                {SCREENS.map(([key, label, desc]) => (
+                  <button key={key} className={`cs-journey${screen === key ? " on" : ""}`}
+                    aria-pressed={screen === key} onClick={() => setScreen(key)}>
+                    <span className="cs-journey-name">
+                      {label}{screen === key && <span className="cs-journey-now">showing</span>}
+                    </span>
+                    <span className="cs-journey-desc">{desc}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="cs-device-col">
-            <div className="cs-live-badge"><span className="cs-live-dot" />Live · running build</div>
-            {/* real component inline; `key` remounts it per journey */}
-            <div className="cs-device" style={deviceH ? { height: deviceH } : undefined}>
-              <VerdureApp key={screen} embedded screen={screen} />
+
+            <div className="cs-device-col">
+              <div className="cs-live-badge" ref={badgeRef}>
+                <span className="cs-live-dot" />Live · running build
+              </div>
+              {/* real component inline; `key` remounts it per journey */}
+              <div className="cs-device" style={deviceH ? { height: deviceH } : undefined}>
+                <VerdureApp key={screen} embedded screen={screen} />
+              </div>
             </div>
-            <a className="cs-inline-cta" href={`/?screen=${screen}`} target="_blank" rel="noreferrer">
-              Open full size
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M7 17 17 7M9 7h8v8" /></svg>
-            </a>
           </div>
         </div>
+      </section>
+
+      {/* ---------- motivation ---------- */}
+      <Section id="why" kicker="Motivation" title="Why build another plant app"
+        lede="People don't stop caring for plants because they forget to water them. They stop because the app tells them what to do without ever telling them what's going on. Five recurring complaints from the category, and what each one changed here.">
+        <div className="cs-research">
+          {RESEARCH.map((r, i) => (
+            <article key={i} className="cs-finding">
+              <div className="cs-finding-n">{String(i + 1).padStart(2, "0")}</div>
+              <div className="cs-finding-body">
+                <h3 className="cs-h3">{r.finding}</h3>
+                <p className="cs-body cs-tight">{r.detail}</p>
+                <a className="cs-source" href={r.href} target="_blank" rel="noreferrer">{r.source} ↗</a>
+              </div>
+              <div className="cs-response">
+                <div className="cs-response-label">What Verdure does</div>
+                <p className="cs-body cs-tight">{r.response}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="cs-footnote">
+          Secondary research — published reviews and horticultural guidance, linked above. No original
+          user studies were run for this project.
+        </p>
       </Section>
 
       {/* ---------- the light model ---------- */}
@@ -249,6 +401,13 @@ export default function CaseStudy() {
                 <div key={n} className="cs-elev"><div className="cs-elev-box" style={{ boxShadow: sh }} /><small>{n}</small></div>
               ))}
             </div>
+            <div className="cs-token-head" style={{ marginTop: space[20] }}>Gutter · the one constant</div>
+            <div className="cs-gutterdemo">
+              <span className="cs-gutterdemo-edge" style={{ width: space.gutter }}>{space.gutter}</span>
+              <span className="cs-gutterdemo-body">content</span>
+              <span className="cs-gutterdemo-edge" style={{ width: space.gutter }}>{space.gutter}</span>
+            </div>
+            <p className="cs-body cs-tight">Every screen and sheet holds {space.gutter}px from each edge — 51 places, one token.</p>
           </div>
 
           <div className="cs-token-card">
@@ -272,6 +431,20 @@ export default function CaseStudy() {
               ))}
             </div>
             <p className="cs-body cs-tight">Vivid tokens fill; darker text variants keep labels above 4.5:1.</p>
+          </div>
+
+          <div className="cs-token-card">
+            <div className="cs-token-head">Duration · {Object.keys(motion.duration).length}</div>
+            <div className="cs-durations">
+              {Object.entries(motion.duration).map(([n, v]) => (
+                <div key={n} className="cs-duration">
+                  <span className="cs-duration-n">{n}</span>
+                  <span className="cs-duration-bar" style={{ width: `${(parseInt(v) / 900) * 100}%` }} />
+                  <span className="cs-duration-v">{v}</span>
+                </div>
+              ))}
+            </div>
+            <p className="cs-body cs-tight">Named so a transition reads as a decision, not a magic number.</p>
           </div>
         </div>
 
@@ -362,16 +535,18 @@ export default function CaseStudy() {
               <h3 className="cs-h3">A newer phone is a layout change</h3></header>
             <div className="cs-prob-body">
               <div className="cs-demo-box">
+                {/* fluid: the two bars stay in true 390:402 proportion at any
+                    width, so the 3% reads correctly on a phone as well as a desktop */}
                 <div className="cs-ab cs-ab-stack">
                   <div className="cs-ab-col">
                     <span className="cs-ab-lbl cs-ab-good">390pt — the canvas it was tuned on</span>
-                    <div className="cs-scalebar" style={{ width: 195 }}><span>390</span></div>
+                    <div className="cs-scalebar" style={{ width: `${(390 / 402) * 100}%` }}><span>390</span></div>
                   </div>
                   <div className="cs-ab-col">
                     <span className="cs-ab-lbl cs-ab-bad">402pt — every element gains 3%</span>
-                    <div className="cs-scalebar" style={{ width: 201 }}>
+                    <div className="cs-scalebar" style={{ width: "100%" }}>
                       <span>390</span>
-                      <i className="cs-scalebar-extra" style={{ width: 6 }}>+12</i>
+                      <i className="cs-scalebar-extra" style={{ width: `${(12 / 402) * 100}%` }}>+12</i>
                     </div>
                   </div>
                 </div>
@@ -478,16 +653,38 @@ export default function CaseStudy() {
         </div>
       </Section>
 
-      {/* ---------- limits ---------- */}
-      <Section id="limits" kicker="Scope" title="Limits, and what's next"
-        lede="What this prototype deliberately doesn't do — and what I'd build first if it continued.">
-        <div className="cs-gaps">
-          {[["No end-to-end tests", `The ${FACTS.assertions} tests cover tokens, routing and rendering. Nothing drives a real browser, so the layout checks in this build were still done by hand.`],
-            ["One screen size", "No tablet, landscape or responsive behaviour inside the product. Needs a size-class strategy."],
-            ["No backend", "State lives in the session. Real interactions, fake persistence."],
-            ["Simulated identification", "The scan runs a scripted three-stage sequence. Faithful mock, not a vision model."]].map(([t, d]) => (
-            <div key={t} className="cs-gap"><h3 className="cs-h3">{t}</h3><p className="cs-body cs-tight">{d}</p></div>
+      {/* ---------- what's ahead ---------- */}
+      <Section id="next" kicker="What's ahead" title="Where this goes next"
+        lede="The light model is the foundation, not the feature. Everything below builds on a garden that already knows what time it is.">
+        <div className="cs-next">
+          {[
+            ["Next", "Light that knows your window",
+              "The model runs on the clock today. Feeding it the room's orientation and the local forecast would let the scene reflect this actual Tuesday — overcast, north-facing, shorter days — and move a plant's care window with the season."],
+            ["Next", "A garden that persists",
+              "Sync turns the seeded demo into a real garden that follows you across devices, and turns the photo journal into a genuine record of a plant over years rather than a session."],
+            ["Later", "Identification that earns its confidence",
+              "The two-shot scan already asks for the plant and the room. A real vision model could use both — species from the close-up, placement advice from the light — and show its confidence instead of asserting a name."],
+            ["Later", "Beyond one screen size",
+              "The layout is tuned for a single canvas. A size-class strategy would let the same garden open up on a tablet, where rooms and their plants can sit side by side."],
+            ["Exploring", "Care that's shared",
+              "Plants in a shared home have more than one carer. Letting a household see the same garden — and who watered last — removes the most common cause of an overwatered plant."],
+            ["Exploring", "The scene as a widget",
+              "The home screen is already a glanceable state. On a lock screen it would need no interaction at all: you'd learn your garden's condition without opening anything."],
+          ].map(([tag, t, d]) => (
+            <article key={t} className="cs-next-item">
+              <span className={`cs-next-tag cs-next-${tag.toLowerCase()}`}>{tag}</span>
+              <h3 className="cs-h3">{t}</h3>
+              <p className="cs-body cs-tight">{d}</p>
+            </article>
           ))}
+        </div>
+        <div className="cs-callout" style={{ marginTop: space[16] }}>
+          <div>
+            <b>Honest footing.</b> This is a working prototype: state lives in the session, identification is
+            a faithful mock rather than a vision model, and the {FACTS.assertions} tests cover tokens,
+            routing and rendering rather than driving a real browser. Those are the starting conditions for
+            the list above, not hidden caveats.
+          </div>
         </div>
       </Section>
 
@@ -527,35 +724,81 @@ const css = `
   .cs-root code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em;
     background: ${color.brand}12; color: ${color.brand}; padding: 1px 5px; border-radius: ${radius.xs}px; }
 
-  .cs-bar { position: sticky; top: 0; z-index: 10; background: ${color.surface}e8;
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid ${color.line}; }
-  .cs-bar-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  /* the bar is painted into the hero until you scroll past it */
+  .cs-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    background: transparent; border-bottom: 1px solid transparent; color: ${palette.onDark};
+    transition: background ${motion.duration.base} ${motion.easing.standard},
+                border-color ${motion.duration.base} ${motion.easing.standard},
+                color ${motion.duration.base} ${motion.easing.standard}; }
+  .cs-bar.solid { background: ${color.surface}e8; color: ${color.ink};
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom-color: ${color.line}; }
+  .cs-bar-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
   .cs-brand { display: flex; align-items: center; gap: ${space[10]}px; text-decoration: none;
-    font-weight: ${ds.weight.extrabold}; letter-spacing: 0.12em; font-size: ${ds.size.md}px; }
-  .cs-brand-mark { width: 20px; height: 20px; border-radius: 50%; background: ${color.brand};
-    box-shadow: inset 0 0 0 3px ${color.surface}, 0 0 0 1.5px ${color.brand}; }
-  .cs-brand-sub { font-weight: ${ds.weight.medium}; letter-spacing: 0; font-size: ${ds.size.base}px; color: ${color.inkFaint}; }
+    font-weight: ${ds.weight.extrabold}; letter-spacing: 0.1em; font-size: ${ds.size.md}px; }
+  .cs-brand-mark { width: 26px; height: 26px; flex-shrink: 0; }
+  .cs-brand-sub { font-weight: ${ds.weight.medium}; letter-spacing: 0; font-size: ${ds.size.base}px;
+    opacity: 0.62; }
   .cs-bar-cta { display: inline-flex; align-items: center; gap: ${space[6]}px; text-decoration: none;
-    font-size: ${ds.size.base}px; font-weight: ${ds.weight.bold}; color: ${color.brand};
-    background: ${color.brand}14; padding: ${space[8]}px ${space[14]}px; border-radius: ${radius.pill}px;
-    white-space: nowrap; flex-shrink: 0; transition: background ${motion.duration.fast} ${motion.easing.standard}; }
-  .cs-bar-cta:hover { background: ${color.brand}22; }
+    font-size: ${ds.size.base}px; font-weight: ${ds.weight.bold}; color: inherit;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22);
+    padding: ${space[8]}px ${space[14]}px; border-radius: ${radius.pill}px;
+    white-space: nowrap; flex-shrink: 0;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: background ${motion.duration.fast} ${motion.easing.standard}; }
+  .cs-bar-cta:hover { background: rgba(255,255,255,0.24); }
+  .cs-bar.solid .cs-bar-cta { color: ${color.brand}; background: ${color.brand}14; border-color: transparent; }
+  .cs-bar.solid .cs-bar-cta:hover { background: ${color.brand}22; }
 
-  /* hero — dark, echoing the app's night sky */
+  /* hero — a full-viewport day running on a loop */
+  /* exactly one viewport — the bar is painted inside it */
   .cs-hero { position: relative; overflow: hidden; color: ${palette.onDark};
-    padding: clamp(64px, 10vw, 148px) 0 clamp(52px, 7vw, 104px);
-    background: radial-gradient(120% 95% at 72% 8%, ${palette.moss750} 0%, ${color.brandDeep} 42%, ${palette.black780} 100%); }
-  .cs-hero-sun { position: absolute; top: -8%; right: 8%; width: min(420px, 42vw); aspect-ratio: 1;
-    border-radius: 50%; pointer-events: none;
-    background: radial-gradient(closest-side, ${palette.amber100}66, ${palette.amber400}22 55%, transparent 72%); }
-  .cs-hero-inner { position: relative; }
-  .cs-root .cs-standfirst { font-size: clamp(17px, 2vw, 23px); font-weight: ${ds.weight.medium};
-    line-height: ${ds.leading.snug}; color: ${palette.leaf100}; max-width: 54ch; margin-top: ${space[24]}px; }
-  .cs-meta { display: flex; flex-wrap: wrap; gap: ${space[32]}px; margin: ${space[40]}px 0 0; }
-  .cs-meta div { display: flex; flex-direction: column; gap: ${space[2]}px; }
-  .cs-meta dt { font-size: ${ds.size.xs}px; font-weight: ${ds.weight.bold}; letter-spacing: 0.12em;
+    height: 100svh; min-height: 600px; display: flex; align-items: center;
+    padding: 64px 0 0; }
+  .cs-sky { position: absolute; inset: 0; transition: background 120ms linear; }
+  .cs-stars { position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 18%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 28% 34%, #fff, transparent),
+      radial-gradient(1.6px 1.6px at 46% 12%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 63% 27%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 78% 15%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 88% 33%, #fff, transparent),
+      radial-gradient(1.3px 1.3px at 36% 8%, #fff, transparent),
+      radial-gradient(1.1px 1.1px at 71% 6%, #fff, transparent); }
+  /* position and colour come from the product's own celestialPos()/lightAt() */
+  .cs-orb { position: absolute; width: clamp(90px, 10vw, 150px); aspect-ratio: 1;
+    border-radius: 50%; transform: translate(-50%, -50%); filter: blur(1px); }
+  /* the headline sits over a constant dark base, so contrast never depends on
+     which phase the sky happens to be in */
+  .cs-hero-scrim { position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(100deg, rgba(6,10,8,0.92) 0%, rgba(6,10,8,0.78) 30%, rgba(6,10,8,0.34) 60%, rgba(6,10,8,0.04) 100%),
+      linear-gradient(180deg, rgba(6,10,8,0.34) 0%, transparent 34%, rgba(6,10,8,0.4) 100%); }
+  .cs-hero-garden { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%;
+    height: clamp(120px, 22vh, 240px); }
+  .cs-hero-inner { position: relative; width: 100%; }
+  .cs-hero-cue { position: absolute; left: 50%; bottom: clamp(24px, 4vh, 44px); transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: ${space[8]}px;
+    font-size: ${ds.size["2xs"]}px; font-weight: ${ds.weight.extrabold};
+    letter-spacing: 0.24em; text-transform: uppercase; color: ${palette.leaf200}; }
+  .cs-hero-cue span { width: 1px; height: 34px;
+    background: linear-gradient(${palette.leaf200}, transparent); }
+  /* kicker gets a rule, so it reads as a label rather than floating text */
+  .cs-kicker-dark { display: inline-flex; align-items: center; gap: ${space[12]}px;
+    font-size: ${ds.size.xs}px; letter-spacing: 0.22em; color: ${palette.leaf300}; }
+  .cs-kicker-dark::before { content: ""; width: 40px; height: 1px; background: ${palette.leaf300}; opacity: 0.6; }
+  .cs-root .cs-standfirst { font-size: clamp(16px, 1.5vw, 19px); font-weight: ${ds.weight.medium};
+    line-height: 1.62; color: ${palette.leaf100}; max-width: 44ch; margin-top: ${space[24]}px; }
+  /* meta sits on a hairline, labels tighter and quieter than the values */
+  .cs-meta { display: flex; flex-wrap: wrap; gap: ${space[20]}px clamp(${space[20]}px, 3vw, ${space[40]}px);
+    margin: clamp(${space[28]}px, 4vh, ${space[40]}px) 0 0; padding-top: ${space[20]}px;
+    border-top: 1px solid rgba(255,255,255,0.16); max-width: 760px; }
+  .cs-meta div { display: flex; flex-direction: column; gap: ${space[6]}px; }
+  .cs-meta dt { font-size: 10px; font-weight: ${ds.weight.bold}; letter-spacing: 0.18em;
     text-transform: uppercase; color: ${palette.leaf300}; }
-  .cs-meta dd { margin: 0; font-size: ${ds.size.lg}px; font-weight: ${ds.weight.semibold}; color: ${palette.onDark}; }
+  .cs-meta dd { margin: 0; font-size: ${ds.size.md}px; font-weight: ${ds.weight.semibold};
+    color: ${palette.onDark}; letter-spacing: -0.005em; }
 
   .cs-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: ${space[12]}px; margin-top: ${space[32]}px; }
@@ -570,10 +813,12 @@ const css = `
   .cs-section { padding: clamp(48px, 6vw, 88px) 0 0; scroll-margin-top: 76px; }
 
   /* live demo */
-  .cs-demo { display: grid; grid-template-columns: minmax(0, 1fr) 320px;
-    gap: clamp(24px, 4vw, 48px); align-items: start; margin-top: ${space[28]}px; }
+  /* 380px so the frame's height, not its width, is what limits the scale —
+     otherwise it can't grow tall enough to meet the last journey card */
+  .cs-demo { display: grid; grid-template-columns: minmax(0, 1fr) 380px;
+    gap: clamp(24px, 4vw, 48px); align-items: stretch; }
   .cs-demo-side { min-width: 0; }
-  .cs-journeys { display: flex; flex-direction: column; gap: ${space[10]}px; }
+  .cs-journeys { display: flex; flex-direction: column; gap: ${space[10]}px; margin-top: ${space[24]}px; }
   .cs-journey { display: flex; flex-direction: column; gap: ${space[4]}px; text-align: left;
     background: ${color.surfaceRaised}; border: 1px solid ${color.line}; border-radius: ${radius.lg}px;
     padding: ${space[18]}px ${space[20]}px;
@@ -590,8 +835,10 @@ const css = `
     padding: ${space[2]}px ${space[6]}px; border-radius: ${radius.xs}px; }
   .cs-journey-desc { font-size: ${ds.size.md}px; font-weight: ${ds.weight.medium};
     line-height: ${ds.leading.snug}; color: ${color.inkSoft}; }
-  .cs-device-col { position: sticky; top: 76px; display: flex; flex-direction: column;
-    align-items: center; gap: ${space[10]}px; }
+  /* bottom-aligned so the frame finishes level with the last journey card;
+     the badge above it lands level with the section title */
+  .cs-device-col { display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-end; gap: ${space[20]}px; height: 100%; padding-bottom: 0; }
   .cs-device { width: 100%; }
   .cs-live-badge { display: inline-flex; align-items: center; gap: ${space[8]}px;
     font-size: ${ds.size.xs}px; font-weight: ${ds.weight.extrabold}; letter-spacing: 0.1em;
@@ -601,6 +848,25 @@ const css = `
   .cs-inline-cta { display: inline-flex; align-items: center; gap: ${space[6]}px;
     font-size: ${ds.size.base}px; font-weight: ${ds.weight.bold}; color: ${color.brand}; text-decoration: none; }
   .cs-inline-cta:hover { text-decoration: underline; }
+
+  /* research → response */
+  .cs-research { display: flex; flex-direction: column; gap: ${space[12]}px; margin-top: ${space[28]}px; }
+  .cs-finding { display: grid; grid-template-columns: 44px minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: ${space[18]}px; align-items: start;
+    background: ${color.surfaceRaised}; border: 1px solid ${color.line};
+    border-radius: ${radius.xl}px; padding: ${space[20]}px; box-shadow: ${shadow.e1}; }
+  /* was brand at 20% alpha — 1.38:1, unreadable. Muted but legible instead. */
+  .cs-finding-n { font-size: ${ds.size["2xl"]}px; font-weight: ${ds.weight.extrabold};
+    color: ${color.inkFaint}; line-height: 1; letter-spacing: -0.03em; }
+  .cs-finding-body { min-width: 0; }
+  .cs-source { display: inline-block; margin-top: ${space[10]}px;
+    font-size: ${ds.size.sm}px; font-weight: ${ds.weight.bold}; color: ${color.brand}; text-decoration: none; }
+  .cs-source:hover { text-decoration: underline; }
+  .cs-response { min-width: 0; background: ${color.brand}0c; border: 1px solid ${color.brand}22;
+    border-radius: ${radius.lg}px; padding: ${space[16]}px; }
+  .cs-response-label { font-size: ${ds.size["2xs"]}px; font-weight: ${ds.weight.extrabold};
+    letter-spacing: 0.12em; text-transform: uppercase; color: ${color.brandBright}; }
+  .cs-root .cs-response .cs-body { margin-top: ${space[6]}px; }
 
   /* light-model diagram */
   .cs-phases { display: flex; border-radius: ${radius.lg}px; overflow: hidden;
@@ -644,6 +910,18 @@ const css = `
   .cs-elevs { display: flex; flex-wrap: wrap; gap: ${space[16]}px; }
   .cs-elev { display: flex; flex-direction: column; align-items: center; gap: ${space[8]}px; }
   .cs-elev-box { width: 60px; height: 40px; background: ${color.surface}; border-radius: ${radius.md}px; }
+  .cs-gutterdemo { display: flex; align-items: stretch; height: 46px; border-radius: ${radius.md}px;
+    overflow: hidden; border: 1px solid ${color.line}; }
+  .cs-gutterdemo-edge { display: grid; place-items: center; background: ${color.brand}22;
+    color: ${color.brand}; font-size: 9px; font-weight: ${ds.weight.extrabold}; flex-shrink: 0; }
+  .cs-gutterdemo-body { flex: 1; display: grid; place-items: center; background: ${color.surface};
+    font-size: ${ds.size.sm}px; font-weight: ${ds.weight.semibold}; color: ${color.inkFaint}; }
+  .cs-durations { display: flex; flex-direction: column; gap: ${space[8]}px; }
+  .cs-duration { display: flex; align-items: center; gap: ${space[10]}px;
+    font-size: ${ds.size.sm}px; font-weight: ${ds.weight.semibold}; color: ${color.inkFaint}; }
+  .cs-duration-n { min-width: 52px; color: ${color.inkSoft}; }
+  .cs-duration-bar { height: 8px; background: ${color.brandBright}; border-radius: ${radius.xs}px; }
+  .cs-duration-v { margin-left: auto; }
   .cs-motion-row { display: flex; align-items: center; gap: ${space[12]}px; padding: ${space[8]}px 0; }
   .cs-motion-name { font-size: ${ds.size.sm}px; font-weight: ${ds.weight.bold}; min-width: 68px; }
   .cs-track { flex: 1; height: 8px; background: ${color.brand}14; border-radius: ${radius.pill}px; position: relative; }
@@ -738,10 +1016,17 @@ const css = `
   .cs-fixlist li::before { content: "✓"; position: absolute; left: 0; color: ${color.thrivingText}; font-weight: ${ds.weight.extrabold}; }
   .cs-fixlist b { color: ${color.ink}; font-weight: ${ds.weight.extrabold}; }
 
-  .cs-gaps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  .cs-next { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: ${space[16]}px; margin-top: ${space[28]}px; }
-  .cs-gap { background: ${color.surfaceRaised}; border: 1px solid ${color.line};
-    border-radius: ${radius.lg}px; padding: ${space[18]}px; }
+  .cs-next-item { background: ${color.surfaceRaised}; border: 1px solid ${color.line};
+    border-radius: ${radius.lg}px; padding: ${space[20]}px; }
+  .cs-next-item .cs-h3 { margin-top: ${space[10]}px; }
+  .cs-next-tag { display: inline-block; font-size: ${ds.size["2xs"]}px; font-weight: ${ds.weight.extrabold};
+    letter-spacing: 0.1em; text-transform: uppercase; padding: ${space[4]}px ${space[8]}px;
+    border-radius: ${radius.sm}px; }
+  .cs-next-next { background: ${color.brand}; color: #fff; }
+  .cs-next-later { background: ${color.brand}1e; color: ${color.brand}; }
+  .cs-next-exploring { background: ${color.line}; color: ${color.inkSoft}; }
 
   .cs-footer { margin-top: clamp(56px, 7vw, 96px); border-top: 1px solid ${color.line};
     padding: ${space[24]}px 0 ${space[40]}px; }
@@ -753,8 +1038,16 @@ const css = `
     .cs-span2 { grid-column: span 1; }
     .cs-prob-body { grid-template-columns: 1fr; }
   }
+  @media (max-width: 560px) {
+    .cs-brand-sub { display: none; }          /* was wrapping to a second line */
+    .cs-kicker-dark::before { display: none; } /* rule crowds the label on narrow screens */
+    .cs-finding { grid-template-columns: 1fr; gap: ${space[14]}px; }
+    .cs-finding-n { font-size: ${ds.size.lg}px; }
+  }
   @media (max-width: 860px) {
     .cs-demo { grid-template-columns: 1fr; }
+    .cs-finding { grid-template-columns: 36px minmax(0, 1fr); }
+    .cs-finding .cs-response { grid-column: 1 / -1; }
     .cs-device-col { position: static; order: -1; }
     .cs-device { max-width: 300px; margin: 0 auto; }
     .cs-a11y { grid-template-columns: 1fr; }

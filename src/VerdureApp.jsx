@@ -60,7 +60,7 @@ const FONT_IMPORT =
 /* ----------------------------- light model ----------------------------- */
 function lerp(a, b, t) { return a + (b - a) * t; }
 function lerpColor(c1, c2, t) { return c1.map((c, i) => Math.round(lerp(c, c2[i], t))); }
-function rgb(c) { return `rgb(${c[0]},${c[1]},${c[2]})`; }
+export function rgb(c) { return `rgb(${c[0]},${c[1]},${c[2]})`; }
 
 const KEYS = [
   { h: 0,  top: [18, 22, 40],   bot: [40, 44, 72],   sun: [120, 130, 180], warmth: 0.05, label: "Night" },
@@ -72,7 +72,7 @@ const KEYS = [
   { h: 21, top: [40, 44, 78],   bot: [88, 70, 100],   sun: [180, 150, 200], warmth: 0.15, label: "Evening" },
   { h: 24, top: [18, 22, 40],   bot: [40, 44, 72],   sun: [120, 130, 180], warmth: 0.05, label: "Night" },
 ];
-function lightAt(hour) {
+export function lightAt(hour) {
   let a = KEYS[0], b = KEYS[KEYS.length - 1];
   for (let i = 0; i < KEYS.length - 1; i++) {
     if (hour >= KEYS[i].h && hour <= KEYS[i + 1].h) { a = KEYS[i]; b = KEYS[i + 1]; break; }
@@ -80,7 +80,7 @@ function lightAt(hour) {
   const t = (hour - a.h) / (b.h - a.h || 1);
   return { top: lerpColor(a.top, b.top, t), bot: lerpColor(a.bot, b.bot, t), sun: lerpColor(a.sun, b.sun, t), warmth: lerp(a.warmth, b.warmth, t), label: t < 0.5 ? a.label : b.label };
 }
-function celestialPos(hour) {
+export function celestialPos(hour) {
   const isDay = hour >= 6 && hour <= 18;
   // ONE full circle, clockwise, continuous. 6am at the left horizon; the sun sweeps
   // up over the top (noon = highest), down to the right horizon at 6pm, where it
