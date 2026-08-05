@@ -45,6 +45,40 @@ export const SCREENS = [
    continuous circle, so the sky and the sun/moon move together and never jump. */
 const HERO_DAY_SECONDS = 48; // one full 24h cycle
 
+/* Five silhouettes rather than one repeated shape — a broad fan, upright
+   blades, a trailing arch, a low rosette and tall fronds. Drawn from the
+   ground up (y = 0 is the horizon). */
+const HERO_SHAPES = [
+  // broad fan
+  ["M0 0 C-52 -26 -70 -86 -34 -132 C-2 -96 14 -46 0 0 Z",
+   "M0 0 C52 -26 70 -86 34 -132 C2 -96 -14 -46 0 0 Z",
+   "M0 0 C-20 -56 -10 -130 2 -170 C16 -120 18 -52 0 0 Z"],
+  // upright blades
+  ["M-16 0 C-24 -62 -18 -124 -8 -170 C0 -120 -4 -60 -8 0 Z",
+   "M2 0 C-4 -74 2 -146 12 -196 C20 -140 14 -68 12 0 Z",
+   "M20 0 C16 -52 24 -108 36 -146 C38 -100 30 -50 28 0 Z"],
+  // trailing arch
+  ["M0 0 C-42 -18 -78 -56 -92 -102 C-54 -82 -20 -46 0 0 Z",
+   "M0 0 C42 -18 78 -56 92 -102 C54 -82 20 -46 0 0 Z",
+   "M0 0 C-10 -42 -4 -92 4 -124 C12 -88 10 -42 0 0 Z"],
+  // low rosette
+  ["M0 0 C-50 -12 -80 -38 -86 -70 C-48 -56 -18 -32 0 0 Z",
+   "M0 0 C50 -12 80 -38 86 -70 C48 -56 18 -32 0 0 Z",
+   "M0 0 C-16 -32 -8 -70 0 -94 C12 -66 12 -30 0 0 Z"],
+  // tall fronds
+  ["M0 0 C-32 -54 -58 -116 -48 -168 C-18 -126 -6 -60 0 0 Z",
+   "M0 0 C32 -54 58 -116 48 -168 C18 -126 6 -60 0 0 Z",
+   "M0 0 C-6 -74 0 -158 8 -206 C14 -148 8 -70 0 0 Z"],
+];
+/* [x, shape, scale, opacity] — irregular spacing so it reads as planting,
+   not a pattern. */
+const HERO_PLANTS = [
+  [60, 0, 0.92, 0.40], [150, 1, 0.74, 0.30], [246, 3, 1.02, 0.44], [330, 2, 0.66, 0.26],
+  [438, 4, 0.86, 0.38], [534, 0, 0.70, 0.28], [648, 1, 1.06, 0.46], [742, 3, 0.80, 0.32],
+  [852, 2, 0.92, 0.40], [960, 4, 0.72, 0.30], [1066, 0, 1.00, 0.42], [1178, 1, 0.84, 0.34],
+  [1286, 3, 0.94, 0.38], [1392, 2, 0.76, 0.28],
+];
+
 /* Secondary research: recurring complaints about existing plant-care apps, and
    the design decision each one drove. Sources are linked on the page — these
    are other people's findings, not claims of my own. */
@@ -212,14 +246,11 @@ export default function CaseStudy() {
 
         {/* the garden, echoing the product's shelf */}
         <svg className="cs-hero-garden" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
-          {[
-            [80, 1, .34], [190, .8, .28], [300, 1.1, .4], [430, .7, .24], [560, .95, .32],
-            [700, 1.15, .42], [850, .75, .26], [980, 1, .34], [1120, .85, .3], [1260, 1.1, .38], [1380, .8, .28],
-          ].map(([x, s, o], i) => (
+          {HERO_PLANTS.map(([x, shape, s, o], i) => (
             <g key={i} transform={`translate(${x} 220) scale(${s})`} opacity={o}>
-              <path d="M0 0 C-46 -30 -62 -92 -30 -140 C6 -104 22 -50 0 0 Z" fill="#0A1710" />
-              <path d="M0 0 C46 -30 62 -92 30 -140 C-6 -104 -22 -50 0 0 Z" fill="#0A1710" />
-              <path d="M0 0 C-18 -52 -8 -128 4 -172 C18 -122 20 -50 0 0 Z" fill="#08120C" />
+              {HERO_SHAPES[shape].map((d, j) => (
+                <path key={j} d={d} fill={j === 2 ? "#08120C" : "#0A1710"} />
+              ))}
             </g>
           ))}
         </svg>
@@ -228,8 +259,9 @@ export default function CaseStudy() {
           <div className="cs-kicker cs-kicker-dark">Product design · Design systems · Front-end</div>
           <h1 className="cs-h1">A plant app that<br /><em>knows what time it is.</em></h1>
           <p className="cs-standfirst">
-            The home screen isn't a checklist with leaves on it — it's a living scene, lit by a model
-            that tracks the real hour of the day. This sky is running that model now.
+            A houseplant companion that shows you what your garden is doing instead of handing you a
+            task list. Plants live in rooms defined by the light they actually get, care follows what
+            you really did, and the whole garden reads at a glance.
           </p>
           <dl className="cs-meta">
             <div><dt>Role</dt><dd>Design &amp; build</dd></div>
@@ -243,7 +275,8 @@ export default function CaseStudy() {
       </div>
 
       {/* ---------- facts ---------- */}
-      <div className="cs-wrap">
+      <Section id="scale" kicker="At a glance" title="What's actually in the build"
+        lede="Not estimates. Each figure is measured from this repository, and the test suite asserts them against the modules they describe — so a number here can't quietly go stale.">
         <div className="cs-facts">
           {[[FACTS.components, "components"], [`${FACTS.paletteColors}/${FACTS.semanticColors}`, "colours"],
             [FACTS.typeSizes, "type steps"], [FACTS.spaceSteps, "spacing steps"],
@@ -252,9 +285,9 @@ export default function CaseStudy() {
           ))}
         </div>
         <p className="cs-footnote">
-          Measured from this repository on {FACTS.measured}. Run the suite with <code>npm test</code> — see <a href="#tests">what it covers</a>.
+          Measured on {FACTS.measured}. Run the suite yourself with <code>npm test</code> — see <a href="#tests">what it covers</a>.
         </p>
-      </div>
+      </Section>
 
       {/* ---------- live product ----------
           The heading lives inside the grid so the phone can span the full
@@ -791,13 +824,14 @@ const css = `
   .cs-root .cs-standfirst { font-size: clamp(16px, 1.5vw, 19px); font-weight: ${ds.weight.medium};
     line-height: 1.62; color: ${palette.leaf100}; max-width: 44ch; margin-top: ${space[24]}px; }
   /* meta sits on a hairline, labels tighter and quieter than the values */
-  .cs-meta { display: flex; flex-wrap: wrap; gap: ${space[20]}px clamp(${space[20]}px, 3vw, ${space[40]}px);
+  /* sized to hold all four on one row once the values scale up */
+  .cs-meta { display: flex; flex-wrap: wrap; gap: ${space[20]}px clamp(${space[18]}px, 2.4vw, ${space[32]}px);
     margin: clamp(${space[28]}px, 4vh, ${space[40]}px) 0 0; padding-top: ${space[20]}px;
-    border-top: 1px solid rgba(255,255,255,0.16); max-width: 760px; }
+    border-top: 1px solid rgba(255,255,255,0.16); max-width: 900px; }
   .cs-meta div { display: flex; flex-direction: column; gap: ${space[6]}px; }
-  .cs-meta dt { font-size: 10px; font-weight: ${ds.weight.bold}; letter-spacing: 0.18em;
-    text-transform: uppercase; color: ${palette.leaf300}; }
-  .cs-meta dd { margin: 0; font-size: ${ds.size.md}px; font-weight: ${ds.weight.semibold};
+  .cs-meta dt { font-size: clamp(10px, 0.86vw, 12px); font-weight: ${ds.weight.bold};
+    letter-spacing: 0.16em; text-transform: uppercase; color: ${palette.leaf300}; }
+  .cs-meta dd { margin: 0; font-size: clamp(15px, 1.35vw, 19px); font-weight: ${ds.weight.semibold};
     color: ${palette.onDark}; letter-spacing: -0.005em; }
 
   .cs-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
