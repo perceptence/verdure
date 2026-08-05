@@ -242,11 +242,11 @@ export default function CaseStudy() {
               <path d="M48 46c0-9 5-15 14-17 0 9-5 15-14 17Z" fill={palette.leaf200} />
               <circle cx="48" cy="78" r="4" fill="currentColor" />
             </svg>
-            Verdure
+            VERDURE
             <span className="cs-brand-sub">Design case study</span>
           </a>
-          <a className="cs-bar-cta" href="/?screen=garden">
-            Open the app
+          <a className="cs-bar-cta" href="/?screen=garden" target="_blank" rel="noreferrer">
+            Try it live
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M7 17 17 7M9 7h8v8" /></svg>
           </a>
         </div>
@@ -932,7 +932,7 @@ const css = `
      (17px) — so the numeral reads low by ~3px and needs pulling up, not down. */
   .cs-finding-n { font-size: 46px; font-weight: ${ds.weight.extrabold};
     color: ${color.inkFaint}; line-height: 1; letter-spacing: -0.04em;
-    margin-top: 1px; font-variant-numeric: tabular-nums; }
+    margin-top: -1px; font-variant-numeric: tabular-nums; }
   .cs-finding-body { min-width: 0; }
   .cs-source { display: inline-block; margin-top: ${space[10]}px;
     font-size: ${ds.size.sm}px; font-weight: ${ds.weight.bold}; color: ${color.brand}; text-decoration: none; }
