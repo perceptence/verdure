@@ -3069,6 +3069,8 @@ const dsfCss = `
 ========================================================================== */
 const SCREEN_ROUTES = {
   garden:         { phase: "app", tab: "home" },
+  // the light model, playing fast — `auto` drives the existing rAF day cycle
+  "time-of-day":  { phase: "app", tab: "home", auto: true },
   rooms:          { phase: "app", tab: "rooms" },
   activity:       { phase: "app", tab: "reminders" },
   profile:        { phase: "app", tab: "profile" },
@@ -3085,15 +3087,23 @@ function readDeepLink() {
   return { route: SCREEN_ROUTES[q.get("screen")] || null, embed: q.get("embed") === "1" };
 }
 
-export default function VerdureApp() {
+/* Props (all optional — the standalone app passes none):
+     embedded  render inline inside a host page: the phone sizes to its CONTAINER
+               rather than the window, drops the 100vh stage, and hides the demo
+               panel. Used by the case study to show the product in-page.
+     screen    render a specific screen directly, bypassing the URL. Resolved on
+               mount, so remount (via a React key) to switch screens. */
+export default function VerdureApp({ embedded = false, screen = null }) {
   // Resolved once on mount, so a deep-linked app renders its target screen on
   // the FIRST paint — no splash flash, no post-mount jump.
-  const [deep] = useState(readDeepLink);
+  const [deep] = useState(() =>
+    screen ? { route: SCREEN_ROUTES[screen] || null, embed: true } : readDeepLink()
+  );
   const dl = deep.route;
 
   const realHour = new Date().getHours() + new Date().getMinutes() / 60;
   const [hour, setHour] = useState(realHour);
-  const [auto, setAuto] = useState(false);
+  const [auto, setAuto] = useState(!!(dl && dl.auto)); // ?screen=time-of-day plays the day
   const [mounted, setMounted] = useState(false);
   const [plants, setPlants] = useState(INITIAL);
   const [favorites, setFavorites] = useState({}); // id -> true
@@ -3129,13 +3139,33 @@ export default function VerdureApp() {
   // Scale the phone to fill the viewport at any window size (preview framing).
   const [phoneScale, setPhoneScale] = useState(1);
   const [dsFull, setDsFull] = useState(!!(dl && dl.dsFull)); // full-screen design system
+  const embedRef = useRef(null);
   useEffect(() => {
     const PW = 402, PH = 874, PAD = 20; // frame footprint + a little breathing room
+    const BTN = 28;                     // hardware buttons protrude ~12px per side
+
+    if (embedded) {
+      // Inline: fit the CONTAINER. Width always binds; height binds too when the
+      // host gives the container a definite height. Never upscales past native.
+      const el = embedRef.current;
+      if (!el) return;
+      const fit = () => {
+        const byW = (el.clientWidth - BTN) / PW;
+        const h = el.clientHeight;
+        setPhoneScale(Math.min(1, h > 0 ? Math.min(byW, h / PH) : byW));
+      };
+      fit();
+      const ro = new ResizeObserver(fit);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }
+
+    // Standalone: fill the viewport.
     const fit = () => setPhoneScale(0.98 * Math.min((window.innerWidth - PAD) / PW, (window.innerHeight - PAD) / PH));
     fit();
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
-  }, []);
+  }, [embedded]);
 
   const top = stack[stack.length - 1] || null;
   const [exiting, setExiting] = useState(null);
@@ -3251,7 +3281,7 @@ export default function VerdureApp() {
   }, [tab, stack]);
 
   return (
-    <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", background: "transparent", minHeight: "100vh", fontFamily: "Manrope, sans-serif" }}>
+    <div ref={embedRef} style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", background: "transparent", fontFamily: "Manrope, sans-serif", ...(embedded ? { width: "100%", height: "100%" } : { minHeight: "100vh" }) }}>
       {dsFull && <DesignSystemFullScreen onClose={() => setDsFull(false)} />}
       <style>{`
         ${FONT_IMPORT}
@@ -4496,8 +4526,9 @@ export default function VerdureApp() {
         }
       `}</style>
 
-      <div className="v-stage">
-      <div className="v-phone-shell" style={{ transform: `scale(${phoneScale})` }}>
+      {/* Inline: reserve the SCALED height — transform doesn't affect layout. */}
+      <div className="v-stage" style={embedded ? { height: Math.round(874 * phoneScale), alignItems: "flex-start" } : undefined}>
+      <div className="v-phone-shell" style={{ transform: `scale(${phoneScale})`, ...(embedded ? { transformOrigin: "top center" } : null) }}>
       <div className="v-btn left v-btn-action" aria-hidden="true" />
       <div className="v-btn left v-btn-volup" aria-hidden="true" />
       <div className="v-btn left v-btn-voldn" aria-hidden="true" />
@@ -4584,7 +4615,7 @@ export default function VerdureApp() {
           these exist only to showcase the real-time light engine. In production
           the scene simply follows the device clock. Hidden when embedded (?embed=1)
           so the embed shows the product alone. */}
-      {!deep.embed && <div className="demo-panel" style={{ zoom: phoneScale }}>
+      {!deep.embed && !embedded && <div className="demo-panel" style={{ zoom: phoneScale }}>
         <div className="demo-head">
           <span className="demo-badge">DEMO</span>
           <span className="demo-title">Time-of-day engine · not in the shipping app</span>
