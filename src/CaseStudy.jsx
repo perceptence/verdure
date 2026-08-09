@@ -35,7 +35,7 @@ export const FACTS = {
   radii: 8, elevations: 6, easings: 3,
   // quality bar
   axeVersion: "4.10.2", axeViolations: 0, axeScreens: 4,
-  testFiles: 3, tests: 49, measured: "9 Aug 2026",
+  testFiles: 3, tests: 50, measured: "9 Aug 2026",
 };
 
 /* Five stops that trace the argument: why it exists → what it is → how it
@@ -327,8 +327,8 @@ export default function CaseStudy() {
           <dl className="cs-meta">
             <div><dt>Team</dt><dd>Solo, with AI assistance</dd></div>
             <div><dt>Scope</dt><dd>Problem framing → design system → shipped build</dd></div>
-            <div><dt>Stage</dt><dd>Working prototype · no live users</dd></div>
-            <div><dt>Stack</dt><dd>React 18 · Vite · Vercel</dd></div>
+            <div><dt>Stage</dt><dd>Working prototype, running end to end</dd></div>
+            <div><dt>Standard</dt><dd>Audited against WCAG 2.1 AA</dd></div>
           </dl>
         </div>
 
@@ -811,7 +811,8 @@ export default function CaseStudy() {
         </div>
         <div className="cs-callout" style={{ marginTop: space[16] }}>
           <div>
-            <b>Honest footing.</b> This is a working prototype: state lives in the session, identification is
+            <b>Honest footing.</b> This is a working prototype with no users yet: state lives in the
+            session, identification is
             a faithful mock rather than a vision model, and the {FACTS.tests} tests cover tokens,
             routing and rendering rather than driving a real browser. Those are the starting conditions for
             the list above, not hidden caveats.
@@ -821,7 +822,9 @@ export default function CaseStudy() {
 
       <footer className="cs-footer">
         <div className="cs-wrap cs-footer-inner">
-          <span>Verdure — design case study</span>
+          {/* The stack left the hero — it isn't what this page is arguing — but
+              it's still a real fact about the build, so it lands here. */}
+          <span>Verdure — design case study · React 18 · Vite · Vercel</span>
           <span>Built solo, with AI assistance · <a href="/?screen=garden">open the app</a></span>
         </div>
       </footer>

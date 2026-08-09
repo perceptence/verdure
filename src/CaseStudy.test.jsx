@@ -84,9 +84,17 @@ describe("case study page", () => {
     expect(Object.fromEntries(pairs)).toEqual({
       Team: "Solo, with AI assistance",
       Scope: "Problem framing → design system → shipped build",
-      Stage: "Working prototype · no live users",
-      Stack: "React 18 · Vite · Vercel",
+      Stage: "Working prototype, running end to end",
+      Standard: "Audited against WCAG 2.1 AA",
     });
+  });
+
+  /* The hero no longer leads with the prototype's limits, so the page has to
+     keep stating them somewhere unhedged. If this line goes, the honesty goes
+     with it and nothing else would catch that. */
+  it("still says plainly that there are no users yet", () => {
+    render(<CaseStudy />);
+    expect(screen.getByText(/working prototype with no users yet/i)).toBeTruthy();
   });
 
   /* The roadmap's buckets and the key that explains them must not drift apart. */
