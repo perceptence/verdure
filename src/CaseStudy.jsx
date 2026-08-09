@@ -19,15 +19,34 @@ export const MAXW = 1080;
      components  grep -cE "^function [A-Z]" src/VerdureApp.jsx
      tokens      Object.keys(...) on ./tokens.js
      a11y        axe-core 4.10.2 vs WCAG 2.1 AA on each core screen
+     tests       `npm test` summary line
+
+   Most of these are re-asserted by the suite, so they fail the build rather
+   than go stale. `tests` is the exception and can't be: two files generate
+   cases in a loop, so counting `it(` in the source undercounts (28 vs 47).
+   It's checked by running the suite, which is a human step, not a guard.
 -------------------------------------------------------------------------- */
 export const FACTS = {
-  commits: 19, tags: 0, components: 22, appLines: 4627,
+  // product scope
+  journeys: 7, linkableScreens: 11, components: 22, findings: 5,
+  seededPlants: 7, seededRooms: 4,
+  // system internals — used as section subtitles, asserted by the suite
   paletteColors: 64, semanticColors: 28, typeSizes: 12, spaceSteps: 17,
   radii: 8, elevations: 6, easings: 3,
-  seededPlants: 7, seededRooms: 4,
+  // quality bar
   axeVersion: "4.10.2", axeViolations: 0, axeScreens: 4,
-  testFiles: 3, assertions: 42, measured: "5 Aug 2026",
+  testFiles: 3, tests: 47, measured: "5 Aug 2026",
 };
+
+/* Five stops that trace the argument: why it exists → what it is → how it
+   scales → what it cost → where it goes. Not every section. */
+export const NAV = [
+  ["why", "Why"],
+  ["live", "The product"],
+  ["system", "System"],
+  ["build", "Decisions"],
+  ["next", "What's next"],
+];
 
 /* Journeys — one line each. The detail lives in the phone, not the copy. */
 export const SCREENS = [
@@ -243,8 +262,14 @@ export default function CaseStudy() {
               <circle cx="48" cy="78" r="4" fill="currentColor" />
             </svg>
             VERDURE
-            <span className="cs-brand-sub">Design case study</span>
           </a>
+          {/* Curated route through the argument — five stops, not a table of
+              contents. Every href must match a section id; a test guards that. */}
+          <nav className="cs-nav" aria-label="Sections">
+            {NAV.map(([id, label]) => (
+              <a key={id} href={`#${id}`}>{label}</a>
+            ))}
+          </nav>
           <a className="cs-bar-cta" href="/?screen=garden" target="_blank" rel="noreferrer">
             Try it live
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M7 17 17 7M9 7h8v8" /></svg>
@@ -298,10 +323,10 @@ export default function CaseStudy() {
             you really did, and the whole garden reads at a glance.
           </p>
           <dl className="cs-meta">
-            <div><dt>Role</dt><dd>Design &amp; build</dd></div>
-            <div><dt>Surface</dt><dd>iOS · one canvas, any screen</dd></div>
-            <div><dt>Stack</dt><dd>React 18 · Vite</dd></div>
-            <div><dt>Deploy</dt><dd>Vercel · one build, two routes</dd></div>
+            <div><dt>Scope</dt><dd>Solo, with AI assistance</dd></div>
+            <div><dt>Owned</dt><dd>Problem framing → system → shipped build</dd></div>
+            <div><dt>Stage</dt><dd>Working prototype · no live users</dd></div>
+            <div><dt>Stack</dt><dd>React 18 · Vite · Vercel</dd></div>
           </dl>
         </div>
 
@@ -310,11 +335,11 @@ export default function CaseStudy() {
 
       {/* ---------- facts ---------- */}
       <Section id="scale" kicker="At a glance" title="What's actually in the build"
-        lede="Not estimates. Each figure is measured from this repository, and the test suite asserts them against the modules they describe — so a number here can't quietly go stale.">
+        lede="Not estimates. Each figure is derived from the codebase, and the test suite asserts it against the module it describes — so a number here can't quietly go stale.">
         <div className="cs-facts">
-          {[[FACTS.components, "components"], [`${FACTS.paletteColors}/${FACTS.semanticColors}`, "colours"],
-            [FACTS.typeSizes, "type steps"], [FACTS.spaceSteps, "spacing steps"],
-            [FACTS.assertions, "tests, passing"], [FACTS.axeViolations, "a11y violations"]].map(([n, l]) => (
+          {[[FACTS.journeys, "journeys"], [FACTS.linkableScreens, "linkable screens"],
+            [FACTS.components, "reusable components"], [FACTS.findings, "sourced findings"],
+            [FACTS.tests, "tests, passing"], [FACTS.axeViolations, "a11y violations"]].map(([n, l]) => (
             <div key={l} className="cs-fact"><div className="cs-fact-n">{n}</div><div className="cs-fact-l">{l}</div></div>
           ))}
         </div>
@@ -380,6 +405,14 @@ export default function CaseStudy() {
               </div>
             </article>
           ))}
+        </div>
+        <div className="cs-callout" style={{ marginTop: space[16] }}>
+          <div>
+            <b>What the five add up to.</b> Every complaint is the same complaint wearing a different hat:
+            these apps issue instructions but never show state. So the bet here isn't a better reminder
+            engine — it's making the garden itself legible, and letting care follow from what you can see.
+            Every decision below inherits from that.
+          </div>
         </div>
         <p className="cs-footnote">
           Secondary research — published reviews and horticultural guidance, linked above. No original
@@ -657,7 +690,7 @@ export default function CaseStudy() {
 
       {/* ---------- tests ---------- */}
       <Section id="tests" kicker="Tests" title="What the suite actually guards"
-        lede={`${FACTS.assertions} tests across ${FACTS.testFiles} files. They don't chase coverage — each one pins a rule that a real bug broke, so the same mistake can't return quietly.`}>
+        lede={`${FACTS.tests} tests across ${FACTS.testFiles} files. They don't chase coverage — each one pins a rule that a real bug broke, so the same mistake can't return quietly.`}>
         <div className="cs-tests">
           {[
             ["Contrast can't regress", "Every ink colour is checked against every surface it sits on, and the status label colours against cards. The original audit found ~20 failures from one token; if a future palette edit drops any text below the 4.5:1 threshold, the build fails instead of shipping."],
@@ -671,9 +704,17 @@ export default function CaseStudy() {
 
         <div className="cs-prob" style={{ marginTop: space[16] }}>
           <header><span className="cs-tag">Example</span><h3 className="cs-h3">The test that keeps this page honest</h3></header>
+          <p className="cs-body cs-tight" style={{ marginBottom: space[14] }}>
+            This is the only passage on the page that needs code to make its point — everything else is
+            product reasoning and stays open. The plain-English version is on the right; the mechanics are
+            tucked away for anyone who wants them.
+          </p>
           <div className="cs-prob-body">
-            {/* focusable: it can scroll on narrow screens, and a scrollable
-                region has to be reachable by keyboard */}
+            {/* Progressive disclosure: the only code block on the page, so a
+                skimming reader isn't blocked by it. focusable because it can
+                scroll on narrow screens. */}
+            <details className="cs-details">
+              <summary>Show the mechanics</summary>
             <pre className="cs-code" tabIndex={0} aria-label="Example test">
               <code>{`it("testFiles matches disk", () => {
   const found =
@@ -684,6 +725,7 @@ export default function CaseStudy() {
     Object.keys(found).length + 1
   );
 });`}</code></pre>
+            </details>
             <div className="cs-explain">
               <div className="cs-explain-label">In plain English</div>
               <p className="cs-body cs-tight">
@@ -723,6 +765,17 @@ export default function CaseStudy() {
       {/* ---------- what's ahead ---------- */}
       <Section id="next" kicker="What's ahead" title="Where this goes next"
         lede="The light model is the foundation, not the feature. Everything below builds on a garden that already knows what time it is.">
+        <div className="cs-criteria">
+          <div><span className="cs-next-tag cs-next-next">Next</span>
+            <p className="cs-body cs-tight">Makes the existing model truer without new primitives. The scene already
+              runs on a clock — giving it weather and orientation is more signal into a system that's built.</p></div>
+          <div><span className="cs-next-tag cs-next-later">Later</span>
+            <p className="cs-body cs-tight">Needs a capability the prototype doesn't have — a backend, a vision model,
+              a second size class. Worth doing, but each one is its own project.</p></div>
+          <div><span className="cs-next-tag cs-next-exploring">Exploring</span>
+            <p className="cs-body cs-tight">Changes who the product is for. Shared care and a lock-screen widget both
+              move it beyond one person tending one garden, so they need evidence before investment.</p></div>
+        </div>
         <div className="cs-next">
           {[
             ["Next", "Light that knows your window",
@@ -748,7 +801,7 @@ export default function CaseStudy() {
         <div className="cs-callout" style={{ marginTop: space[16] }}>
           <div>
             <b>Honest footing.</b> This is a working prototype: state lives in the session, identification is
-            a faithful mock rather than a vision model, and the {FACTS.assertions} tests cover tokens,
+            a faithful mock rather than a vision model, and the {FACTS.tests} tests cover tokens,
             routing and rendering rather than driving a real browser. Those are the starting conditions for
             the list above, not hidden caveats.
           </div>
@@ -758,7 +811,7 @@ export default function CaseStudy() {
       <footer className="cs-footer">
         <div className="cs-wrap cs-footer-inner">
           <span>Verdure — design case study</span>
-          <span>{FACTS.commits} commits · React &amp; Vite · <a href="/?screen=garden">open the app</a></span>
+          <span>Built solo, with AI assistance · <a href="/?screen=garden">open the app</a></span>
         </div>
       </footer>
     </div>
@@ -807,6 +860,32 @@ const css = `
   .cs-brand-mark { width: 30px; height: 30px; flex-shrink: 0; }
   .cs-brand-sub { font-weight: ${ds.weight.medium}; letter-spacing: 0; font-size: ${ds.size.base}px;
     opacity: 0.62; }
+  /* curated route through the argument; sits between brand and CTA */
+  .cs-nav { display: flex; gap: ${space[4]}px; margin: 0 auto; }
+  .cs-nav a { text-decoration: none; font-size: ${ds.size.base}px; font-weight: ${ds.weight.semibold};
+    color: inherit; opacity: 0.72; padding: ${space[6]}px ${space[10]}px; border-radius: ${radius.pill}px;
+    white-space: nowrap; transition: opacity ${motion.duration.fast} ${motion.easing.standard},
+      background ${motion.duration.fast} ${motion.easing.standard}; }
+  .cs-nav a:hover { opacity: 1; background: rgba(255,255,255,0.14); }
+  .cs-bar.solid .cs-nav a:hover { background: ${color.brand}14; color: ${color.brand}; opacity: 1; }
+
+  /* progressive disclosure — used once, on the page's only code block */
+  .cs-details { border: 1px solid ${color.line}; border-radius: ${radius.lg}px; overflow: hidden; }
+  .cs-details summary { cursor: pointer; list-style: none; padding: ${space[12]}px ${space[16]}px;
+    font-size: ${ds.size.base}px; font-weight: ${ds.weight.bold}; color: ${color.brand};
+    background: ${color.brand}0c; }
+  .cs-details summary::-webkit-details-marker { display: none; }
+  .cs-details summary::after { content: " ↓"; }
+  .cs-details[open] summary::after { content: " ↑"; }
+  .cs-details summary:hover { background: ${color.brand}18; }
+  .cs-details .cs-code { border-radius: 0; }
+
+  /* what earns a place in each roadmap bucket */
+  .cs-criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: ${space[16]}px; margin-top: ${space[28]}px; padding: ${space[20]}px;
+    background: ${color.surfaceRaised}; border: 1px solid ${color.line}; border-radius: ${radius.xl}px; }
+  .cs-criteria > div { min-width: 0; }
+  .cs-criteria .cs-next-tag { margin-bottom: ${space[8]}px; }
   .cs-bar-cta { display: inline-flex; align-items: center; gap: ${space[6]}px; text-decoration: none;
     font-size: ${ds.size.base}px; font-weight: ${ds.weight.bold}; color: inherit;
     background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22);
@@ -1048,8 +1127,9 @@ const css = `
   .cs-scalebar { position: relative; display: flex; align-items: center; height: 34px;
     border-radius: ${radius.sm}px; background: ${color.brand}; color: #fff;
     font-size: ${ds.size.sm}px; font-weight: ${ds.weight.extrabold}; padding-left: ${space[10]}px; }
+  /* clay600 put white text at 4.48:1 — just under AA. clay700 clears it. */
   .cs-scalebar-extra { position: absolute; right: 0; top: 0; height: 100%;
-    background: ${color.needsCare}; border-radius: 0 ${radius.sm}px ${radius.sm}px 0;
+    background: ${palette.clay700}; border-radius: 0 ${radius.sm}px ${radius.sm}px 0;
     display: flex; align-items: center; justify-content: center; overflow: visible;
     font-size: ${ds.size["2xs"]}px; font-style: normal; white-space: nowrap; }
   .cs-widthbox { background: ${color.surfaceRaised}; border: 1px solid ${color.line}; border-radius: ${radius.md}px;
@@ -1113,6 +1193,7 @@ const css = `
     .cs-span2 { grid-column: span 1; }
     .cs-prob-body { grid-template-columns: 1fr; }
   }
+  @media (max-width: 900px) { .cs-nav { display: none; } }  /* CTA keeps priority */
   @media (max-width: 560px) {
     .cs-brand-sub { display: none; }          /* was wrapping to a second line */
     .cs-kicker-dark::before { display: none; } /* rule crowds the label on narrow screens */

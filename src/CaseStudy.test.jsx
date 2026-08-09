@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
-import CaseStudy, { FACTS, SCREENS } from "./CaseStudy.jsx";
+import CaseStudy, { FACTS, SCREENS, NAV } from "./CaseStudy.jsx";
+import { SCREEN_ROUTES } from "./VerdureApp.jsx";
 import { color, type as ds, space, radius, shadow, motion, palette } from "./tokens.js";
 
 describe("case study page", () => {
@@ -49,6 +50,28 @@ describe("case study page", () => {
     const { container } = render(<CaseStudy />);
     expect(container.querySelector(".sp-root")).toBeNull();
   });
+
+  /* The header nav promises a route through the page. A stop that points at a
+     section which no longer exists is a broken promise, so pin it. */
+  it("every nav stop points at a section that exists", () => {
+    const { container } = render(<CaseStudy />);
+    const missing = NAV
+      .map(([id]) => id)
+      .filter((id) => !container.querySelector(`#${id}`));
+    expect(missing).toEqual([]);
+  });
+
+  it("keeps the nav curated rather than a table of contents", () => {
+    const sections = render(<CaseStudy />).container.querySelectorAll("section[id]").length;
+    expect(NAV.length).toBeLessThan(sections);
+    expect(NAV.length).toBeLessThanOrEqual(5);
+  });
+
+  /* Honesty constraint: the page must not claim a team. */
+  it("describes scope as solo with AI assistance", () => {
+    render(<CaseStudy />);
+    expect(screen.getAllByText(/solo, with ai assistance/i).length).toBeGreaterThan(0);
+  });
 });
 
 /* Requirement: every number printed on the page is real. These assert the
@@ -56,6 +79,10 @@ describe("case study page", () => {
    without updating the page fails the build instead of quietly going stale. */
 describe("printed figures match the codebase", () => {
   const cases = [
+    // product-scope figures shown in the "At a glance" row
+    ["journeys", FACTS.journeys, SCREENS.length],
+    ["linkableScreens", FACTS.linkableScreens, Object.keys(SCREEN_ROUTES).length],
+    // system internals used as section subtitles
     ["paletteColors", FACTS.paletteColors, Object.keys(palette).length],
     ["semanticColors", FACTS.semanticColors, Object.keys(color).length],
     ["typeSizes", FACTS.typeSizes, Object.keys(ds.size).length],
