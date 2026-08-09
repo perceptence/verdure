@@ -68,9 +68,33 @@ describe("case study page", () => {
   });
 
   /* Honesty constraint: the page must not claim a team. */
-  it("describes scope as solo with AI assistance", () => {
+  it("describes the team as solo with AI assistance", () => {
     render(<CaseStudy />);
     expect(screen.getAllByText(/solo, with ai assistance/i).length).toBeGreaterThan(0);
+  });
+
+  /* A dt is a claim about its dd. "Scope: solo, with AI assistance" read as a
+     scope of work and said nothing true about it, so pin each pairing. */
+  it("pairs every hero term with the value it names", () => {
+    const { container } = render(<CaseStudy />);
+    const pairs = [...container.querySelectorAll(".cs-meta div")].map((d) => [
+      d.querySelector("dt").textContent,
+      d.querySelector("dd").textContent,
+    ]);
+    expect(Object.fromEntries(pairs)).toEqual({
+      Team: "Solo, with AI assistance",
+      Scope: "Problem framing → design system → shipped build",
+      Stage: "Working prototype · no live users",
+      Stack: "React 18 · Vite · Vercel",
+    });
+  });
+
+  /* The roadmap's buckets and the key that explains them must not drift apart. */
+  it("explains every bucket the roadmap actually uses", () => {
+    const { container } = render(<CaseStudy />);
+    const explained = [...container.querySelectorAll(".cs-rules dt")].map((d) => d.textContent);
+    const used = [...container.querySelectorAll(".cs-next-item .cs-next-tag")].map((t) => t.textContent);
+    expect(new Set(explained)).toEqual(new Set(used));
   });
 });
 

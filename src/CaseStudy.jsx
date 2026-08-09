@@ -35,7 +35,7 @@ export const FACTS = {
   radii: 8, elevations: 6, easings: 3,
   // quality bar
   axeVersion: "4.10.2", axeViolations: 0, axeScreens: 4,
-  testFiles: 3, tests: 47, measured: "5 Aug 2026",
+  testFiles: 3, tests: 49, measured: "9 Aug 2026",
 };
 
 /* Five stops that trace the argument: why it exists → what it is → how it
@@ -322,9 +322,11 @@ export default function CaseStudy() {
             task list. Plants live in rooms defined by the light they actually get, care follows what
             you really did, and the whole garden reads at a glance.
           </p>
+          {/* Each term names what its value actually is: who did the work, how
+              much of the work that was, how far it got, what it runs on. */}
           <dl className="cs-meta">
-            <div><dt>Scope</dt><dd>Solo, with AI assistance</dd></div>
-            <div><dt>Owned</dt><dd>Problem framing → system → shipped build</dd></div>
+            <div><dt>Team</dt><dd>Solo, with AI assistance</dd></div>
+            <div><dt>Scope</dt><dd>Problem framing → design system → shipped build</dd></div>
             <div><dt>Stage</dt><dd>Working prototype · no live users</dd></div>
             <div><dt>Stack</dt><dd>React 18 · Vite · Vercel</dd></div>
           </dl>
@@ -765,17 +767,26 @@ export default function CaseStudy() {
       {/* ---------- what's ahead ---------- */}
       <Section id="next" kicker="What's ahead" title="Where this goes next"
         lede="The light model is the foundation, not the feature. Everything below builds on a garden that already knows what time it is.">
-        <div className="cs-criteria">
-          <div><span className="cs-next-tag cs-next-next">Next</span>
-            <p className="cs-body cs-tight">Makes the existing model truer without new primitives. The scene already
-              runs on a clock — giving it weather and orientation is more signal into a system that's built.</p></div>
-          <div><span className="cs-next-tag cs-next-later">Later</span>
-            <p className="cs-body cs-tight">Needs a capability the prototype doesn't have — a backend, a vision model,
-              a second size class. Worth doing, but each one is its own project.</p></div>
-          <div><span className="cs-next-tag cs-next-exploring">Exploring</span>
-            <p className="cs-body cs-tight">Changes who the product is for. Shared care and a lock-screen widget both
-              move it beyond one person tending one garden, so they need evidence before investment.</p></div>
-        </div>
+        {/* The rule the roadmap was sorted by. Deliberately not card-shaped —
+            the cards below are the items; this is the key you read them with. */}
+        <p className="cs-rules-cap">How these are sorted</p>
+        <dl className="cs-rules">
+          <div className="cs-rule cs-rule-next">
+            <dt><span className="cs-next-tag cs-next-next">Next</span></dt>
+            <dd>Makes the existing model truer without new primitives. The scene already runs on a
+              clock — giving it weather and orientation is more signal into a system that's built.</dd>
+          </div>
+          <div className="cs-rule cs-rule-later">
+            <dt><span className="cs-next-tag cs-next-later">Later</span></dt>
+            <dd>Needs a capability the prototype doesn't have — a backend, a vision model, a second
+              size class. Worth doing, but each one is its own project.</dd>
+          </div>
+          <div className="cs-rule cs-rule-exploring">
+            <dt><span className="cs-next-tag cs-next-exploring">Exploring</span></dt>
+            <dd>Changes who the product is for. Shared care and a lock-screen widget both move it
+              beyond one person tending one garden, so they need evidence before investment.</dd>
+          </div>
+        </dl>
         <div className="cs-next">
           {[
             ["Next", "Light that knows your window",
@@ -880,12 +891,35 @@ const css = `
   .cs-details summary:hover { background: ${color.brand}18; }
   .cs-details .cs-code { border-radius: 0; }
 
-  /* what earns a place in each roadmap bucket */
-  .cs-criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: ${space[16]}px; margin-top: ${space[28]}px; padding: ${space[20]}px;
-    background: ${color.surfaceRaised}; border: 1px solid ${color.line}; border-radius: ${radius.xl}px; }
-  .cs-criteria > div { min-width: 0; }
-  .cs-criteria .cs-next-tag { margin-bottom: ${space[8]}px; }
+  /* What earns a place in each roadmap bucket. A key, not a panel: the tag sits
+     in its own column so the three criteria line up and can be read down, and a
+     rail in the bucket's own colour ties each rule to the cards below it. */
+  /* Scoped with .cs-root because the reset is .cs-root p (0,1,1) — a bare class
+     here loses on specificity and both margins collapse to zero.
+     No backticks in this comment: it lives inside a JS template literal. */
+  .cs-root .cs-rules-cap { margin: ${space[28]}px 0 ${space[10]}px; font-size: ${ds.size.sm}px;
+    font-weight: ${ds.weight.bold}; letter-spacing: 0.14em; text-transform: uppercase;
+    color: ${color.inkSoft}; }
+  /* One shared tag column so the three rules align; subgrid sizes it to the
+     widest pill, so nothing here has to guess at "Exploring". */
+  .cs-rules { margin: 0; display: grid; grid-template-columns: max-content 1fr; }
+  .cs-rule { display: grid; grid-column: span 2; grid-template-columns: subgrid; gap: ${space[20]}px;
+    align-items: baseline; padding: ${space[14]}px 0 ${space[14]}px ${space[16]}px;
+    border-left: 3px solid ${color.line}; }
+  .cs-rule + .cs-rule { border-top: 1px solid ${color.line}; }
+  .cs-rule-next { border-left-color: ${color.brand}; }
+  .cs-rule-later { border-left-color: ${color.brand}66; }
+  .cs-rules dt { margin: 0; }
+  /* Unconstrained these ran 115 characters a line against the page's 1080px
+     column. Capped to a readable measure; the rail still spans the full row. */
+  .cs-rules dd { margin: 0; max-width: 68ch; font-size: ${ds.size.base}px;
+    line-height: 1.62; color: ${color.inkSoft}; }
+  /* Below this the two columns would leave the text a ragged sliver, so the tag
+     moves above its rule and the rail keeps the grouping. */
+  @media (max-width: 620px) {
+    .cs-rules { grid-template-columns: 1fr; }
+    .cs-rule { grid-column: 1; grid-template-columns: 1fr; gap: ${space[8]}px; }
+  }
   .cs-bar-cta { display: inline-flex; align-items: center; gap: ${space[6]}px; text-decoration: none;
     font-size: ${ds.size.base}px; font-weight: ${ds.weight.bold}; color: inherit;
     background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22);
@@ -1181,7 +1215,11 @@ const css = `
     border-radius: ${radius.sm}px; }
   .cs-next-next { background: ${color.brand}; color: #fff; }
   .cs-next-later { background: ${color.brand}1e; color: ${color.brand}; }
-  .cs-next-exploring { background: ${color.line}; color: ${color.inkSoft}; }
+  /* This chip's fill is translucent, so its contrast moved with whatever sat
+     behind it: 4.7:1 on a white card, 4.26:1 on the tinted page — a fail the
+     moment it was used off-card. Full ink holds 11:1 on both. The quiet-to-loud
+     order is carried by the fills (neutral → tint → solid), not by the text. */
+  .cs-next-exploring { background: ${color.line}; color: ${color.ink}; }
 
   .cs-footer { margin-top: clamp(56px, 7vw, 96px); border-top: 1px solid ${color.line};
     padding: ${space[24]}px 0 ${space[40]}px; }
