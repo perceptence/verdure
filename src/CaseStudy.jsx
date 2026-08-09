@@ -976,11 +976,15 @@ const css = `
   .cs-kicker-dark::before { content: ""; width: 40px; height: 1px; background: ${palette.leaf300}; opacity: 0.6; }
   .cs-root .cs-standfirst { font-size: clamp(16px, 1.5vw, 19px); font-weight: ${ds.weight.medium};
     line-height: 1.62; color: ${palette.leaf100}; max-width: 44ch; margin-top: ${space[24]}px; }
-  /* meta sits on a hairline, labels tighter and quieter than the values */
-  /* sized to hold all four on one row once the values scale up */
-  .cs-meta { display: flex; flex-wrap: wrap; gap: ${space[20]}px clamp(${space[18]}px, 2.4vw, ${space[32]}px);
+  /* meta sits on a hairline, labels tighter and quieter than the values.
+     The 900px cap here was leftover from shorter copy and forced a 2+2 wrap
+     with mismatched column widths per row — the "unorganized" look. Above
+     720px the four now hold one line against the hero's full 1080px; below
+     it they stack, which is the same pattern the header nav already uses. */
+  .cs-meta { display: flex; flex-wrap: wrap; gap: ${space[20]}px clamp(${space[14]}px, 1.8vw, ${space[24]}px);
     margin: clamp(${space[28]}px, 4vh, ${space[40]}px) 0 0; padding-top: ${space[20]}px;
-    border-top: 1px solid rgba(255,255,255,0.16); max-width: 900px; }
+    border-top: 1px solid rgba(255,255,255,0.16); }
+  @media (min-width: 720px) { .cs-meta { flex-wrap: nowrap; } }
   .cs-meta div { display: flex; flex-direction: column; gap: ${space[6]}px; }
   .cs-meta dt { font-size: clamp(10px, 0.86vw, 12px); font-weight: ${ds.weight.bold};
     letter-spacing: 0.16em; text-transform: uppercase; color: ${palette.leaf300}; }
