@@ -85,7 +85,7 @@ describe("case study page", () => {
       Team: "Solo, with AI assistance",
       Scope: "Problem framing → design system → shipped build",
       Stage: "Working prototype, running end to end",
-      Standard: "Audited against WCAG 2.1 AA",
+      Surface: "iOS, responsive to the viewport",
     });
   });
 

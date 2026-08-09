@@ -328,7 +328,7 @@ export default function CaseStudy() {
             <div><dt>Team</dt><dd>Solo, with AI assistance</dd></div>
             <div><dt>Scope</dt><dd>Problem framing → design system → shipped build</dd></div>
             <div><dt>Stage</dt><dd>Working prototype, running end to end</dd></div>
-            <div><dt>Standard</dt><dd>Audited against WCAG 2.1 AA</dd></div>
+            <div><dt>Surface</dt><dd>iOS, responsive to the viewport</dd></div>
           </dl>
         </div>
 
